@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import './index.css';
 import LessonDetail from '../screens/LessonDetail';
 import Questions from '../screens/Questions';
 import Home from '../screens/Home';
 import Calendar from '../screens/Calendar';
 import Homework from '../screens/Homework';
 import Lessons from '../screens/Lessons';
+import './styles.css';
+import './index.css';
+
 
 export default function App() {
   const [user, setUser] = useState(null);
@@ -54,7 +56,7 @@ export default function App() {
 
   return (
     <Router>
-      <div className="bg-gray-100 min-h-screen pb-24">
+      <div className="container">
         <Routes>
           <Route path="/" element={<Home user={user} />} />
           <Route path="/calendar" element={<Calendar />} />
@@ -64,11 +66,11 @@ export default function App() {
           <Route path="/lessons/:lessonId" element={<LessonDetail />} />
         </Routes>
 
-        <nav className="fixed bottom-0 left-0 right-0 bg-black text-white flex justify-around p-3 rounded-t-3xl">
-          <NavItem title="Главная" to="/" />
-          <NavItem title="Календарь" to="/calendar" />
-          <NavItem title="Домашка" to="/homework" />
-          <NavItem title="Вопросы" to="/faq" />
+        <nav className="bottom-nav">
+          <NavItem className="nav-item" title="🏠" to="/" />
+          <NavItem className="nav-item" title="🗓️" to="/calendar" />
+          <NavItem className="nav-item" title="📄" to="/homework" />
+          <NavItem className="nav-item" title="❓" to="/faq" />
         </nav>
       </div>
     </Router>
