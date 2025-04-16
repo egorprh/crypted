@@ -1,15 +1,21 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./calendar.css";
 
 export default function Calendar() {
-  const events = [
-    {
-      title: "Стрим. (тема стрима)",
-      date: "22.02.2025",
-      author: "vyshee",
-      image: "/event-image.jpg", // Подставь путь к изображению
-    },
-  ];
+  const [events, setEvents] = useState([]);
+
+  useEffect(() => {
+    // Загружаем данные из файла events.json
+    fetch("/content/events.json")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Ошибка загрузки событий");
+        }
+        return response.json();
+      })
+      .then((data) => setEvents(data))
+      .catch((error) => console.error("Ошибка загрузки событий:", error));
+  }, []);
 
   return (
     <div className="page-container">
@@ -20,8 +26,8 @@ export default function Calendar() {
       <div className="content">
         <h2 className="title">Ближайшие ивенты</h2>
 
-        {events.map((event, i) => (
-          <div key={i} className="event-card">
+        {events.map((event) => (
+          <div key={event.id} className="event-card">
             <img src={event.image} alt="Event preview" className="event-image" />
 
             <div className="event-info">
@@ -34,7 +40,6 @@ export default function Calendar() {
           </div>
         ))}
       </div>
-
     </div>
   );
 }

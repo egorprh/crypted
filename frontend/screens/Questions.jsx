@@ -1,10 +1,28 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
-export default function Question() {
-  const questions = [
-    { q: 'Как попасть на стрим?', a: 'Ссылка появляется за 10 мин до начала' },
-    { q: 'Где посмотреть записи?', a: 'Они доступны на вкладке "Календарь" после события.' }
-  ];
+export default function Questions() {
+  const [questions, setQuestions] = useState([]);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    // Загружаем данные из файла questions.json
+    fetch("/content/questions.json")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Ошибка загрузки вопросов");
+        }
+        return response.json();
+      })
+      .then((data) => setQuestions(data))
+      .catch((error) => {
+        console.error("Ошибка загрузки вопросов:", error);
+        setError("Ошибка загрузки вопросов");
+      });
+  }, []);
+
+  if (error) {
+    return <div className="p-4">{error}</div>;
+  }
 
   return (
     <div className="p-4">
@@ -14,8 +32,8 @@ export default function Question() {
       <h2 className="text-xl font-semibold mb-4">Вопросы</h2>
       {questions.map((item, i) => (
         <div key={i} className="bg-white p-4 rounded-xl shadow mb-2">
-          <p className="font-medium">{item.q}</p>
-          <p className="text-sm text-gray-500">{item.a}</p>
+          <p className="font-medium">{item.question}</p>
+          <p className="text-sm text-gray-500">{item.answer}</p>
         </div>
       ))}
       <div className="mt-4">
