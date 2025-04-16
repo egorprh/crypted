@@ -8,6 +8,9 @@ export default function Question() {
 
   return (
     <div className="p-4">
+      <div className="header">
+        <img src="/logo.svg" alt="DeptSpace" />
+      </div>
       <h2 className="text-xl font-semibold mb-4">Вопросы</h2>
       {questions.map((item, i) => (
         <div key={i} className="bg-white p-4 rounded-xl shadow mb-2">

@@ -1,21 +1,40 @@
-import React from 'react';
+import React from "react";
+import "./calendar.css";
 
 export default function Calendar() {
   const events = [
-    { title: 'Разбор сделок', date: '18 апреля 2025', author: '@mentor_trader' },
-    { title: 'Лайв торговля', date: '20 апреля 2025', author: '@pro_trader' }
+    {
+      title: "Стрим. (тема стрима)",
+      date: "22.02.2025",
+      author: "vyshee",
+      image: "/event-image.jpg", // Подставь путь к изображению
+    },
   ];
 
   return (
-    <div className="p-4">
-      <h2 className="text-xl font-semibold mb-4">Календарь</h2>
-      {events.map((event, i) => (
-        <div key={i} className="bg-white p-4 rounded-xl shadow mb-2">
-          <h3 className="font-semibold">Стрим: {event.title}</h3>
-          <p className="text-sm text-gray-500">Дата: {event.date}</p>
-          <p className="text-sm text-gray-500">Автор: {event.author}</p>
-        </div>
-      ))}
+    <div className="page-container">
+      <div className="header">
+        <img src="/logo.svg" alt="DeptSpace" />
+      </div>
+
+      <div className="content">
+        <h2 className="title">Ближайшие ивенты</h2>
+
+        {events.map((event, i) => (
+          <div key={i} className="event-card">
+            <img src={event.image} alt="Event preview" className="event-image" />
+
+            <div className="event-info">
+              <div>
+                <p className="event-title">{event.title}</p>
+                <p className="event-author">by {event.author}</p>
+              </div>
+              <span className="event-date">{event.date}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+
     </div>
   );
 }

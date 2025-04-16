@@ -26,13 +26,17 @@ export default function LessonDetail() {
 
   return (
     <div className="p-4">
-      {/* Back Button */}
+      <div className="header">
+        {/* Back Button */}
       <button
         onClick={() => navigate('/lessons')}
         className="mb-4 flex items-center text-blue-500 hover:underline"
       >
         <span className="mr-2">←</span> Назад к урокам
       </button>
+        <img src="/logo.svg" alt="DeptSpace" />
+      </div>
+      
 
       <h1 className="text-xl font-bold mb-4">{lesson.title}</h1>
       <p className="text-gray-700 mb-4">{lesson.description}</p>

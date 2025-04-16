@@ -6,7 +6,6 @@ import Home from '../screens/Home';
 import Calendar from '../screens/Calendar';
 import Homework from '../screens/Homework';
 import Lessons from '../screens/Lessons';
-import './styles.css';
 import './index.css';
 
 
