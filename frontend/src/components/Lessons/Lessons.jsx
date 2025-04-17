@@ -34,7 +34,7 @@ export default function Lessons() {
     };
 
     return (
-        <div className="page-container">
+        <div className="page-container content">
 
             <div className="welcome">
                 <h2>{courseTitle || 'Уроки курса'}</h2>

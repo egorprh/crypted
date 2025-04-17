@@ -10,13 +10,15 @@
 }
 
 .hw-info {
-    padding-right: 60px;
-    margin-bottom: 10px;
+    padding-right: 80px;
+    margin-bottom: 20px;
 }
 
 .hw-icon {
+    position: absolute;
+    bottom: 20px;
+    right: 30px;
     flex-shrink: 0;
-    height: 100%;
 }
 
 .hw-icon svg {
