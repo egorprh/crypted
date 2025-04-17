@@ -8,14 +8,6 @@
   margin-bottom: 24px;
 }
 
-.event-card {
-  border-radius: 20px;
-  overflow: hidden;
-  background-color: white;
-  margin-bottom: 20px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
-}
-
 .event-image {
   width: 100%;
   height: 170px;
