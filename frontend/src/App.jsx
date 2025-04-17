@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import LessonDetail from '../screens/LessonDetail';
-import Questions from '../screens/Questions';
-import Home from '../screens/Home';
-import Calendar from '../screens/Calendar';
-import Homework from '../screens/Homework';
-import Lessons from '../screens/Lessons';
-import './index.css';
 
+import Home from "./components/Home/Home.jsx";
+import Calendar from "./components/Calendar/Calendar.jsx";
+import Homework from "./components/Homework/Homework.jsx";
+import Questions from "./components/Qustions/Questions.jsx";
+import Lessons from "./components/Lessons/Lessons.jsx";
+import LessonDetail from "./components/LessonDetail/LessonDetail.jsx";
+import Layout from "./layout.jsx";
 
 export default function App() {
   const [user, setUser] = useState(null);
@@ -61,31 +61,16 @@ export default function App() {
 
   return (
     <Router>
-      <div className="container">
         <Routes>
-          <Route path="/" element={<Home user={user} />} />
-          <Route path="/calendar" element={<Calendar />} />
-          <Route path="/homework" element={<Homework />} />
-          <Route path="/faq" element={<Questions />} />
-          <Route path="/lessons" element={<Lessons />} />
-          <Route path="/lessons/:lessonId" element={<LessonDetail />} />
+          <Route element={<Layout user={user} />}>
+            <Route path="/" element={<Home user={user} />} />
+            <Route path="/calendar" element={<Calendar />} />
+            <Route path="/homework" element={<Homework />} />
+            <Route path="/faq" element={<Questions />} />
+            <Route path="/lessons" element={<Lessons />} />
+            <Route path="/lessons/:lessonId" element={<LessonDetail />} />
+          </Route>
         </Routes>
-
-        <nav className="bottom-nav">
-          <NavItem className="nav-item" title="🏠" to="/" />
-          <NavItem className="nav-item" title="🗓️" to="/calendar" />
-          <NavItem className="nav-item" title="📄" to="/homework" />
-          <NavItem className="nav-item" title="❓" to="/faq" />
-        </nav>
-      </div>
     </Router>
-  );
-}
-
-function NavItem({ title, to }) {
-  return (
-    <Link to={to} className="text-sm text-center">
-      {title}
-    </Link>
   );
 }
