@@ -1,0 +1,30 @@
+[
+  {
+    "id": 1,
+    "title": "Что такое криптовалюта?",
+    "progress": 80,
+    "badge": "Пункт 2.16",
+    "testId": "crypto-basics"
+  },
+  {
+    "id": 2,
+    "title": "Развитие трейдера",
+    "progress": 0,
+    "badge": "Пункт 3.14",
+    "testId": "trader-growth"
+  },
+  {
+    "id": 3,
+    "title": "Основы технического анализа",
+    "progress": 0,
+    "badge": "Пункт 4.2",
+    "testId": "technical-analysis"
+  },
+  {
+    "id": 4,
+    "title": "Управление рисками",
+    "progress": 0,
+    "badge": "Пункт 5.7",
+    "testId": "risk-management"
+  }
+]

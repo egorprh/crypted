@@ -1,0 +1,36 @@
+.hw-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding: 20px 30px;
+    background-color: var(--secondary);
+    color: var(--white);
+    position: relative;
+    overflow-x: hidden;
+}
+
+.hw-info {
+    padding-right: 60px;
+    margin-bottom: 10px;
+}
+
+.hw-icon {
+    flex-shrink: 0;
+    height: 100%;
+}
+
+.hw-icon svg {
+    display: block;
+    margin-top: auto;
+}
+
+.hw-descr {
+    color: var(--gray);
+    font-size: 14px;
+}
+
+.hw-badge {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+}

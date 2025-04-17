@@ -10,17 +10,11 @@
   cursor: pointer;
  }
 
-.courses:hover .start-btn {
+.course-card:hover .start-btn {
   background-color: var(--primary);
 }
 
-.courses h2 {
-  font-size: 36px;
-  margin-bottom: 25px;
-}
-
 .course-card {
-  border-radius: 30px;
   overflow: hidden;
   margin-bottom: 20px;
 }
@@ -37,11 +31,6 @@
   background: var(--secondary);
   color: var(--white);
   padding: 30px;
-}
-
-.course-body .title {
-  font-size: 26px;
-  margin-bottom: 20px;
 }
 
 .course-footer {

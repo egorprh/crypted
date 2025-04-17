@@ -1,26 +1,64 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import './homework.css';
+import NextIcon from "../../assets/images/NextIcon.jsx";
 
 export default function Homework() {
-  const homework = [
-    { title: 'Что такое криптовалюта?', progress: 80 },
-    { title: 'Развитие трейдера', progress: 60 }
-  ];
+    const navigate = useNavigate();
+    const [homework, setHomework] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-  return (
-    <div className="p-4">
-      <div className="header">
-        <img src="/logo.svg" alt="DeptSpace" />
-      </div>
-      <h2 className="text-xl font-semibold mb-4">Домашка</h2>
-      {homework.map((task, i) => (
-        <div key={i} className="bg-white p-4 rounded-xl shadow mb-4">
-          <p className="font-medium mb-1">{task.title}</p>
-          <div className="w-full bg-gray-200 rounded-full h-2.5">
-            <div className="bg-green-500 h-2.5 rounded-full" style={{ width: `${task.progress}%` }}></div>
-          </div>
-          <p className="text-xs text-gray-500 mt-1">{task.progress}% правильных ответов</p>
+    useEffect(() => {
+        fetch("/content/homework.json")
+            .then((response) => {
+                if (!response.ok) throw new Error("Ошибка загрузки заданий");
+                return response.json();
+            })
+            .then((data) => {
+                setHomework(data);
+                setLoading(false);
+            })
+            .catch((error) => {
+                console.error("Ошибка загрузки заданий:", error);
+                setError(error.message);
+                setLoading(false);
+            });
+    }, []);
+
+    const handleTaskClick = (testId) => {
+        navigate(`/tests/${testId}`);
+    };
+
+    if (loading) return <div className="content"><h2>Мои задания</h2><div className="loading">Загрузка заданий...</div></div>;
+    if (error) return <div className="content"><h2>Мои задания</h2><div className="error">Ошибка: {error}</div></div>;
+
+    return (
+        <div className="content">
+            <h2>Мои задания</h2>
+
+            <div className="wrapper">
+                {homework.map((task) => (
+                    <div
+                        key={task.id}
+                        className="card hw-card"
+                        onClick={() => handleTaskClick(task.testId)}
+                    >
+                        <div className="hw-info">
+                            <div className="card-title">{task.title}</div>
+                            <p className="hw-descr">
+                                {task.progress ? `Результаты теста: ${task.progress} правильных ответов` : ''}
+                            </p>
+                        </div>
+                        <div className="hw-icon">
+                            <NextIcon/>
+                        </div>
+                        <div className="badge hw-badge">
+                            {task.badge}
+                        </div>
+                    </div>
+                ))}
+            </div>
         </div>
-      ))}
-    </div>
-  );
+    );
 }

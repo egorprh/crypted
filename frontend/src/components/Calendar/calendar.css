@@ -1,11 +1,5 @@
-.content {
-  padding: 16px;
-}
-
-.title {
-  font-size: 22px;
-  font-weight: 600;
-  margin-bottom: 24px;
+.event-card {
+  text-decoration: none;
 }
 
 .event-image {
@@ -13,17 +7,19 @@
   height: 170px;
   object-fit: cover;
   display: block;
+  border-top-left-radius: 30px;
+  border-top-right-radius: 30px;
 }
 
 .event-info {
-  background-color: #000;
-  color: #fff;
-  padding: 12px 16px;
+  background-color: var(--secondary);
+  color: var(--white);
+  padding: 20px 30px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom-left-radius: 20px;
-  border-bottom-right-radius: 20px;
+  border-bottom-left-radius: 30px;
+  border-bottom-right-radius: 30px;
 }
 
 .event-title {
@@ -37,13 +33,4 @@
   font-size: 12px;
   color: #aaa;
   margin: 2px 0 0;
-}
-
-.event-date {
-  background-color: white;
-  color: black;
-  font-size: 12px;
-  padding: 4px 10px;
-  border-radius: 999px;
-  font-weight: 500;
 }

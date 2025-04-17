@@ -1,0 +1,18 @@
+[
+  {
+    "id": 1,
+    "title": "Старт в торговле криптовалютой",
+    "thumbnail": "/images/logo.png",
+    "price": "Бесплатно",
+    "priceIcon": "/images/free.png",
+    "lessonsId": "crypto-start"
+  },
+  {
+    "id": 2,
+    "title": "Продвинутые стратегии трейдинга",
+    "thumbnail": "/images/logo.png",
+    "price": "Премиум",
+    "priceIcon": "/images/free.png",
+    "lessonsId": "advanced-trading"
+  }
+]

@@ -1,46 +1,67 @@
 import React, { useEffect, useState } from 'react';
+import './questions.css';
+import ArrowIcon from "../../assets/images/ArrowIcon.jsx";
 
 export default function Questions() {
-  const [questions, setQuestions] = useState([]);
-  const [error, setError] = useState(null);
+    const [questions, setQuestions] = useState([]);
+    const [error, setError] = useState(null);
+    const [expandedQuestions, setExpandedQuestions] = useState({});
 
-  useEffect(() => {
-    // Загружаем данные из файла questions.json
-    fetch("/content/questions.json")
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Ошибка загрузки вопросов");
-        }
-        return response.json();
-      })
-      .then((data) => setQuestions(data))
-      .catch((error) => {
-        console.error("Ошибка загрузки вопросов:", error);
-        setError("Ошибка загрузки вопросов");
-      });
-  }, []);
+    useEffect(() => {
+        // Загружаем данные из файла questions.json
+        fetch("/content/questions.json")
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error("Ошибка загрузки вопросов");
+                }
+                return response.json();
+            })
+            .then((data) => setQuestions(data))
+            .catch((error) => {
+                console.error("Ошибка загрузки вопросов:", error);
+                setError("Ошибка загрузки вопросов");
+            });
+    }, []);
 
-  if (error) {
-    return <div className="p-4">{error}</div>;
-  }
+    if (error) {
+        return <div>{error}</div>;
+    }
 
-  return (
-    <div className="p-4">
-      <div className="header">
-        <img src="/logo.svg" alt="DeptSpace" />
-      </div>
-      <h2 className="text-xl font-semibold mb-4">Вопросы</h2>
-      {questions.map((item, i) => (
-        <div key={i} className="bg-white p-4 rounded-xl shadow mb-2">
-          <p className="font-medium">{item.question}</p>
-          <p className="text-sm text-gray-500">{item.answer}</p>
+    const toggleQuestion = (id) => {
+        setExpandedQuestions(prev => ({
+            ...prev,
+            [id]: !prev[id]
+        }));
+    };
+
+    return (
+        <div className="content">
+            <h2>Вопросы</h2>
+
+            <div className="wrapper">
+                {questions.map((item, i) => (
+                    <div key={i} className="card qustions-card">
+                        <div className="question-header" onClick={() => toggleQuestion(i)}>
+                            <p>{i+1}. {item.question}</p>
+                            <span className={expandedQuestions[i] ? "rotated" : ""} >
+                                <ArrowIcon />
+                            </span>
+                        </div>
+                        <p className={`answer ${expandedQuestions[i] ? "expanded" : "hidden"}`}>
+                            {item.answer}
+                        </p>
+                    </div>
+                ))}
+            </div>
+
+            <div className="questions-form-wrapper">
+                <h3 className="">Задать вопрос куратору:</h3>
+                <div className="qustions-form">
+                    <textarea placeholder="Ваш вопрос..."/>
+                    <button className="btn">Отправить</button>
+                </div>
+
+            </div>
         </div>
-      ))}
-      <div className="mt-4">
-        <h3 className="font-medium mb-2">Задать вопрос куратору:</h3>
-        <textarea className="w-full p-2 border rounded mb-2" placeholder="Ваш вопрос..." />
-        <button className="bg-black text-white px-4 py-2 rounded">Отправить</button>
-      </div>
-    </div>
-  );
+    );
 }
