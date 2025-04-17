@@ -1,7 +1,7 @@
 .header {
     display: flex;
     gap: 20px;
-    padding: 40px;
+    padding: 20px;
     color: var(--white);
 }
 

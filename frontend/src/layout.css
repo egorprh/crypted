@@ -35,7 +35,7 @@ body {
 main {
   flex-grow: 1;
   padding: 50px 40px;
-  height: calc(100% - 150px);
+  height: calc(100% - 80px);
   background-color: var(--white);
   border-top-left-radius: 70px;
   border-top-right-radius: 70px;
@@ -56,8 +56,8 @@ a {
 }
 
 h2 {
-  font-size: 36px;
-  margin-bottom: 25px;
+  font-size: 32px;
+  margin-bottom: 20px;
 }
 
 .card {
@@ -65,13 +65,13 @@ h2 {
 }
 
 .card-title {
-  font-size: 26px;
+  font-size: 22px;
   margin-bottom: 10px;
 }
 
 .content {
   overflow: auto;
-  height: calc(100% - 150px);
+  height: calc(100% - 80px);
 }
 
 .wrapper {

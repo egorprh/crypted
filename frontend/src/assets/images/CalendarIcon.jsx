@@ -4,11 +4,11 @@ export default function CalendarIcon() {
         <svg
             xmlns="http://www.w3.org/2000/svg"
             xmlnsXlink="http://www.w3.org/1999/xlink"
-            width={45}
-            height={45}
+            width={35}
+            height={35}
             fill="none"
         >
-            <path fill="url(#calendar)" d="M0 0h45v45H0z"/>
+            <path fill="url(#calendar)" d="M0 0h35v35H0z"/>
             <defs>
                 <pattern
                     id="calendar"
