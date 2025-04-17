@@ -15,50 +15,52 @@ export default function App() {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
+
+    const tg = window.Telegram?.WebApp;
+    tg.ready();
+    tg.expand();
+
+    const u = tg.initDataUnsafe?.user;
+
+    if (!u) {
+      // Заглушка если пришли без Telegram
+      setUser({
+        username: 'luckyman',
+        photo_url: 'https://i.pravatar.cc/150?img=3',
+      });
+
+    } else {
+      setUser(u);
+
+      const now = new Date().toISOString();
+      const userData = {
+        telegram_id: u.id,
+        username: u.username,
+        first_name: u.first_name,
+        last_name: u.last_name,
+        timecreated: now,
+      };
+
+      // Отправляем данные пользователя на сервер
+      fetch('/api/save_user', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(userData),
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error('Ошибка записи пользователя');
+          }
+          return response.json();
+        })
+        .then((data) => {
+          console.log('Пользователь успешно сохранен:', data);
+        })
+        .catch((error) => {
+          console.error('Ошибка записи пользователя:', error);
+        });
+    }
     
-    // Заглушка для разработки вне Telegram
-    setUser({
-      username: 'demo_user',
-      photo_url: 'https://i.pravatar.cc/150?img=3',
-    });
-
-    // const tg = window.Telegram?.WebApp;
-
-    // if (!tg) {
-    //   alert('Telegram WebApp API недоступен. Запустите приложение в Telegram.');
-    //   return;
-    // }
-  
-    // if (tg) {
-    //   tg.ready();
-    //   tg.expand();
-    //   const u = tg.initDataUnsafe?.user;
-
-    //   if (!u) {
-    //     console.error('Пользовательские данные отсутствуют в initDataUnsafe.');
-    //     return;
-    //   }
-    //   setUser(u);
-
-    //   // fetch('https://your-backend.com/auth/telegram', {
-    //   //   method: 'POST',
-    //   //   headers: { 'Content-Type': 'application/json' },
-    //   //   body: JSON.stringify({
-    //   //     telegram_id: u.id,
-    //   //     username: u.username,
-    //   //     first_name: u.first_name,
-    //   //     last_name: u.last_name,
-    //   //     photo_url: u.photo_url
-    //   //   })
-    //   // });
-    // } 
-    // else {
-    //   // Заглушка для разработки вне Telegram
-    //   setUser({
-    //     username: 'demo_user',
-    //     photo_url: 'https://i.pravatar.cc/150?img=3',
-    //   });
-    // }
   }, []);
 
   return (
