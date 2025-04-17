@@ -34,7 +34,6 @@ export default function Footer() {
     ];
 
     const isActive = (path) => {
-        console.log(path, Boolean(location.pathname === path))
         return Boolean(location.pathname === path)
     };
 

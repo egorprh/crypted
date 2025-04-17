@@ -8,6 +8,8 @@ import Questions from "./components/Qustions/Questions.jsx";
 import Lessons from "./components/Lessons/Lessons.jsx";
 import LessonDetail from "./components/LessonDetail/LessonDetail.jsx";
 import Layout from "./layout.jsx";
+import TestPage from "./components/TestPage/TestPage.jsx";
+import EventPage from "./components/EventPage/EventPage.jsx";
 
 export default function App() {
   const [user, setUser] = useState(null);
@@ -65,10 +67,12 @@ export default function App() {
           <Route element={<Layout user={user} />}>
             <Route path="/" element={<Home user={user} />} />
             <Route path="/calendar" element={<Calendar />} />
+            <Route path="/calendar/event/:id" element={<EventPage />} />
             <Route path="/homework" element={<Homework />} />
             <Route path="/faq" element={<Questions />} />
-            <Route path="/lessons" element={<Lessons />} />
-            <Route path="/lessons/:lessonId" element={<LessonDetail />} />
+            <Route path="/lessons/:lessonsId" element={<Lessons />} />
+            <Route path="/lessons/:lessonsId/:lessonId" element={<LessonDetail />} />
+            <Route path="/tests/:testId" element={<TestPage />} />
           </Route>
         </Routes>
     </Router>

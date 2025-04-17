@@ -1,0 +1,14 @@
+[
+  {
+    "id": "adv1",
+    "title": "Сложные стратегии",
+    "thumbnail": "/images/strategies.png",
+    "description": "Продвинутые методы торговли"
+  },
+  {
+    "id": "adv2",
+    "title": "Риск-менеджмент",
+    "thumbnail": "/images/risk.png",
+    "description": "Как минимизировать потери"
+  }
+]

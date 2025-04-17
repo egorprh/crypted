@@ -35,9 +35,15 @@ body {
 main {
   flex-grow: 1;
   padding: 50px 40px;
+  height: calc(100% - 150px);
   background-color: var(--white);
   border-top-left-radius: 70px;
   border-top-right-radius: 70px;
+  overflow: auto;
+}
+
+a {
+  text-decoration: none;
 }
 
 .logo {
@@ -49,3 +55,46 @@ main {
   margin: auto;
 }
 
+h2 {
+  font-size: 36px;
+  margin-bottom: 25px;
+}
+
+.card {
+  border-radius: 24px;
+}
+
+.card-title {
+  font-size: 26px;
+  margin-bottom: 10px;
+}
+
+.content {
+  overflow: auto;
+  height: calc(100% - 150px);
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.badge {
+  background-color: white;
+  color: black;
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.btn {
+  background-color: var(--primary);
+  color: var(--white);
+  font-size: 16px;
+  padding: 10px 15px;
+  border-radius: 24px;
+  border: none;
+}

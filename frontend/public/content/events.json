@@ -1,56 +1,20 @@
 [
     {
         "id": 1,
-        "title": "Введение в криптовалюты",
-        "image": "images/event1_crypto_intro.jpg",
-        "author": "Александр Иванов",
-        "description": "Базовый семинар для новичков, желающих разобраться в основах криптовалют и блокчейна.",
-        "date": "15.11.2023 18:00",
-        "event_url": "https://example.com/event1"
+        "title": "Название события 1",
+        "author": "Автор 1",
+        "date": "2023-05-15",
+        "image": "/images/event1.jpg",
+        "youtubeUrl": "VIDEO_ID_FROM_YOUTUBE",
+        "description": "Подробное описание события..."
     },
     {
         "id": 2,
-        "title": "Трейдинг криптовалют: с чего начать?",
-        "image": "images/event2_trading_basics.jpg",
-        "author": "Мария Петрова",
-        "description": "Практический мастер-класс по основам торговли криптовалютами на биржах.",
-        "date": "20.11.2023 19:30",
-        "event_url": "https://example.com/event2"
-    },
-    {
-        "id": 3,
-        "title": "Блокчейн: технологии и будущее",
-        "image": "images/event3_blockchain_future.jpg",
-        "author": "Дмитрий Сидоров",
-        "description": "Лекция о перспективах развития блокчейн-технологий и их применении в разных отраслях.",
-        "date": "25.11.2023 17:00",
-        "event_url": "https://example.com/event3"
-    },
-    {
-        "id": 4,
-        "title": "Как защитить свои криптоактивы?",
-        "image": "images/event4_security_tips.jpg",
-        "author": "Екатерина Кузнецова",
-        "description": "Вебинар по защите криптовалютных кошельков и предотвращению мошенничества.",
-        "date": "28.11.2023 20:00",
-        "event_url": "https://example.com/event4"
-    },
-    {
-        "id": 5,
-        "title": "NFT: искусство и инвестиции",
-        "image": "images/event5_nft_art.jpg",
-        "author": "Андрей Михайлов",
-        "description": "Интерактивная конференция о мире NFT, их создании и монетизации.",
-        "date": "01.12.2023 16:30",
-        "event_url": "https://example.com/event5"
-    },
-    {
-        "id": 6,
-        "title": "Криптовалюты и законодательство",
-        "image": "images/event6_crypto_law.jpg",
-        "author": "Ольга Николаева",
-        "description": "Обзор правовых аспектов использования криптовалют в разных странах мира.",
-        "date": "05.12.2023 19:00",
-        "event_url": "https://example.com/event6"
+        "title": "Название события 2",
+        "author": "Автор 2",
+        "date": "2023-05-20",
+        "image": "/images/event2.jpg",
+        "youtubeUrl": "ANOTHER_VIDEO_ID",
+        "description": "Еще одно описание..."
     }
 ]
