@@ -4,7 +4,7 @@
         "title": "Название события 1",
         "author": "Автор 1",
         "date": "2023-05-15",
-        "image": "/images/event1.jpg",
+        "image": "/images/event1.png",
         "youtubeUrl": "VIDEO_ID_FROM_YOUTUBE",
         "description": "Подробное описание события..."
     },

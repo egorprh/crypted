@@ -9,7 +9,7 @@
     align-items: center;
     gap: 8px;
     padding: 5px 10px;
-    border-radius: 10px;
+    border-radius: var(--brs-sm);
     text-decoration: none;
 }
 
@@ -27,5 +27,5 @@
 
 .nav-item span {
     color: var(--gray);
-    font-size: 12px;
+    font-size: var(--fs-xxs);
 }

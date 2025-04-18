@@ -30,7 +30,7 @@ export default function TestPage() {
     if (!test) return <div className="test-container">Тест не найден</div>;
 
     return (
-        <div className="test-container content">
+        <div className="test content">
             <h2>{test.title}</h2>
             <p className="test-description">{test.description}</p>
 
