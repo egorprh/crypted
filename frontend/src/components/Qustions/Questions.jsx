@@ -55,10 +55,12 @@ export default function Questions() {
             </div>
 
             <div className="questions-form-wrapper">
-                <h3 className="">Задать вопрос куратору:</h3>
+                <h3>Задать вопрос куратору:</h3>
                 <div className="qustions-form">
-                    <textarea placeholder="Ваш вопрос..."/>
-                    <button className="btn">Отправить</button>
+                    <textarea />
+                    <button>
+                        <ArrowIcon />
+                    </button>
                 </div>
 
             </div>

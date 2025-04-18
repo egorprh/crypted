@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, Link } from 'react-router-dom';
 import './lessons.css';
 import ArrowIcon from "../../assets/images/ArrowIcon.jsx";
 
@@ -18,8 +18,7 @@ export default function Lessons() {
                 if (currentCourse) setCourseTitle(currentCourse.title);
             });
 
-        // Загружаем уроки для данного курса
-        fetch(`/content/lessons-${lessonsId}.json`)
+        fetch(`/content/lessons/lessons-${lessonsId}.json`)
             .then((response) => {
                 if (!response.ok) throw new Error("Ошибка загрузки уроков");
                 return response.json();
@@ -30,11 +29,12 @@ export default function Lessons() {
 
     const handleImageError = (e) => {
         e.target.src = '/images/default-event.avif';
-        e.target.onerror = null; // Предотвращаем бесконечный цикл при ошибке загрузки fallback-изображения
+        e.target.onerror = null;
     };
 
     return (
         <div className="page-container content">
+            <Link to="/" className="back-link">← Назад</Link>
 
             <div className="welcome">
                 <h2>{courseTitle || 'Уроки курса'}</h2>
@@ -50,7 +50,7 @@ export default function Lessons() {
                     >
                         <div className="info">
                             <img
-                                src={lesson.thumbnail || "/images/default-event.avif"}
+                                src={lesson.image || "/images/default-event.avif"}
                                 alt=""
                                 onError={handleImageError}
                             />

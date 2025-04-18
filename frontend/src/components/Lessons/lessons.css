@@ -1,27 +1,22 @@
-.welcome {
-    padding: 0 16px;
-    margin-top: 16px;
-  }
-  
   .welcome h2 {
-    font-size: 24px;
+    font-size: var(--fs-md);
     font-weight: bold;
     margin-bottom: 4px;
   }
   
   .welcome p {
-    font-size: 14px;
+    font-size: var(--fs-xs);
+    line-height: 1.2;
     color: #4b5563;
     margin-bottom: 24px;
   }
   
   .lesson-block {
-    padding: 0 16px;
     margin-bottom: 20px;
   }
   
   .lesson-block p {
-    font-size: 16px;
+    font-size: var(--fs-s);
     font-weight: 600;
     margin-bottom: 8px;
   }
@@ -30,7 +25,7 @@
     background-color: #000;
     color: #fff;
     padding: 12px;
-    border-radius: 20px;
+    border-radius: var(--brs-md);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -44,18 +39,18 @@
   .lesson-card .info {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 14px;
   }
   
   .lesson-card img {
     width: 80px;
     height: 56px;
-    border-radius: 12px;
+    border-radius: var(--brs-sm);
     object-fit: cover;
   }
   
   .lesson-card span {
-    font-size: 14px;
+    font-size: var(--fs-s);
     line-height: 1.3;
   }
   

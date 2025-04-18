@@ -1,0 +1,16 @@
+[
+  {
+    "id": "adv1",
+    "title": "Сложные стратегии",
+    "image": "/images/strategies.png",
+    "description": "Продвинутые методы торговли",
+    "video_url": "https://www.youtube.com/watch?v=example2"
+  },
+  {
+    "id": "adv2",
+    "title": "Риск-менеджмент",
+    "image": "/images/risk.png",
+    "description": "Как минимизировать потери",
+    "video_url": "https://www.youtube.com/watch?v=example2"
+  }
+]

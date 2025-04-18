@@ -1,0 +1,16 @@
+[
+  {
+    "id": "basic1",
+    "title": "Основы криптовалют",
+    "image": "/images/crypto-basics.png",
+    "description": "Введение в мир криптовалют",
+    "video_url": "https://www.youtube.com/watch?v=example2"
+  },
+  {
+    "id": "basic2",
+    "title": "Как покупать криптовалюту",
+    "image": "/images/buy-crypto.png",
+    "description": "Пошаговое руководство по покупке",
+    "video_url": "https://www.youtube.com/watch?v=example2"
+  }
+]

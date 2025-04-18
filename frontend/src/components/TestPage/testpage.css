@@ -1,7 +1,9 @@
-.test-container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
+.test {
+    padding-inline: 15px;
+}
+
+.test h2 {
+    margin-bottom: 0;
 }
 
 .test-description {
@@ -37,7 +39,7 @@
     border: none;
     padding: 12px 24px;
     border-radius: 4px;
-    font-size: 16px;
+    font-size: var(--fs-s);
     cursor: pointer;
     margin-top: 20px;
 }
