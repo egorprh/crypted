@@ -15,9 +15,7 @@ from db.pgapi import PGApi
 ###
 
 app = FastAPI()
-db = PGApi()
 
-#db.create_all_tables()
 
 @app.get("/ping")
 async def ping():
