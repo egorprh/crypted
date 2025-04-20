@@ -1,5 +1,5 @@
 services:
-  db:
+  postgressql:
     container_name: postgressql
     image: postgres:12
     environment:
@@ -36,7 +36,7 @@ services:
       - "5050:80"
     restart: unless-stopped
     depends_on:
-      - db
+      - postgressql
     deploy:
       resources:
         limits:
@@ -45,11 +45,11 @@ services:
     networks:
       - appnetwork
 
-
   app:
     container_name: app
     build:
       context: .
+      dockerfile: Dockerfile
     command: uvicorn main:app --reload --host 0.0.0.0 --port 8000
     ports:
       - 8000:8000
@@ -60,9 +60,10 @@ services:
       - ".env"
     volumes:
       - ./backend:/app
+      - ./frontend/dist:/frontend/dist
     depends_on:
-      - db
-      - pgadmin
+      postgressql:
+        condition: service_healthy
 
 networks:
   appnetwork:

@@ -12,7 +12,7 @@ class PGApi:
         self.pool: Union[Pool, None] = None
 
     async def create(self):
-        config = load_config(".env")
+        config = load_config("../.env")
         self.pool = await asyncpg.create_pool(
             host=config.db.host,
             database=config.db.database,

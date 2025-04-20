@@ -60,6 +60,21 @@ export default function App() {
           console.error('Ошибка записи пользователя:', error);
         });
     }
+
+    // Получаем данные для всего приложения
+    fetch('/get_app_data?user_id=1', {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' },
+    })
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        console.log('Данные приложения:', data);
+      })
+      .catch((error) => {
+        console.error('Ошибка получения данных:', error);
+      });
     
   }, []);
 
