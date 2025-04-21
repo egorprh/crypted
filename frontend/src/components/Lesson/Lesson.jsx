@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import './lesson.css';
+import { TabButtons } from "../ui/TabButton/TabButtons.jsx";
+import BackIcon from "../../assets/images/BackIcon.jsx";
+import tabButtons from "../ui/TabButton/LessonsTabButtons.json";
 
 export default function Lesson() {
     const { lessonsId, lessonId } = useParams();
@@ -11,13 +14,11 @@ export default function Lesson() {
 
     useEffect(() => {
         setLoading(true);
-        fetch(`/content/lessons/lessons-${lessonsId}.json`)
-            .then(response => {
-                if (!response.ok) throw new Error("Уроки не найдены");
-                return response.json();
-            })
+        fetch("/content/courses.json")
+            .then(res => res.json())
             .then(data => {
-                const foundLesson = data.find(l => l.id === lessonId);
+                const course = data.courses.find(c => String(c.id) === lessonsId);
+                const foundLesson = course?.lessons.find(l => String(l.id) === lessonId);
                 if (!foundLesson) throw new Error("Урок не найден");
                 setLesson(foundLesson);
             })
@@ -28,39 +29,39 @@ export default function Lesson() {
             .finally(() => setLoading(false));
     }, [lessonsId, lessonId]);
 
+    const handleTabChange = (tab) => {
+        if (tab === 'content') return;
+        navigate(`/lessons/${lessonsId}/${lessonId}/${tab}`);
+    };
+
     if (loading) return <div className="page-container content">Загрузка...</div>;
     if (error) return <div className="page-container content">{error}</div>;
-    if (!lesson) return <div className="page-container content">Урок не найден</div>;
 
     return (
         <div className="page-container content">
-            <div onClick={() => navigate(-1)} className="back-link">← Назад</div>
+            <div onClick={() => navigate(`/lessons/${lessonsId}`)} className="back-link">
+                <BackIcon />
+                Назад
+            </div>
 
             <h2>{lesson.title}</h2>
 
-            <div className="lesson-content">
-                {lesson.video_url && (
-                    <div className="video-container">
-                        <iframe
-                            src={lesson.video_url}
-                            frameBorder="0"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                            allowFullScreen
-                            title={lesson.title}
-                        />
-                    </div>
-                )}
+            <TabButtons buttons={tabButtons.btns} activeTab={'content'} onTabChange={handleTabChange} />
 
-                <div className="lesson-description">
-                    <p>
-                        {lesson.description.split('\n').map((paragraph, i) => (
-                            <span key={i}>
-                                {paragraph}
-                                <br />
-                            </span>
-                        ))}
-                    </p>
+            {lesson.video_url && (
+                <div className="video-container">
+                    <iframe
+                        src={lesson.video_url}
+                        frameBorder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                        title={lesson.title}
+                    />
                 </div>
+            )}
+
+            <div className="lesson-description">
+                {lesson.description.split('\n').map((p, i) => <p key={i}>{p}</p>)}
             </div>
         </div>
     );

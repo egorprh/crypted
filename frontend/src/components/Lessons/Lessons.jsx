@@ -1,30 +1,37 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import './lessons.css';
 import ArrowIcon from "../../assets/images/ArrowIcon.jsx";
+import BackIcon from "../../assets/images/BackIcon.jsx";
 
 export default function Lessons() {
     const navigate = useNavigate();
-    const { lessonsId } = useParams();
+    const { lessonsId } = useParams(); // lessonsId — это courseId в новой структуре
     const [lessons, setLessons] = useState([]);
     const [courseTitle, setCourseTitle] = useState('');
 
     useEffect(() => {
-        // Загружаем данные курса
         fetch("/content/courses.json")
-            .then(response => response.json())
-            .then(courses => {
-                const currentCourse = courses.find(c => c.lessonsId === lessonsId);
-                if (currentCourse) setCourseTitle(currentCourse.title);
-            });
-
-        fetch(`/content/lessons/lessons-${lessonsId}.json`)
             .then((response) => {
-                if (!response.ok) throw new Error("Ошибка загрузки уроков");
+                if (!response.ok) {
+                    throw new Error("Ошибка загрузки курсов");
+                }
                 return response.json();
             })
-            .then((data) => setLessons(data))
-            .catch((error) => console.error("Ошибка загрузки уроков:", error));
+            .then((data) => {
+                const courses = data.courses || [];
+                const course = courses.find((c) => String(c.id) === lessonsId);
+
+                if (course) {
+                    setCourseTitle(course.title);
+                    setLessons(course.lessons || []);
+                } else {
+                    console.warn("Курс не найден");
+                }
+            })
+            .catch((error) => {
+                console.error("Ошибка загрузки данных курса:", error);
+            });
     }, [lessonsId]);
 
     const handleImageError = (e) => {
@@ -34,7 +41,10 @@ export default function Lessons() {
 
     return (
         <div className="page-container content">
-            <Link to="/" className="back-link">← Назад</Link>
+            <Link to="/" className="back-link">
+                <BackIcon />
+                Назад
+            </Link>
 
             <div className="welcome">
                 <h2>{courseTitle || 'Уроки курса'}</h2>
