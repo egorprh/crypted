@@ -12,6 +12,7 @@ import EventPage from "./components/EventPage/EventPage.jsx";
 import Lesson from "./components/Lesson/Lesson.jsx";
 import LessonMaterials from "./components/LessonMaterials/LessonMaterials.jsx";
 import LessonQuiz from "./components/LessonQuiz/LessonQuiz.jsx";
+import LessonLayout from "./LessonLayout.jsx";
 
 export default function App() {
   const [user, setUser] = useState(null);
@@ -89,10 +90,12 @@ export default function App() {
             <Route path="/calendar/event/:id" element={<EventPage />} />
             <Route path="/homework" element={<Homework />} />
             <Route path="/faq" element={<Questions />} />
-            <Route path="/lessons/:lessonsId" element={<Lessons />} />
-            <Route path="/lessons/:lessonsId/:lessonId" element={<Lesson />} />
-            <Route path="/lessons/:lessonsId/:lessonId/materials" element={<LessonMaterials />} />
-            <Route path="/lessons/:lessonsId/:lessonId/quiz" element={<LessonQuiz />} />
+            <Route element={<LessonLayout />}>
+              <Route path="/lessons/:courseId/:lessonId" element={<Lesson />} />
+              <Route path="/lessons/:courseId/:lessonId/materials" element={<LessonMaterials />} />
+              <Route path="/lessons/:courseId/:lessonId/quiz" element={<LessonQuiz />} />
+            </Route>
+            <Route path="/lessons/:courseId" element={<Lessons />} />
             <Route path="/tests/:testId" element={<TestPage />} />
           </Route>
         </Routes>

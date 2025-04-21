@@ -6,7 +6,7 @@ import BackIcon from "../../assets/images/BackIcon.jsx";
 import tabButtons from "../ui/TabButton/LessonsTabButtons.json";
 
 export default function LessonQuiz() {
-    const { lessonsId, lessonId } = useParams();
+    const { courseId, lessonId } = useParams();
     const navigate = useNavigate();
     const [lesson, setLesson] = useState(null);
 
@@ -14,30 +14,15 @@ export default function LessonQuiz() {
         fetch("/content/courses.json")
             .then(res => res.json())
             .then(data => {
-                const course = data.courses.find(c => String(c.id) === lessonsId);
+                const course = data.courses.find(c => String(c.id) === courseId);
                 const foundLesson = course?.lessons.find(l => String(l.id) === lessonId);
                 setLesson(foundLesson || null);
             });
-    }, [lessonsId, lessonId]);
-
-    const handleTabChange = (tab) => {
-        if (tab === 'quiz') return;
-        navigate(`/lessons/${lessonsId}/${lessonId}/${tab === 'content' ? '' : tab}`);
-    };
+    }, [courseId, lessonId]);
 
     return (
-        <div className="page-container content">
-            <div onClick={() => navigate(`/lessons/${lessonsId}`)} className="back-link">
-                <BackIcon />
-                Назад
-            </div>
-            <h2>{lesson?.title || 'Домашка'}</h2>
+        <div className="lesson-quiz">
 
-            <TabButtons buttons={tabButtons.btns} activeTab={'quiz'} onTabChange={handleTabChange} />
-
-            <div className="lesson-quiz">
-
-            </div>
         </div>
     );
 }
