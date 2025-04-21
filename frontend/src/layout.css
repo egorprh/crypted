@@ -1,6 +1,7 @@
 :root {
   --secondary: #1F1F1F;
   --primary: rgb(65, 133, 244);
+  --primary-transparent: rgba(65, 133, 244, 0.25);
   --bg: #3284FF;
   --white: #fff;
   --gray: #c6c6c6;
@@ -110,4 +111,21 @@ h2 {
   padding: 10px 15px;
   border-radius: var(--brs-sm);
   border: none;
+}
+
+.back-link {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 20px;
+  color: var(--primary);
+  text-decoration: none;
+}
+
+.back-link:hover {
+  text-decoration: underline;
+}
+
+.back-link svg path {
+  fill: var(--primary);
 }

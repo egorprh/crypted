@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import "./eventpage.css"
+import BackIcon from "../../assets/images/BackIcon.jsx";
 export default function EventPage() {
     const { id } = useParams();
     const [event, setEvent] = useState(null);
@@ -40,7 +41,10 @@ export default function EventPage() {
 
     return (
         <div className="content">
-            <Link to="/calendar" className="back-link">← Назад к календарю</Link>
+            <Link to="/calendar" className="back-link">
+                <BackIcon />
+                Назад
+            </Link>
 
             <h2 className="title">{event.title}</h2>
 

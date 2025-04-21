@@ -10,6 +10,8 @@ import Layout from "./layout.jsx";
 import TestPage from "./components/TestPage/TestPage.jsx";
 import EventPage from "./components/EventPage/EventPage.jsx";
 import Lesson from "./components/Lesson/Lesson.jsx";
+import LessonMaterials from "./components/LessonMaterials/LessonMaterials.jsx";
+import LessonQuiz from "./components/LessonQuiz/LessonQuiz.jsx";
 
 export default function App() {
   const [user, setUser] = useState(null);
@@ -89,6 +91,8 @@ export default function App() {
             <Route path="/faq" element={<Questions />} />
             <Route path="/lessons/:lessonsId" element={<Lessons />} />
             <Route path="/lessons/:lessonsId/:lessonId" element={<Lesson />} />
+            <Route path="/lessons/:lessonsId/:lessonId/materials" element={<LessonMaterials />} />
+            <Route path="/lessons/:lessonsId/:lessonId/quiz" element={<LessonQuiz />} />
             <Route path="/tests/:testId" element={<TestPage />} />
           </Route>
         </Routes>

@@ -1,0 +1,29 @@
+.tabs {
+    display: flex;
+    justify-content: space-around;
+    background-color: var(--secondary);
+    border-radius: var(--brs-sm);
+    margin: 20px 0;
+}
+
+.tabs button {
+    width: 100%;
+    padding: 8px 16px;
+    font-size: var(--fs-xs);
+    border: none;
+    border-radius: var(--brs-sm);
+    color: var(--white);
+    background-color: transparent;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.tabs button.active {
+    background-color: var(--bg);
+    color: var(--white);
+    font-weight: bold;
+}
+
+.tabs button:focus {
+    outline: none;
+}

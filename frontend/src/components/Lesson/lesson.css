@@ -37,7 +37,7 @@
 }
 
 .lesson-description {
-    background: rgba(65, 133, 244, 0.3);
+    background: var(--primary-transparent);
     padding: 15px 20px;
     border-radius: var(--brs-md);
 }
