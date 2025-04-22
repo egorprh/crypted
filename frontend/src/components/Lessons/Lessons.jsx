@@ -56,7 +56,7 @@ export default function Lessons() {
                     <p>Урок {index + 1}</p>
                     <div
                         className="lesson-card"
-                        onClick={() => navigate(`/lessons/${courseId}/${lesson.id}`)}
+                        onClick={() => navigate(`/lessons/${courseId}/${lesson.id}/content`)}
                     >
                         <div className="info">
                             <img

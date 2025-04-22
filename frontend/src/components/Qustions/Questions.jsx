@@ -8,7 +8,6 @@ export default function Questions() {
     const [expandedQuestions, setExpandedQuestions] = useState({});
 
     useEffect(() => {
-        // Загружаем данные из файла questions.json
         fetch("/content/questions.json")
             .then((response) => {
                 if (!response.ok) {
@@ -16,7 +15,9 @@ export default function Questions() {
                 }
                 return response.json();
             })
-            .then((data) => setQuestions(data))
+            .then((data) => {
+                setQuestions(data.faq || []);
+            })
             .catch((error) => {
                 console.error("Ошибка загрузки вопросов:", error);
                 setError("Ошибка загрузки вопросов");
@@ -36,33 +37,30 @@ export default function Questions() {
 
     return (
         <div className="content">
-            <h2>Вопросы</h2>
+            <div className="questions-form-wrapper">
+                <div>
+                    <h3>Вопрос Ростиславу</h3>
+                    <a href="#" className="btn">Написать</a>
+                </div>
+                <img className="questions-img" src="/images/photo.png" alt="Вопрос" />
+            </div>
+
+            <h2>Часто задаваемые вопросы</h2>
 
             <div className="wrapper">
                 {questions.map((item, i) => (
-                    <div key={i} className="card qustions-card">
-                        <div className="question-header" onClick={() => toggleQuestion(i)}>
-                            <p>{i+1}. {item.question}</p>
-                            <span className={expandedQuestions[i] ? "rotated" : ""} >
+                    <div key={item.id} className="card qustions-card">
+                        <div className="question-header" onClick={() => toggleQuestion(item.id)}>
+                            <p>{i + 1}. {item.question}</p>
+                            <span className={expandedQuestions[item.id] ? "rotated" : ""}>
                                 <ArrowIcon />
                             </span>
                         </div>
-                        <p className={`answer ${expandedQuestions[i] ? "expanded" : "hidden"}`}>
+                        <p className={`answer ${expandedQuestions[item.id] ? "expanded" : "hidden"}`}>
                             {item.answer}
                         </p>
                     </div>
                 ))}
-            </div>
-
-            <div className="questions-form-wrapper">
-                <h3>Задать вопрос куратору:</h3>
-                <div className="qustions-form">
-                    <textarea />
-                    <button>
-                        <ArrowIcon />
-                    </button>
-                </div>
-
             </div>
         </div>
     );

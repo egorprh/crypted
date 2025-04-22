@@ -1,12 +1,10 @@
-// LessonQuiz.jsx
 import React from 'react';
-import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
+import { useNavigate, useOutletContext } from 'react-router-dom';
 import './lesson-quiz.css';
 
 export default function LessonQuiz() {
-    const { courseId, lessonId } = useParams();
     const navigate = useNavigate();
-    const lesson = useOutletContext();
+    const {lesson, courseId, lessonId} = useOutletContext();
 
     if (!lesson || !lesson.quizzes || lesson.quizzes.length === 0) {
         return <div className="lesson-quiz">Тест не найден.</div>;
@@ -19,7 +17,7 @@ export default function LessonQuiz() {
     };
 
     return (
-        <div className="lesson-quiz">
+        <div className="lesson-container">
             <div className="quiz-intro">
                 <h3>{quiz.title}</h3>
                 <p>{quiz.description}</p>

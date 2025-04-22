@@ -48,12 +48,24 @@
 
 .questions-form-wrapper {
     display: flex;
-    flex-direction: column;
-    margin-top: 24px;
-    padding: 20px 30px;
-    background-color: var(--secondary);
+    justify-content: space-between;
+    margin-bottom: 24px;
+    padding: 15px 20px;
+    background-color: var(--primary);
     color: var(--white);
     border-radius: var(--brs-md);
+}
+
+.questions-form-wrapper .btn {
+    display: block;
+    background-color: var(--white);
+    color: var(--secondary);
+    text-align: center;
+}
+
+.questions-form-wrapper h3 {
+    font-size: var(--fs-sm);
+    margin-bottom: 15px;
 }
 
 .qustions-form {
@@ -73,4 +85,10 @@
 .qustions-form button {
     background-color: transparent;
     border: none;
+}
+
+.questions-img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
 }

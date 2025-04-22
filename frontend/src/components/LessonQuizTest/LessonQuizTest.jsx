@@ -4,7 +4,7 @@ import { buildStyles, CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import './lesson-quiz-test.css';
 
-export default function LessonQuizTest() {
+export default function LessonQuizTest({ user }) {
     const { courseId, lessonId } = useParams();
     const navigate = useNavigate();
 
@@ -66,7 +66,26 @@ export default function LessonQuizTest() {
     };
 
     const handleFinish = () => {
-        navigate(`/lessons/${courseId}`);
+        const total = quiz.questions.length;
+        const progress = Math.round((correctCount / total) * 100);
+
+        fetch('/api/save_progress', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                userId: user?.id,
+                quizId: quiz.id,
+                progress: progress
+            })
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Прогресс сохранен:', data);
+                navigate(`/lessons/${courseId}`);
+            })
+            .catch(error => {
+                console.error('Ошибка при сохранении прогресса:', error);
+            });
     };
 
     if (loading) return <div>Загрузка...</div>;

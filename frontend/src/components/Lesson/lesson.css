@@ -1,3 +1,11 @@
+.lesson-container {
+    height: calc(100% - 90px - 80px);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 8px;
+}
+
 .lesson-header {
     display: flex;
     align-items: center;
@@ -26,6 +34,15 @@
 
 .lesson-title {
     font-size: var(--fs-sm);
+}
+
+.video-container {
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 */
+    height: 0;
+    overflow: hidden;
+    margin-bottom: 20px;
+    border-radius: var(--brs-md);
 }
 
 .video-container iframe {

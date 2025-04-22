@@ -9,11 +9,17 @@ export default function Calendar() {
         fetch("/content/events.json")
             .then((response) => {
                 if (!response.ok) {
-                    throw new Error("Ошибка загрузки событий");
+                    throw new Error("Ошибка загрузки данных");
                 }
                 return response.json();
             })
-            .then((data) => setEvents(data))
+            .then((data) => {
+                if (data.events) {
+                    setEvents(data.events);
+                } else {
+                    console.warn("События не найдены");
+                }
+            })
             .catch((error) => console.error("Ошибка загрузки событий:", error));
     }, []);
 

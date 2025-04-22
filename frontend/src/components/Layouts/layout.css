@@ -99,6 +99,7 @@ h2 {
 }
 
 .badge {
+  width: min-content;
   background-color: var(--white);
   color: black;
   font-size: var(--fs-xxs);
@@ -108,13 +109,19 @@ h2 {
   white-space: nowrap;
 }
 
+.badge.badge-primary {
+  background-color: var(--primary);
+}
+
 .btn {
+  display: inline-block;
   background-color: var(--primary);
   color: var(--white);
   font-size: var(--fs-s);
   padding: 10px 15px;
   border-radius: var(--brs-md);
   border: none;
+  cursor: pointer;
 }
 
 .back-link {
@@ -124,44 +131,19 @@ h2 {
   margin-bottom: 20px;
   color: var(--primary);
   text-decoration: none;
-}
-
-.back-link:hover {
-  text-decoration: underline;
+  cursor: pointer;
 }
 
 .back-link svg path {
   fill: var(--primary);
 }
 
-.quiz-container main {
-  height: 100%;
-  border-top-left-radius: 0;
-  border-top-right-radius: 0;
-  border: 8px solid transparent;
+.content h2 {
+  font-size: 22px;
 }
 
-.quiz-container main:has(.btn-incorrect) {
-  animation: flash-red 2s ease-out forwards;
-}
-
-.quiz-container main:has(.btn-correct) {
-  animation: flash-green 2s ease-out forwards;
-}
-
-@keyframes flash-red {
-  0% {
-    border-color: var(--danger);
-  }
-  100% {
-    border-color: transparent
-  }
-}
-
-@keyframes flash-green {
-  0% {
-    border-color: var(--success);
-  }
-  100% {
-    border-color: transparent }
+.d-flex {
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }

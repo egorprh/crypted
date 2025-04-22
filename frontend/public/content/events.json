@@ -1,20 +1,44 @@
-[
-    {
-        "id": 1,
-        "title": "Название события 1",
-        "author": "Автор 1",
-        "date": "2023-05-15",
-        "image": "/images/event1.png",
-        "youtubeUrl": "VIDEO_ID_FROM_YOUTUBE",
-        "description": "Подробное описание события..."
-    },
-    {
-        "id": 2,
-        "title": "Название события 2",
-        "author": "Автор 2",
-        "date": "2023-05-20",
-        "image": "/images/event2.jpg",
-        "youtubeUrl": "ANOTHER_VIDEO_ID",
-        "description": "Еще одно описание..."
-    }
-]
+{
+    "events": [
+        {
+            "id": 1,
+            "title": "Вебинар: Основы трейдинга",
+            "description": "На этом вебинаре мы расскажем о базовых принципах трейдинга и ответим на ваши вопросы.",
+            "author": "Александр Трейдер",
+            "image": "https://tegrk.ru/wp-content/uploads/%D1%80%D0%B2%D1%80%D0%B2%D0%B0%D1%80.jpg",
+            "date": "2023-12-15"
+        },
+        {
+            "id": 2,
+            "title": "Мастер-класс: Анализ графиков",
+            "description": "Узнайте, как правильно анализировать графики и находить точки входа.",
+            "author": "Мария Аналитик",
+            "image": "https://example.com/images/masterclass_1.jpg",
+            "date": "2023-12-20"
+        },
+        {
+            "id": 3,
+            "title": "Конкурс: Лучший трейдер месяца",
+            "description": "Примите участие в конкурсе и получите призы за лучшие результаты торговли.",
+            "author": "Команда D-Product",
+            "image": "https://example.com/images/contest_1.jpg",
+            "date": "2023-12-25"
+        },
+        {
+            "id": 4,
+            "title": "Трансляция: Реальные сделки",
+            "description": "Смотрите прямую трансляцию реальных сделок и учите стратегии профессионалов.",
+            "author": "Иван Профессионал",
+            "image": "https://example.com/images/live_trading.jpg",
+            "date": "2023-12-30"
+        },
+        {
+            "id": 5,
+            "title": "Открытая встреча: Стратегии успеха",
+            "description": "Обсудим стратегии успешного трейдинга и поделимся опытом.",
+            "author": "Анна Ментор",
+            "image": "https://example.com/images/meeting_1.jpg",
+            "date": "2024-01-05"
+        }
+    ]
+}
