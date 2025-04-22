@@ -1,8 +1,6 @@
 import { Outlet, useLocation, useNavigate, useParams } from "react-router-dom";
-import Footer from "../Footer/Footer.jsx";
 import './layout.css';
 import React, { useEffect, useState } from "react";
-import Header from "../Header/Header.jsx";
 import BackIcon from "../../assets/images/BackIcon.jsx";
 import { TabButtons } from "../ui/TabButton/TabButtons.jsx";
 import tabButtons from "../ui/TabButton/LessonsTabButtons.json";
@@ -19,9 +17,6 @@ export default function LessonLayout() {
 
     const pathParts = location.pathname.split('/');
     const lastSegment = pathParts[pathParts.length - 1];
-    const isNumeric = /^\d+$/.test(lastSegment);
-
-    const defaultTab = tabButtons.btns[0]?.value;
 
     useEffect(() => {
         setLoading(true);
@@ -33,12 +28,6 @@ export default function LessonLayout() {
                 if (!foundLesson) throw new Error("Урок не найден");
                 setLesson(foundLesson);
 
-                if (isNumeric) {
-                    setCurrentTab(defaultTab);
-                    navigate(`/lessons/${courseId}/${lessonId}/${defaultTab}`, { replace: true });
-                } else {
-                    setCurrentTab(lastSegment);
-                }
             })
             .catch(err => {
                 console.error("Ошибка загрузки урока:", err);
@@ -47,17 +36,32 @@ export default function LessonLayout() {
             .finally(() => setLoading(false));
     }, [courseId, lessonId]);
 
+    useEffect(() => {
+        if (lastSegment && lastSegment !== currentTab) {
+            setCurrentTab(lastSegment);
+        } else if (!lastSegment && currentTab !== defaultTab) {
+            setCurrentTab(defaultTab);
+            navigate(`/lessons/${courseId}/${lessonId}/${defaultTab}`, { replace: true });
+        }
+    }, [location.pathname]);
+
+    const contextData = {
+        lesson,
+        courseId,
+        lessonId
+    }
+
     const handleTabChange = (tab) => {
         if (tab === currentTab) return;
         setCurrentTab(tab);
-        navigate(`/lessons/${courseId}/${lessonId}/${tab === defaultTab ? '' : tab}`);
+        navigate(`/lessons/${courseId}/${lessonId}/${tab}`);
     };
 
     if (loading) return <div className="page-container content">Загрузка...</div>;
     if (error) return <div className="page-container content">{error}</div>;
 
     return (
-        <div className="page-container content">
+        <div className="content">
             <div onClick={() => navigate(`/lessons/${courseId}`)} className="back-link">
                 <BackIcon />
                 Назад
@@ -71,7 +75,7 @@ export default function LessonLayout() {
                 onTabChange={handleTabChange}
             />
 
-            <Outlet context={lesson}/>
+            <Outlet context={contextData} />
         </div>
     );
 }

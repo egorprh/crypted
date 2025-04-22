@@ -1,7 +1,7 @@
 
 .material-item {
     padding: 15px 20px;
-    border-radius: var(--brs-sm);
+    border-radius: var(--brs-md);
     background: var(--primary-transparent);
     margin-bottom: 10px;
 }

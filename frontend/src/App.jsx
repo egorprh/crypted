@@ -93,7 +93,7 @@ export default function App() {
             <Route path="/homework" element={<Homework />} />
             <Route path="/faq" element={<Questions />} />
             <Route element={<LessonLayout />}>
-              <Route path="/lessons/:courseId/:lessonId" element={<Lesson />} />
+              <Route path="/lessons/:courseId/:lessonId/content" element={<Lesson />} />
               <Route path="/lessons/:courseId/:lessonId/materials" element={<LessonMaterials />} />
               <Route path="/lessons/:courseId/:lessonId/quiz" element={<LessonQuiz />} />
             </Route>
@@ -101,7 +101,7 @@ export default function App() {
             <Route path="/tests/:testId" element={<TestPage />} />
           </Route>
           <Route element={<QuizLayout />}>
-            <Route path="/lessons/:courseId/:lessonId/quiz/start" element={<LessonQuizTest />} />
+            <Route path="/lessons/:courseId/:lessonId/quiz/start" element={<LessonQuizTest user={user} />} />
           </Route>
         </Routes>
     </Router>

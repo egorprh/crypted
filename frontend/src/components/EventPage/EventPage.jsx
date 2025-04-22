@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import "./eventpage.css"
+import "./eventpage.css";
 import BackIcon from "../../assets/images/BackIcon.jsx";
+
 export default function EventPage() {
     const { id } = useParams();
     const [event, setEvent] = useState(null);
@@ -11,17 +12,17 @@ export default function EventPage() {
         fetch("/content/events.json")
             .then((response) => {
                 if (!response.ok) {
-                    throw new Error("Ошибка загрузки событий");
+                    throw new Error("Ошибка загрузки данных");
                 }
                 return response.json();
             })
             .then((data) => {
-                const foundEvent = data.find(e => e.id.toString() === id);
+                const foundEvent = data.events?.find(e => e.id.toString() === id);
                 setEvent(foundEvent);
                 setLoading(false);
             })
             .catch((error) => {
-                console.error("Ошибка загрузки событий:", error);
+                console.error("Ошибка загрузки данных:", error);
                 setLoading(false);
             });
     }, [id]);
@@ -46,43 +47,26 @@ export default function EventPage() {
                 Назад
             </Link>
 
-            <h2 className="title">{event.title}</h2>
-
             <div className="event-page">
-                {event.youtubeUrl ? (
-                    <div className="video-container">
-                        <iframe
-                            src={`https://www.youtube.com/embed/${event.youtubeUrl}`}
-                            title={event.title}
-                            frameBorder="0"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                            allowFullScreen
-                        ></iframe>
-                    </div>
-                ) : (
-                    <img
-                        src={event.image || '/images/default-event.avif'}
-                        alt="Event preview"
-                        className="event-image-large"
-                        onError={handleImageError}
-                    />
-                )}
+                <img
+                    className="event-image"
+                    src={event.image || '/images/default-event.avif'}
+                    alt="Event preview"
+                    onError={handleImageError}
+                />
+
+                <h2 className="title">{event.title}</h2>
 
                 <div className="event-details">
-                    <p className="event-author">Автор: {event.author}</p>
-                    <p className="event-date">Дата: {event.date}</p>
+                    <div className="d-flex">
+                        <p className="event-date badge badge-primary">Дата: {event.date}</p>
+                        <p className="event-author">by {event.author}</p>
+                    </div>
                     <p className="event-description">{event.description || "Описание отсутствует"}</p>
+                </div>
 
-                    {event.youtubeUrl && (
-                        <a
-                            href={`https://youtube.com/watch?v=${event.youtubeUrl}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="btn"
-                        >
-                            Смотреть на YouTube
-                        </a>
-                    )}
+                <div className="event-note">
+                    Уведомление о начале придет в ЛС
                 </div>
             </div>
         </div>

@@ -1,6 +1,6 @@
 {
     "btns": [
-      { "label": "Контент", "value": "" },
+      { "label": "Контент", "value": "content" },
       { "label": "Материалы", "value": "materials" },
       { "label": "Задание", "value": "quiz" }
     ]
