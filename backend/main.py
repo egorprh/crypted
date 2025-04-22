@@ -16,6 +16,7 @@ import json
 
 db = PGApi()
 
+# https://medium.com/@marcnealer/fastapi-after-the-getting-started-867ecaa99de9
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # app startup
@@ -24,6 +25,7 @@ async def lifespan(app: FastAPI):
     # app teardown
 
 
+#https://habr.com/ru/articles/799337/
 app = FastAPI(lifespan=lifespan)
 
 
@@ -68,6 +70,7 @@ async def get_app_data(user_id: int):
 
     events = await db.get_records("events")
     faq = await db.get_records("faq")
+    config = await db.get_records("config")
 
     up_sql = f"""SELECT up.id, up.progress, c.title, l.title FROM user_progress up 
     LEFT JOIN quizzes q ON up.quiz_id = q.id 
@@ -84,6 +87,7 @@ async def get_app_data(user_id: int):
         "events": events,
         "homework": homework,
         "faq": faq,
+        "config": config
     }
 
     # Удаляем ключи time_created и time_modified

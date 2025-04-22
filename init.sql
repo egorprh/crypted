@@ -15,7 +15,8 @@ CREATE TABLE IF NOT EXISTS courses (
     id BIGSERIAL PRIMARY KEY,
     title VARCHAR(255),
     description TEXT,
-    price VARCHAR(255),
+    oldprice VARCHAR(255),
+    newprice VARCHAR(255),
     image VARCHAR(255),
     type VARCHAR(255),
     time_modified TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
@@ -38,6 +39,7 @@ CREATE TABLE IF NOT EXISTS lessons (
 CREATE TABLE IF NOT EXISTS materials (
     id BIGSERIAL PRIMARY KEY,
     title VARCHAR(255),
+    description VARCHAR(255),
     url VARCHAR(255),
     lesson_id BIGINT REFERENCES lessons(id) ON DELETE CASCADE,
     time_modified TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
@@ -115,6 +117,15 @@ CREATE TABLE IF NOT EXISTS faq (
     time_created TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Создание таблицы config
+CREATE TABLE IF NOT EXISTS config (
+    id BIGSERIAL PRIMARY KEY,
+    name TEXT,
+    value TEXT,
+    time_modified TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    time_created TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Добавление данных
 
 -- Вставка 7 вопросов в таблицу faq
@@ -136,36 +147,43 @@ INSERT INTO events (title, description, author, image, date) VALUES
 ('Открытая встреча: Стратегии успеха', 'Обсудим стратегии успешного трейдинга и поделимся опытом.', 'Анна Ментор', 'https://example.com/images/meeting_1.jpg', '2024-01-05');
 
 -- 1. Добавляем курс
-INSERT INTO courses (title, description, price, image, type)
-VALUES ('Старт в торговле криптовалютой', 'Курс для новичков, желающих освоить основы торговли криптовалютами.', 'Бесплатно', 'course_image.jpg', 'Образовательный');
+INSERT INTO courses (title, description, oldprice, newprice, image, type) VALUES
+('Входное тестирование', 'Адаптивное тестирование для выявления твоего уровня знаний. После прохождения откроются материалы курса. Жми "Далее" ', '', '', 'course_image.jpg', 'enter'),
+('Старт в торговле криптовалютой', 'Курс для новичков, желающих освоить основы торговли криптовалютами.', '300$', 'Бесплатно', 'course_image.jpg', 'main');
 
         -- 2. Добавляем 10 уроков
 INSERT INTO lessons (title, description, video_url, course_id, image)
 VALUES 
-            ('Урок 1: Что такое криптовалюта?', 'Основы криптовалют и их роль в современном мире.', 'https://example.com/video1', 1, 'lesson1.jpg'),
-            ('Урок 2: Как выбрать криптобиржу?', 'Рекомендации по выбору надежной биржи.', 'https://example.com/video2', 1, 'lesson2.jpg'),
-            ('Урок 3: TradingView для анализа рынка', 'Как использовать платформу TradingView.', 'https://example.com/video3', 1, 'lesson3.jpg'),
-            ('Урок 4: Стиль трейдинга', 'Определение подходящего стиля трейдинга.', 'https://example.com/video4', 1, 'lesson4.jpg'),
-            ('Урок 5: WinRate и RR', 'Понимание ключевых показателей трейдинга.', 'https://example.com/video5', 1, 'lesson5.jpg'),
-            ('Урок 6: Риск-менеджмент', 'Основы управления рисками.', 'https://example.com/video6', 1, 'lesson6.jpg'),
-            ('Урок 7: Рыночная механика', 'Как работает биржевой стакан.', 'https://example.com/video7', 1, 'lesson7.jpg'),
-            ('Урок 8: Трейдинг как свобода', 'Философия трейдинга.', 'https://example.com/video8', 1, 'lesson8.jpg'),
-            ('Урок 9: Правильный вход в сделки', 'Техники входа в позиции.', 'https://example.com/video9', 1, 'lesson9.jpg'),
-            ('Урок 10: Уникальность D-Product', 'Что делает D-Product особенным.', 'https://example.com/video10', 1, 'lesson10.jpg');
+            ('Урок 1: Что такое криптовалюта?', 'Основы криптовалют и их роль в современном мире.', 'https://kinescope.io/embed/ommU9afW4HccMLEvKsFfbE', 2, 'lesson1.jpg'),
+            ('Урок 2: Как выбрать криптобиржу?', 'Рекомендации по выбору надежной биржи.', 'https://rutube.ru/play/embed/918aa9a7b659832a9a504f7046099444/', 2, 'lesson2.jpg'),
+            ('Урок 3: TradingView для анализа рынка', 'Как использовать платформу TradingView.', 'https://vkvideo.ru/video_ext.php?oid=-223280655&id=456240038&hd=2', 2, 'lesson3.jpg'),
+            ('Урок 4: Стиль трейдинга', 'Определение подходящего стиля трейдинга.', 'https://www.youtube.com/embed/DLGjMJyOaXQ?si=P-i8Q1IgsmcCRwoo', 2, 'lesson4.jpg'),
+            ('Урок 5: WinRate и RR', 'Понимание ключевых показателей трейдинга.', 'https://example.com/video5', 2, 'lesson5.jpg'),
+            ('Урок 6: Риск-менеджмент', 'Основы управления рисками.', 'https://example.com/video6', 2, 'lesson6.jpg'),
+            ('Урок 7: Рыночная механика', 'Как работает биржевой стакан.', 'https://example.com/video7', 2, 'lesson7.jpg'),
+            ('Урок 8: Трейдинг как свобода', 'Философия трейдинга.', 'https://example.com/video8', 2, 'lesson8.jpg'),
+            ('Урок 9: Правильный вход в сделки', 'Техники входа в позиции.', 'https://example.com/video9', 2, 'lesson9.jpg'),
+            ('Урок 10: Уникальность D-Product', 'Что делает D-Product особенным.', 'https://example.com/video10', 2, 'lesson10.jpg');
 
 -- 3. Добавляем материалы для каждого урока
-INSERT INTO materials (title, url, lesson_id) VALUES
-('Материал к уроку 1', 'https://example.com/material1', 1),
-('Материал к уроку 2', 'https://example.com/material2', 2),
-('Материал к уроку 3', 'https://example.com/material3', 3),
-('Материал к уроку 4', 'https://example.com/material4', 4),
-('Материал к уроку 5', 'https://example.com/material5', 5),
-('Материал к уроку 6', 'https://example.com/material6', 6),
-('Материал к уроку 7', 'https://example.com/material7', 7),
-('Материал к уроку 8', 'https://example.com/material8', 8),
-('Материал к уроку 9', 'https://example.com/material9', 9),
-('Материал к уроку 10', 'https://example.com/material10', 10);
+INSERT INTO materials (title, url, description, lesson_id) VALUES
+('Материал к уроку 1', 'https://example.com/material1', 'description', 1),
+('Материал к уроку 2', 'https://example.com/material2', 'Понимание ключевых показателей трейдинга.', 2),
+('Материал к уроку 3', 'https://example.com/material3', '', 3),
+('Материал к уроку 4', 'https://example.com/material4', '', 4),
+('Материал к уроку 5', 'https://example.com/material5', '', 5),
+('Материал к уроку 6', 'https://example.com/material6', '', 6),
+('Материал к уроку 7', 'https://example.com/material7', '', 7),
+('Материал к уроку 8', 'https://example.com/material8', '', 8),
+('Материал к уроку 9', 'https://example.com/material9', '', 9),
+('Материал к уроку 10', 'https://example.com/material10', '', 10);
 
+-- Добавляем конфиг
+INSERT INTO config (name, value) VALUES
+('curator_btn_text', 'Написать'),
+('curator_btn_link', '@egorprh'),
+('curator_btn_avatar', 'https://i.pravatar.cc/150?img=3'),
+('bot_link', '@CryptEduBot');
 
 -- 5. Добавляем вопросы и ответы для тестов
 INSERT INTO quizzes (title, description, lesson_id) VALUES ('Что ты знаешь о криптовалютах?', 'Тест для проверки знаний по теме', 1) RETURNING id;

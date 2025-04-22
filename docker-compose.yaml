@@ -68,3 +68,6 @@ services:
 networks:
   appnetwork:
     driver: bridge
+
+
+# https://habr.com/ru/companies/ruvds/articles/450312/

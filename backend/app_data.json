@@ -2,23 +2,35 @@
     "courses": [
         {
             "id": 1,
+            "title": "Входное тестирование",
+            "description": "Адаптивное тестирование для выявления твоего уровня знаний. После прохождения откроются материалы курса. Жми \"Далее\" ",
+            "oldprice": "",
+            "newprice": "",
+            "image": "course_image.jpg",
+            "type": "enter",
+            "lessons": []
+        },
+        {
+            "id": 2,
             "title": "Старт в торговле криптовалютой",
             "description": "Курс для новичков, желающих освоить основы торговли криптовалютами.",
-            "price": "Бесплатно",
+            "oldprice": "300$",
+            "newprice": "Бесплатно",
             "image": "course_image.jpg",
-            "type": "Образовательный",
+            "type": "main",
             "lessons": [
                 {
                     "id": 1,
                     "title": "Урок 1: Что такое криптовалюта?",
                     "description": "Основы криптовалют и их роль в современном мире.",
-                    "video_url": "https://example.com/video1",
-                    "course_id": 1,
+                    "video_url": "https://kinescope.io/embed/ommU9afW4HccMLEvKsFfbE",
+                    "course_id": 2,
                     "image": "lesson1.jpg",
                     "materials": [
                         {
                             "id": 1,
                             "title": "Материал к уроку 1",
+                            "description": "description",
                             "url": "https://example.com/material1",
                             "lesson_id": 1
                         }
@@ -358,13 +370,14 @@
                     "id": 2,
                     "title": "Урок 2: Как выбрать криптобиржу?",
                     "description": "Рекомендации по выбору надежной биржи.",
-                    "video_url": "https://example.com/video2",
-                    "course_id": 1,
+                    "video_url": "https://rutube.ru/play/embed/918aa9a7b659832a9a504f7046099444/",
+                    "course_id": 2,
                     "image": "lesson2.jpg",
                     "materials": [
                         {
                             "id": 2,
                             "title": "Материал к уроку 2",
+                            "description": "Понимание ключевых показателей трейдинга.",
                             "url": "https://example.com/material2",
                             "lesson_id": 2
                         }
@@ -544,13 +557,14 @@
                     "id": 3,
                     "title": "Урок 3: TradingView для анализа рынка",
                     "description": "Как использовать платформу TradingView.",
-                    "video_url": "https://example.com/video3",
-                    "course_id": 1,
+                    "video_url": "https://vkvideo.ru/video_ext.php?oid=-223280655&id=456240038&hd=2",
+                    "course_id": 2,
                     "image": "lesson3.jpg",
                     "materials": [
                         {
                             "id": 3,
                             "title": "Материал к уроку 3",
+                            "description": "",
                             "url": "https://example.com/material3",
                             "lesson_id": 3
                         }
@@ -730,13 +744,14 @@
                     "id": 4,
                     "title": "Урок 4: Стиль трейдинга",
                     "description": "Определение подходящего стиля трейдинга.",
-                    "video_url": "https://example.com/video4",
-                    "course_id": 1,
+                    "video_url": "https://www.youtube.com/embed/DLGjMJyOaXQ?si=P-i8Q1IgsmcCRwoo",
+                    "course_id": 2,
                     "image": "lesson4.jpg",
                     "materials": [
                         {
                             "id": 4,
                             "title": "Материал к уроку 4",
+                            "description": "",
                             "url": "https://example.com/material4",
                             "lesson_id": 4
                         }
@@ -1077,12 +1092,13 @@
                     "title": "Урок 5: WinRate и RR",
                     "description": "Понимание ключевых показателей трейдинга.",
                     "video_url": "https://example.com/video5",
-                    "course_id": 1,
+                    "course_id": 2,
                     "image": "lesson5.jpg",
                     "materials": [
                         {
                             "id": 5,
                             "title": "Материал к уроку 5",
+                            "description": "",
                             "url": "https://example.com/material5",
                             "lesson_id": 5
                         }
@@ -1423,12 +1439,13 @@
                     "title": "Урок 6: Риск-менеджмент",
                     "description": "Основы управления рисками.",
                     "video_url": "https://example.com/video6",
-                    "course_id": 1,
+                    "course_id": 2,
                     "image": "lesson6.jpg",
                     "materials": [
                         {
                             "id": 6,
                             "title": "Материал к уроку 6",
+                            "description": "",
                             "url": "https://example.com/material6",
                             "lesson_id": 6
                         }
@@ -1609,12 +1626,13 @@
                     "title": "Урок 7: Рыночная механика",
                     "description": "Как работает биржевой стакан.",
                     "video_url": "https://example.com/video7",
-                    "course_id": 1,
+                    "course_id": 2,
                     "image": "lesson7.jpg",
                     "materials": [
                         {
                             "id": 7,
                             "title": "Материал к уроку 7",
+                            "description": "",
                             "url": "https://example.com/material7",
                             "lesson_id": 7
                         }
@@ -1955,12 +1973,13 @@
                     "title": "Урок 8: Трейдинг как свобода",
                     "description": "Философия трейдинга.",
                     "video_url": "https://example.com/video8",
-                    "course_id": 1,
+                    "course_id": 2,
                     "image": "lesson8.jpg",
                     "materials": [
                         {
                             "id": 8,
                             "title": "Материал к уроку 8",
+                            "description": "",
                             "url": "https://example.com/material8",
                             "lesson_id": 8
                         }
@@ -2141,12 +2160,13 @@
                     "title": "Урок 9: Правильный вход в сделки",
                     "description": "Техники входа в позиции.",
                     "video_url": "https://example.com/video9",
-                    "course_id": 1,
+                    "course_id": 2,
                     "image": "lesson9.jpg",
                     "materials": [
                         {
                             "id": 9,
                             "title": "Материал к уроку 9",
+                            "description": "",
                             "url": "https://example.com/material9",
                             "lesson_id": 9
                         }
@@ -2327,12 +2347,13 @@
                     "title": "Урок 10: Уникальность D-Product",
                     "description": "Что делает D-Product особенным.",
                     "video_url": "https://example.com/video10",
-                    "course_id": 1,
+                    "course_id": 2,
                     "image": "lesson10.jpg",
                     "materials": [
                         {
                             "id": 10,
                             "title": "Материал к уроку 10",
+                            "description": "",
                             "url": "https://example.com/material10",
                             "lesson_id": 10
                         }
@@ -2589,6 +2610,28 @@
             "id": 7,
             "question": "Можно ли вернуть деньги за подписку?",
             "answer": "Да, если вы не использовали материалы, вы можете запросить возврат в течение 14 дней после покупки."
+        }
+    ],
+    "config": [
+        {
+            "id": 1,
+            "name": "curator_btn_text",
+            "value": "Написать"
+        },
+        {
+            "id": 2,
+            "name": "curator_btn_link",
+            "value": "@egorprh"
+        },
+        {
+            "id": 3,
+            "name": "curator_btn_avatar",
+            "value": "https://i.pravatar.cc/150?img=3"
+        },
+        {
+            "id": 4,
+            "name": "bot_link",
+            "value": "@CryptEduBot"
         }
     ]
 }
