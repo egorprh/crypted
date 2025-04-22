@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import PageLink from "../Link/PageLink.jsx";
+import PageLink from "../ui/PageLink/PageLink.jsx";
 import './home.css';
 
 export default function Home({ user }) {

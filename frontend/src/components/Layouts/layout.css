@@ -5,9 +5,13 @@
   --bg: #3284FF;
   --white: #fff;
   --gray: #c6c6c6;
+  --success: #4caf50;
+  --danger: #f44336;
+
   --brs-lg: 40px;
   --brs-md: 24px;
   --brs-sm: 12px;
+
   --fs-lg: 32px;
   --fs-md: 24px;
   --fs-sm: 20px;
@@ -95,7 +99,7 @@ h2 {
 }
 
 .badge {
-  background-color: white;
+  background-color: var(--white);
   color: black;
   font-size: var(--fs-xxs);
   padding: 4px 10px;
@@ -109,7 +113,7 @@ h2 {
   color: var(--white);
   font-size: var(--fs-s);
   padding: 10px 15px;
-  border-radius: var(--brs-sm);
+  border-radius: var(--brs-md);
   border: none;
 }
 
@@ -128,4 +132,36 @@ h2 {
 
 .back-link svg path {
   fill: var(--primary);
+}
+
+.quiz-container main {
+  height: 100%;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  border: 8px solid transparent;
+}
+
+.quiz-container main:has(.btn-incorrect) {
+  animation: flash-red 2s ease-out forwards;
+}
+
+.quiz-container main:has(.btn-correct) {
+  animation: flash-green 2s ease-out forwards;
+}
+
+@keyframes flash-red {
+  0% {
+    border-color: var(--danger);
+  }
+  100% {
+    border-color: transparent
+  }
+}
+
+@keyframes flash-green {
+  0% {
+    border-color: var(--success);
+  }
+  100% {
+    border-color: transparent }
 }

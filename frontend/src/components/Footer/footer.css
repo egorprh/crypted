@@ -3,7 +3,7 @@
     max-width: 600px;
     padding: 20px;
     background: var(--secondary);
-    color: white;
+    color: var(--white);
     border-top-left-radius: var(--brs-lg);
     border-top-right-radius: var(--brs-lg);
     position: fixed;

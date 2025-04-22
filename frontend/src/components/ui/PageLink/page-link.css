@@ -4,7 +4,7 @@
     align-items: center;
     padding: 15px 20px;
     background: var(--secondary);
-    color: white;
+    color: var(--white);
     border-radius: var(--brs-md);
     text-decoration: none;
 }

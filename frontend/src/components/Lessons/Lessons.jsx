@@ -6,7 +6,7 @@ import BackIcon from "../../assets/images/BackIcon.jsx";
 
 export default function Lessons() {
     const navigate = useNavigate();
-    const { lessonsId } = useParams(); // lessonsId — это courseId в новой структуре
+    const { courseId } = useParams();
     const [lessons, setLessons] = useState([]);
     const [courseTitle, setCourseTitle] = useState('');
 
@@ -20,7 +20,7 @@ export default function Lessons() {
             })
             .then((data) => {
                 const courses = data.courses || [];
-                const course = courses.find((c) => String(c.id) === lessonsId);
+                const course = courses.find((c) => String(c.id) === courseId);
 
                 if (course) {
                     setCourseTitle(course.title);
@@ -32,7 +32,7 @@ export default function Lessons() {
             .catch((error) => {
                 console.error("Ошибка загрузки данных курса:", error);
             });
-    }, [lessonsId]);
+    }, [courseId]);
 
     const handleImageError = (e) => {
         e.target.src = '/images/default-event.avif';
@@ -56,7 +56,7 @@ export default function Lessons() {
                     <p>Урок {index + 1}</p>
                     <div
                         className="lesson-card"
-                        onClick={() => navigate(`/lessons/${lessonsId}/${lesson.id}`)}
+                        onClick={() => navigate(`/lessons/${courseId}/${lesson.id}`)}
                     >
                         <div className="info">
                             <img

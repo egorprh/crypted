@@ -21,7 +21,7 @@
   
   .lesson-card {
     background-color: #000;
-    color: #fff;
+    color: var(--white);
     padding: 12px;
     border-radius: var(--brs-md);
     display: flex;

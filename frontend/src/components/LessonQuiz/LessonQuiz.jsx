@@ -1,43 +1,33 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
-
-import { TabButtons } from "../ui/TabButton/TabButtons.jsx";
-import BackIcon from "../../assets/images/BackIcon.jsx";
-import tabButtons from "../ui/TabButton/LessonsTabButtons.json";
+// LessonQuiz.jsx
+import React from 'react';
+import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
+import './lesson-quiz.css';
 
 export default function LessonQuiz() {
-    const { lessonsId, lessonId } = useParams();
+    const { courseId, lessonId } = useParams();
     const navigate = useNavigate();
-    const [lesson, setLesson] = useState(null);
+    const lesson = useOutletContext();
 
-    useEffect(() => {
-        fetch("/content/courses.json")
-            .then(res => res.json())
-            .then(data => {
-                const course = data.courses.find(c => String(c.id) === lessonsId);
-                const foundLesson = course?.lessons.find(l => String(l.id) === lessonId);
-                setLesson(foundLesson || null);
-            });
-    }, [lessonsId, lessonId]);
+    if (!lesson || !lesson.quizzes || lesson.quizzes.length === 0) {
+        return <div className="lesson-quiz">Тест не найден.</div>;
+    }
 
-    const handleTabChange = (tab) => {
-        if (tab === 'quiz') return;
-        navigate(`/lessons/${lessonsId}/${lessonId}/${tab === 'content' ? '' : tab}`);
+    const quiz = lesson.quizzes[0];
+
+    const handleStart = () => {
+        navigate(`/lessons/${courseId}/${lessonId}/quiz/start`);
     };
 
     return (
-        <div className="page-container content">
-            <div onClick={() => navigate(`/lessons/${lessonsId}`)} className="back-link">
-                <BackIcon />
-                Назад
+        <div className="lesson-quiz">
+            <div className="quiz-intro">
+                <h3>{quiz.title}</h3>
+                <p>{quiz.description}</p>
+                <p>
+                    Максимальный балл за этот тест — <strong>{quiz.questions.length}</strong>. Правильный ответ только один.
+                </p>
             </div>
-            <h2>{lesson?.title || 'Домашка'}</h2>
-
-            <TabButtons buttons={tabButtons.btns} activeTab={'quiz'} onTabChange={handleTabChange} />
-
-            <div className="lesson-quiz">
-
-            </div>
+            <button className="btn" onClick={handleStart}>Начать</button>
         </div>
     );
 }
