@@ -19,7 +19,7 @@
 }
 
 .tabs button.active {
-    background-color: var(--bg);
+    background-color: var(--primary);
     color: var(--white);
     font-weight: bold;
 }

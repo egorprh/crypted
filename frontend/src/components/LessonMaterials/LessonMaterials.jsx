@@ -7,10 +7,9 @@ import BackIcon from "../../assets/images/BackIcon.jsx";
 import tabButtons from "../ui/TabButton/LessonsTabButtons.json";
 
 import './lesson-materials.css';
-import LessonLayout from "../../LessonLayout.jsx";
+import LessonLayout from "../Layouts/LessonLayout.jsx";
 export default function LessonMaterials() {
     const lesson = useOutletContext();
-
 
     return (
         <div className="lesson-materials">

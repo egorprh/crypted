@@ -1,11 +1,11 @@
 import { Outlet, useLocation, useNavigate, useParams } from "react-router-dom";
-import Footer from "./components/Footer/Footer.jsx";
+import Footer from "../Footer/Footer.jsx";
 import './layout.css';
 import React, { useEffect, useState } from "react";
-import Header from "./components/Header/Header.jsx";
-import BackIcon from "./assets/images/BackIcon.jsx";
-import { TabButtons } from "./components/ui/TabButton/TabButtons.jsx";
-import tabButtons from "./components/ui/TabButton/LessonsTabButtons.json";
+import Header from "../Header/Header.jsx";
+import BackIcon from "../../assets/images/BackIcon.jsx";
+import { TabButtons } from "../ui/TabButton/TabButtons.jsx";
+import tabButtons from "../ui/TabButton/LessonsTabButtons.json";
 
 export default function LessonLayout() {
     const { courseId, lessonId } = useParams();

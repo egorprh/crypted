@@ -1,5 +1,5 @@
 import React from 'react';
-import NavItem from "../NavItem/NavItem.jsx";
+import NavItem from "../ui/NavItem/NavItem.jsx";
 import "./footer.css";
 import HomeIcon from "../../assets/images/HomeIcon.jsx";
 import CalendarIcon from "../../assets/images/CalendarIcon.jsx";

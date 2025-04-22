@@ -1,0 +1,22 @@
+.lesson-quiz {
+    height: calc(100% - 90px - 100px);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.quiz-intro {
+    background: var(--primary-transparent);
+    padding: 15px 20px;
+    border-radius: var(--brs-md);
+}
+
+.quiz-intro p,
+.quiz-intro h3 {
+    margin-bottom: 10px;
+}
+
+.quiz-intro strong {
+    font-weight: 500;
+}

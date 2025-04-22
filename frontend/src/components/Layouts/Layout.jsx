@@ -1,8 +1,8 @@
 import { Outlet } from "react-router-dom";
-import Footer from "./components/Footer/Footer.jsx";
+import Footer from "../Footer/Footer.jsx";
 import './layout.css'
 import React from "react";
-import Header from "./components/Header/Header.jsx";
+import Header from "../Header/Header.jsx";
 export default function Layout({ user }) {
     return (
         <div className="container">

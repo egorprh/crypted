@@ -6,13 +6,15 @@ import Calendar from "./components/Calendar/Calendar.jsx";
 import Homework from "./components/Homework/Homework.jsx";
 import Questions from "./components/Qustions/Questions.jsx";
 import Lessons from "./components/Lessons/Lessons.jsx";
-import Layout from "./layout.jsx";
 import TestPage from "./components/TestPage/TestPage.jsx";
 import EventPage from "./components/EventPage/EventPage.jsx";
 import Lesson from "./components/Lesson/Lesson.jsx";
 import LessonMaterials from "./components/LessonMaterials/LessonMaterials.jsx";
 import LessonQuiz from "./components/LessonQuiz/LessonQuiz.jsx";
-import LessonLayout from "./LessonLayout.jsx";
+import LessonLayout from "./components/Layouts/LessonLayout.jsx";
+import LessonQuizTest from "./components/LessonQuizTest/LessonQuizTest.jsx";
+import Layout from "./components/Layouts/Layout.jsx";
+import QuizLayout from "./components/Layouts/QuizLayout.jsx";
 
 export default function App() {
   const [user, setUser] = useState(null);
@@ -97,6 +99,9 @@ export default function App() {
             </Route>
             <Route path="/lessons/:courseId" element={<Lessons />} />
             <Route path="/tests/:testId" element={<TestPage />} />
+          </Route>
+          <Route element={<QuizLayout />}>
+            <Route path="/lessons/:courseId/:lessonId/quiz/start" element={<LessonQuizTest />} />
           </Route>
         </Routes>
     </Router>

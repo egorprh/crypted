@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import "./page-link.css"
 import React from "react";
-import ArrowIcon from "../../assets/images/ArrowIcon.jsx";
+import ArrowIcon from "../../../assets/images/ArrowIcon.jsx";
 
 export default function PageLink({ title, subtitle, to }) {
     return (
