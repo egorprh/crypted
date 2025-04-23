@@ -20,7 +20,7 @@ export default function LessonLayout() {
 
     useEffect(() => {
         setLoading(true);
-        fetch("/content/courses.json")
+        fetch("/content/app_data.json")
             .then(res => res.json())
             .then(data => {
                 const course = data.courses.find(c => String(c.id) === courseId);
@@ -66,8 +66,6 @@ export default function LessonLayout() {
                 <BackIcon />
                 Назад
             </div>
-
-            <h2>{lesson.title}</h2>
 
             <TabButtons
                 buttons={tabButtons.btns}

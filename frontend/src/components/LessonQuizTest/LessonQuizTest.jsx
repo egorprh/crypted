@@ -17,10 +17,11 @@ export default function LessonQuizTest({ user }) {
     const [correctCount, setCorrectCount] = useState(0);
     const [showSummary, setShowSummary] = useState(false);
     const [wasCorrect, setWasCorrect] = useState(false);
+    const [showSaveError, setShowSaveError] = useState(false);
 
     useEffect(() => {
         setLoading(true);
-        fetch("/content/courses.json")
+        fetch("/content/app_data.json")
             .then(res => res.json())
             .then(data => {
                 const course = data.courses.find(c => String(c.id) === courseId);
@@ -29,7 +30,7 @@ export default function LessonQuizTest({ user }) {
                 if (!foundLesson.quizzes || foundLesson.quizzes.length === 0) {
                     throw new Error("Тест не найден");
                 }
-                setQuiz(foundLesson.quizzes[0]); // Только один тест
+                setQuiz(foundLesson.quizzes[0]);
             })
             .catch(err => {
                 console.error("Ошибка загрузки:", err);
@@ -78,13 +79,21 @@ export default function LessonQuizTest({ user }) {
                 progress: progress
             })
         })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) throw new Error('Ошибка сети');
+                return response.json();
+            })
             .then(data => {
                 console.log('Прогресс сохранен:', data);
                 navigate(`/lessons/${courseId}`);
             })
             .catch(error => {
                 console.error('Ошибка при сохранении прогресса:', error);
+                setShowSaveError(true);
+                setTimeout(() => {
+                    setShowSaveError(false);
+                    navigate(`/lessons/${courseId}`);
+                }, 3000);
             });
     };
 
@@ -97,6 +106,11 @@ export default function LessonQuizTest({ user }) {
         const progress = Math.round((correctCount / total) * 100);
         return (
             <div className="quiz">
+                {showSaveError && (
+                    <div className="save-error">
+                        <p>⚠️ Не удалось сохранить прогресс</p>
+                    </div>
+                )}
                 <h1>Результаты теста</h1>
                 <div className="results-circle">
                     <CircularProgressbar
@@ -104,7 +118,7 @@ export default function LessonQuizTest({ user }) {
                         text={`${progress}%`}
                         styles={buildStyles({
                             pathColor: progress >= 70 ? 'var(--success)' : 'var(--danger)', // зелёный если >=70%, иначе красный
-                            textColor: '#333',
+                            textColor: 'var(--white)',
                             trailColor: '#eee',
                             backgroundColor: 'var(--white)',
                         })}
@@ -114,6 +128,7 @@ export default function LessonQuizTest({ user }) {
                     <p className="correct">Правильные ответы: {correctCount}</p>
                     <p className="incorrect">Неправильные ответы: {total - correctCount}</p>
                 </div>
+
                 <button className="btn" onClick={handleFinish}>Завершить тест</button>
             </div>
         );

@@ -1,11 +1,5 @@
 .quiz h2 {
-    font-size: var(--fs-md);
-}
-
-.quiz-intro {
-    background: var(--primary-transparent);
-    padding: 15px 20px;
-    border-radius: var(--brs-md);
+    font-size: var(--fs-sm);
 }
 
 .quiz-intro p,
@@ -24,27 +18,3 @@
     border: 8px solid transparent;
 }
 
-.quiz-container main:has(.btn-incorrect) {
-    animation: flash-red 2s ease-out forwards;
-}
-
-.quiz-container main:has(.btn-correct) {
-    animation: flash-green 2s ease-out forwards;
-}
-
-@keyframes flash-red {
-    0% {
-        border-color: var(--danger);
-    }
-    100% {
-        border-color: transparent
-    }
-}
-
-@keyframes flash-green {
-    0% {
-        border-color: var(--success);
-    }
-    100% {
-        border-color: transparent }
-}

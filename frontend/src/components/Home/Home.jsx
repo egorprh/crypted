@@ -10,7 +10,7 @@ export default function Home({ user }) {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        fetch("/content/courses.json")
+        fetch("/content/app_data.json")
             .then((response) => {
                 if (!response.ok) {
                     throw new Error("Ошибка загрузки курсов");
@@ -28,35 +28,45 @@ export default function Home({ user }) {
             });
     }, []);
 
-    if (loading) return <div>Загрузка курсов...</div>;
-    if (error) return <div>Ошибка: {error}</div>;
+    if (error) return <div className="error">Ошибка: {error}</div>;
 
     return (
-        <div className="courses-wrapper">
+        <div className="courses-wrapper content main-content">
             <section className="courses">
-                <h2>Мои курсы</h2>
-
-                {courses.map((course) => (
-                    <div
-                        key={course.id}
-                        className="card course-card"
-                        onClick={() => navigate(`/lessons/${course.lessons?.[0]?.id ?? course.id}`)}
-                    >
-                        <div className="course-header">
-                            <img src='/images/logo.png' alt="Course" className="logo" />
-                        </div>
-                        <div className="course-body">
-                            <p className="card-title">{course.title}</p>
-                            <div className="course-footer">
-                                <div className="tag">
-                                    <img src="/images/free.png" alt="price-icon" />
-                                    {course.price}
+                <div className="courses-title">
+                    <img src={user?.photo_url || 'avatar.jpg'}
+                         alt="Аватар"
+                         className="avatar"
+                    />
+                    <h2>Мои курсы</h2>
+                </div>
+                {loading
+                    ?
+                    <div className="loading">Загрузка заданий...</div>
+                    :
+                    courses.length ? courses.map((course) => (
+                        <div
+                            key={course.id}
+                            className="card course-card"
+                            onClick={() => navigate(`/lessons/${course.id}`)}
+                        >
+                            <div className="course-header">
+                                <img src='/images/logo.png' alt="Course" className="logo"/>
+                            </div>
+                            <div className="course-body">
+                                <p className="card-title">{course.title}</p>
+                                <div className="course-footer">
+                                        <div className="tag">
+                                            {(course.newprice || course.oldprice) && <img src="/images/free.png" alt="price-icon"/>}
+                                            {course.oldprice && <span className="old-price">{course.oldprice}</span>}
+                                            {course.newprice && <span className="new-price">{course.newprice}</span>}
+                                        </div>
+                                    <span className="start-btn">Начать</span>
                                 </div>
-                                <span className="start-btn">Начать</span>
                             </div>
                         </div>
-                    </div>
-                ))}
+                    )) : <div>Курсы не найдены</div>
+                }
             </section>
 
             <PageLink

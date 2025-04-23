@@ -1,9 +1,5 @@
-.qustions-card {
+.questions-card {
     border-radius: var(--brs-md);
-}
-
-.qustions-card svg {
-    filter: invert(1);
 }
 
 .question-header {
@@ -12,7 +8,7 @@
     align-items: center;
     padding: 5px 20px;
     border-radius: var(--brs-md);
-    background-color: var(--gray);
+    background-color: var(--secondary);
     cursor: pointer;
 }
 
@@ -24,8 +20,8 @@
 .answer {
     padding: 15px 20px;
     border-radius: var(--brs-md);
-    background-color: var(--secondary);
-    color: var(--white);
+    background-color: var(--white);
+    color: var(--secondary);
     transition: all 0.3s ease;
     overflow: hidden;
 }
@@ -51,9 +47,13 @@
     justify-content: space-between;
     margin-bottom: 24px;
     padding: 15px 20px;
-    background-color: var(--primary);
+    background-color: var(--logo-bg);
     color: var(--white);
     border-radius: var(--brs-md);
+}
+
+.content .questions-wrapper {
+    gap: 12px;
 }
 
 .questions-form-wrapper .btn {
@@ -61,6 +61,11 @@
     background-color: var(--white);
     color: var(--secondary);
     text-align: center;
+}
+
+.questions-form-wrapper .btn.disabled {
+    color: var(--gray-200);
+    cursor: not-allowed;
 }
 
 .questions-form-wrapper h3 {

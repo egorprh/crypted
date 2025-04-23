@@ -14,13 +14,23 @@ export default function LessonMaterials() {
     return (
         <div className="lesson-container">
             <div>
+                <h2>{lesson.title}</h2>
+
                 {lesson?.materials?.length > 0 ? (
                     lesson.materials.map((material) => (
                         <div key={material.id} className="material-item">
-                            <a href={material.url} className="material-link" target="_blank" rel="noopener noreferrer">
-                                <DownloadIcon/>
-                                {material.title}
-                            </a>
+                            <div className="material-link">
+                                <h3>
+                                    {material.title}
+                                </h3>
+                                <p>
+                                    {material.description}
+                                </p>
+                                <a href={material.url} className="btn" target="_blank" rel="noopener noreferrer" download>
+                                    Скачать
+                                    <DownloadIcon />
+                                </a>
+                            </div>
                         </div>
                     ))
                 ) : (

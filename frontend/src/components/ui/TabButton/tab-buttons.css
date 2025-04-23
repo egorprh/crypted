@@ -1,14 +1,14 @@
 .tabs {
     display: flex;
     justify-content: space-around;
-    background-color: var(--secondary);
+    background-color: var(--gray-500);
     border-radius: var(--brs-sm);
-    margin: 20px 0;
+    margin-bottom: 20px;
 }
 
 .tabs button {
     width: 100%;
-    padding: 8px 16px;
+    padding: 10px 16px;
     font-size: var(--fs-xs);
     border: none;
     border-radius: var(--brs-sm);
@@ -19,9 +19,8 @@
 }
 
 .tabs button.active {
-    background-color: var(--primary);
+    background-color: var(--gray-400);
     color: var(--white);
-    font-weight: bold;
 }
 
 .tabs button:focus {

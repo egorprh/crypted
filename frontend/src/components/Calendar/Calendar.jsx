@@ -4,9 +4,11 @@ import "./calendar.css";
 
 export default function Calendar() {
     const [events, setEvents] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
-        fetch("/content/events.json")
+        fetch("/content/app_data.json")
             .then((response) => {
                 if (!response.ok) {
                     throw new Error("Ошибка загрузки данных");
@@ -16,12 +18,16 @@ export default function Calendar() {
             .then((data) => {
                 if (data.events) {
                     setEvents(data.events);
+                    setLoading(false);
                 } else {
                     console.warn("События не найдены");
+                    setLoading(false);
                 }
             })
             .catch((error) => console.error("Ошибка загрузки событий:", error));
     }, []);
+
+    if (error) return <div className="error">Ошибка: {error}</div>;
 
     const handleImageError = (e) => {
         e.target.src = '/images/default-event.avif';
@@ -29,11 +35,15 @@ export default function Calendar() {
     };
 
     return (
-        <div className="content">
+        <div className="content main-content">
             <h2 className="title">Ближайшие ивенты</h2>
 
             <div className="wrapper">
-                {events.map((event) => (
+                {loading
+                    ?
+                    <div className="loading">Загрузка событий...</div>
+                    :
+                    events.length ? events.map((event) => (
                     <Link to={`/calendar/event/${event.id}`} key={event.id} className="card event-card">
                         <img
                             src={event.image || '/images/default-event.avif'}
@@ -51,7 +61,8 @@ export default function Calendar() {
                             <span className="badge">{event.date}</span>
                         </div>
                     </Link>
-                ))}
+                )) : <div>События не найдены</div>
+                }
             </div>
         </div>
     );

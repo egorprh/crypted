@@ -17,15 +17,16 @@ export default function Footer() {
             icon: <HomeIcon />,
         },
         {
-            path: "/calendar",
-            title: "Календарь",
-            icon: <CalendarIcon />,
-        },
-        {
             path: "/homework",
             title: "Домашка",
             icon: <HomeworkIcon />,
         },
+        {
+            path: "/calendar",
+            title: "Календарь",
+            icon: <CalendarIcon />,
+        },
+
         {
             path: "/faq",
             title: "Вопросы",
@@ -34,8 +35,12 @@ export default function Footer() {
     ];
 
     const isActive = (path) => {
-        return Boolean(location.pathname === path)
+        if (path === "/") {
+            return location.pathname === "/" || location.pathname.startsWith("/lessons");
+        }
+        return location.pathname.startsWith(path);
     };
+
 
     return (
         <footer>

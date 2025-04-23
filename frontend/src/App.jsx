@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 import Home from "./components/Home/Home.jsx";
 import Calendar from "./components/Calendar/Calendar.jsx";
@@ -15,25 +15,24 @@ import LessonLayout from "./components/Layouts/LessonLayout.jsx";
 import LessonQuizTest from "./components/LessonQuizTest/LessonQuizTest.jsx";
 import Layout from "./components/Layouts/Layout.jsx";
 import QuizLayout from "./components/Layouts/QuizLayout.jsx";
+import Preloader from "./components/ui/Preloader/Preloader.jsx";
 
 export default function App() {
   const [user, setUser] = useState(null);
+  const [appReady, setAppReady] = useState(false);
 
   useEffect(() => {
-
     const tg = window.Telegram?.WebApp;
-    tg.ready();
-    tg.expand();
+    tg?.ready();
+    tg?.expand();
 
-    const u = tg.initDataUnsafe?.user;
+    const u = tg?.initDataUnsafe?.user;
 
     if (!u) {
-      // Заглушка если пришли без Telegram
       setUser({
         username: 'luckyman',
         photo_url: 'https://i.pravatar.cc/150?img=3',
       });
-
     } else {
       setUser(u);
 
@@ -46,45 +45,32 @@ export default function App() {
         timecreated: now,
       };
 
-      // Отправляем данные пользователя на сервер
       fetch('/api/save_user', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(userData),
-      })
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error('Ошибка записи пользователя');
-          }
-          return response.json();
-        })
-        .then((data) => {
-          console.log('Пользователь успешно сохранен:', data);
-        })
-        .catch((error) => {
-          console.error('Ошибка записи пользователя:', error);
-        });
+      }).catch(err => console.error("Ошибка записи пользователя:", err));
     }
 
-    // Получаем данные для всего приложения
     fetch('/get_app_data?user_id=1', {
       method: 'GET',
       headers: { 'Content-Type': 'application/json' },
     })
-      .then((response) => {
-        return response.json();
-      })
-      .then((data) => {
-        console.log('Данные приложения:', data);
-      })
-      .catch((error) => {
-        console.error('Ошибка получения данных:', error);
-      });
-    
+        .then((res) => res.json())
+        .then(() => setAppReady(true))
+        .catch(err => {
+          console.error("Ошибка получения данных:", err);
+          setAppReady(true)
+        });
+
   }, []);
 
+  if (!appReady) {
+    return <Preloader />;
+  }
+
   return (
-    <Router>
+      <Router>
         <Routes>
           <Route element={<Layout user={user} />}>
             <Route path="/" element={<Home user={user} />} />
@@ -97,13 +83,13 @@ export default function App() {
               <Route path="/lessons/:courseId/:lessonId/materials" element={<LessonMaterials />} />
               <Route path="/lessons/:courseId/:lessonId/quiz" element={<LessonQuiz />} />
             </Route>
-            <Route path="/lessons/:courseId" element={<Lessons />} />
+            <Route path="/lessons/:courseId" element={<Lessons user={user} />} />
             <Route path="/tests/:testId" element={<TestPage />} />
           </Route>
           <Route element={<QuizLayout />}>
             <Route path="/lessons/:courseId/:lessonId/quiz/start" element={<LessonQuizTest user={user} />} />
           </Route>
         </Routes>
-    </Router>
+      </Router>
   );
 }

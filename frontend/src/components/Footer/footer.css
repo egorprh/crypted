@@ -4,9 +4,11 @@
     padding: 20px;
     background: var(--secondary);
     color: var(--white);
-    border-top-left-radius: var(--brs-lg);
-    border-top-right-radius: var(--brs-lg);
     position: fixed;
     bottom: 0;
+
+    svg {
+        filter: invert(0.4);
+    }
 }
 
