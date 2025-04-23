@@ -3,10 +3,15 @@
   }
   
   .welcome p {
-    font-size: var(--fs-xs);
-    line-height: 1.2;
-    color: #4b5563;
+    font-size: var(--fs-s);
+    line-height: 1.4;
+    color: var(--white);
     margin-bottom: 24px;
+  }
+
+  .welcome .badge {
+    margin-bottom: 12px;
+    font-size: var(--fs-s);
   }
   
   .lesson-block {
@@ -20,7 +25,7 @@
   }
   
   .lesson-card {
-    background-color: #000;
+    background-color: var(--secondary);
     color: var(--white);
     padding: 12px;
     border-radius: var(--brs-md);

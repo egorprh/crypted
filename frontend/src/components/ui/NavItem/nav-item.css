@@ -11,21 +11,17 @@
     padding: 5px 10px;
     border-radius: var(--brs-sm);
     text-decoration: none;
+
+    span {
+        color: var(--secondary);
+        font-size: var(--fs-xxs);
+        filter: invert(0.5);
+    }
 }
 
 .nav-item.active {
-    background-color: var(--white);
-}
-
-.nav-item.active span {
-    color: var(--secondary);
-}
-
-.nav-item.active svg {
-    filter: invert(1) saturate(100%);
-}
-
-.nav-item span {
-    color: var(--gray);
-    font-size: var(--fs-xxs);
+    svg,
+    span {
+        filter: invert(1);
+    }
 }

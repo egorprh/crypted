@@ -4,14 +4,15 @@ import './lessons.css';
 import ArrowIcon from "../../assets/images/ArrowIcon.jsx";
 import BackIcon from "../../assets/images/BackIcon.jsx";
 
-export default function Lessons() {
+export default function Lessons({ user }) {
     const navigate = useNavigate();
     const { courseId } = useParams();
     const [lessons, setLessons] = useState([]);
     const [courseTitle, setCourseTitle] = useState('');
+    const [courseDescr, setCourseDescr] = useState('');
 
     useEffect(() => {
-        fetch("/content/courses.json")
+        fetch("/content/app_data.json")
             .then((response) => {
                 if (!response.ok) {
                     throw new Error("Ошибка загрузки курсов");
@@ -24,6 +25,7 @@ export default function Lessons() {
 
                 if (course) {
                     setCourseTitle(course.title);
+                    setCourseDescr(course.description);
                     setLessons(course.lessons || []);
                 } else {
                     console.warn("Курс не найден");
@@ -47,9 +49,13 @@ export default function Lessons() {
             </Link>
 
             <div className="welcome">
-                <h2>{courseTitle || 'Уроки курса'}</h2>
-                <p>Этот интенсив создан для того, чтобы вы смогли получить все необходимые знания и навыки.</p>
+                <div className="badge">
+                    Привет, @{user?.username || 'username'}
+                </div>
+                <h2>{courseTitle}</h2>
+                <p>{courseDescr}</p>
             </div>
+
 
             {lessons.map((lesson, index) => (
                 <div className="lesson-block" key={lesson.id}>

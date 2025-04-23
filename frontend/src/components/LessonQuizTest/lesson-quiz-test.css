@@ -21,9 +21,7 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    padding-block: 10px;
-    font-size: var(--fs-sm);
-    background-color: var(--white);
+    font-size: var(--fs-s);
 }
 
 .quiz-answer input[type="radio"] {
@@ -31,11 +29,11 @@
     appearance: none;
     width: 24px;
     height: 24px;
-    border: 2px solid #999;
+    border: 2px solid var(--primary);
     border-radius: 50%;
     position: relative;
     cursor: pointer;
-    background-color: white;
+    background-color: var(--bg);
 }
 
 .quiz-answer input[type="radio"]:checked::before {
@@ -45,13 +43,13 @@
     left: 6px;
     width: 8px;
     height: 8px;
-    background-color: var(--primary);
+    background-color: var(--gray-100);
     border-radius: 50%;
 }
 
 .quiz-answer.incorrect input[type="radio"]:checked::before,
 .quiz-answer.correct input[type="radio"]:checked::before {
-    background-color: var(--white);
+    background-color: var(--bg);
 }
 
 .quiz-answer.correct {
@@ -82,13 +80,13 @@
     width: 100%;
     background-color: var(--primary);
     color: var(--white);
-    font-size: var(--fs-sm);
+    font-size: var(--fs-s);
     cursor: pointer;
     transition: background-color 0.2s ease;
 }
 
 .actions button:disabled {
-    background-color: #ccc;
+    background-color: var(--gray-200);
     cursor: not-allowed;
 }
 
@@ -107,12 +105,12 @@ progress {
 }
 
 progress::-webkit-progress-bar {
-    background-color: #eee;
+    background-color: var(--gray-100);
     border-radius: 10px;
 }
 
 progress::-webkit-progress-value {
-    background-color: var(--primary);
+    background-color: var(--logo-bg);
     border-radius: 10px;
     transition: width 0.5s ease;
 }
@@ -129,7 +127,7 @@ progress::-webkit-progress-value {
 }
 
 .results {
-    background: var(--primary-transparent);
+    background: var(--gray-500);
     padding: 15px 20px;
     border-radius: var(--brs-md);
     text-align: center;
@@ -152,4 +150,12 @@ progress::-webkit-progress-value {
 .btn.btn-incorrect {
     background-color: var(--danger);
     color: white;
+}
+
+.save-error {
+    background-color: var(--secondary);
+    color: var(--white);
+    padding: 10px 15px;
+    border-radius: var(--brs-sm);
+    text-align: center;
 }

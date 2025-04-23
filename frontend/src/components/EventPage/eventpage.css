@@ -1,4 +1,8 @@
 .event-page {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
     max-width: 800px;
     margin: 0 auto;
 }
@@ -11,6 +15,15 @@
     margin-bottom: 5px;
 }
 
+.event-page .btn {
+    text-align: center;
+}
+
+.event-page .btn.disabled {
+    cursor: not-allowed;
+    background-color: var(--gray-200);
+}
+
 .event-page .event-image {
     height: auto;
     margin-bottom: 20px;
@@ -18,6 +31,9 @@
 }
 
 .event-description {
-    margin: 20px 0;
-    line-height: 1.6;
+    margin: 10px 0 20px;
+}
+
+.event-note {
+    margin-bottom: 20px;
 }

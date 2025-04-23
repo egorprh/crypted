@@ -10,13 +10,13 @@ export default function Homework() {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        fetch("/content/homework.json")
+        fetch("/content/app_data.json")
             .then((response) => {
                 if (!response.ok) throw new Error("Ошибка загрузки заданий");
                 return response.json();
             })
             .then((data) => {
-                setHomework(data);
+                setHomework(data.homework);
                 setLoading(false);
             })
             .catch((error) => {
@@ -30,34 +30,38 @@ export default function Homework() {
         navigate(`/tests/${testId}`);
     };
 
-    if (loading) return <div className="content"><h2>Мои задания</h2><div className="loading">Загрузка заданий...</div></div>;
-    if (error) return <div className="content"><h2>Мои задания</h2><div className="error">Ошибка: {error}</div></div>;
+    if (error) return <div className="error">Ошибка: {error}</div>;
 
     return (
-        <div className="content">
+        <div className="content main-content">
             <h2>Мои задания</h2>
 
             <div className="wrapper">
-                {homework.map((task) => (
-                    <div
-                        key={task.id}
-                        className="card hw-card"
-                        onClick={() => handleTaskClick(task.testId)}
-                    >
-                        <div className="hw-info">
-                            <div className="card-title">{task.title}</div>
-                            <p className="hw-descr">
-                                {task.progress ? `Результаты теста: ${task.progress} правильных ответов` : ''}
-                            </p>
+                {loading
+                    ?
+                    <div className="loading">Загрузка заданий...</div>
+                    :
+                    homework.length ? homework.map((task) => (
+                        <div
+                            key={task.id}
+                            className="card hw-card"
+                            onClick={() => handleTaskClick(task.testId)}
+                        >
+                            <div className="hw-info">
+                                <div className="card-title">{task.title}</div>
+                                <p className="hw-descr">
+                                    {task.progress ? `Результаты теста: ${task.progress} правильных ответов` : ''}
+                                </p>
+                            </div>
+                            <div className="hw-icon">
+                                <NextIcon/>
+                            </div>
+                            <div className="badge hw-badge">
+                                {task.badge}
+                            </div>
                         </div>
-                        <div className="hw-icon">
-                            <NextIcon/>
-                        </div>
-                        <div className="badge hw-badge">
-                            {task.badge}
-                        </div>
-                    </div>
-                ))}
+                    )) : <div>У вас пока нет заданий</div>
+                }
             </div>
         </div>
     );

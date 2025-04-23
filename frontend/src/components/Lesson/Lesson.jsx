@@ -23,6 +23,8 @@ export default function Lesson() {
                     </div>
                 )}
 
+                <h2>{lesson.title}</h2>
+
                 <div className="lesson-description">
                     {lesson.description.split('\n').map((p, i) => <p key={i}>{p}</p>)}
                 </div>
