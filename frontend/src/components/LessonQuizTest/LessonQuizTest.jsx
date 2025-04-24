@@ -70,11 +70,12 @@ export default function LessonQuizTest({ user }) {
         const total = quiz.questions.length;
         const progress = Math.round((correctCount / total) * 100);
 
+        const userId = user?.id ? user.id : 1; // Используем id пользователя, если он есть, иначе 1
         fetch('/api/save_progress', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                userId: user?.id,
+                userId: userId,
                 quizId: quiz.id,
                 progress: progress
             })
@@ -93,7 +94,7 @@ export default function LessonQuizTest({ user }) {
                 setTimeout(() => {
                     setShowSaveError(false);
                     navigate(`/lessons/${courseId}`);
-                }, 3000);
+                }, 1000);
             });
     };
 

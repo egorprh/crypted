@@ -37,8 +37,6 @@ class PGApi:
         async with self.pool.acquire() as connection:
             connection: Connection
             async with connection.transaction():
-                # print(command)
-                # print(*args)
                 if fetch:
                     result = await connection.fetch(command, *args)
                     result = [dict(r.items()) for r in result]
@@ -47,7 +45,7 @@ class PGApi:
                     return await connection.fetchval(command, *args)
                 elif fetchrow:
                     result = await connection.fetchrow(command, *args)
-                    return dict(result)
+                    return dict(result) if result else None
                 elif execute:
                     return await connection.execute(command, *args)
 
@@ -62,7 +60,10 @@ class PGApi:
     async def get_record(self, table, params):
         sql = f"SELECT * FROM {table} WHERE "
         sql, params = self.format_args(sql, params)
-        return await self.execute(sql, *params, fetchrow=True)
+        result = await self.execute(sql, *params, fetchrow=True)
+        if result is None:
+            return None
+        return result
 
     async def get_field(self, table, field, params):
         sql = f"SELECT {field} FROM {table} WHERE "

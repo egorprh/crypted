@@ -56,8 +56,9 @@ class UserAnswer(BaseModel):
 
 class UserProgress(BaseModel):
     id: int
-    quiz_id: str
-    progress: bool # for text always true
+    user_id: int
+    quiz_id: int
+    progress: float # for text always true
 
 class Events(BaseModel):
     id: int

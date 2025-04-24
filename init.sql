@@ -89,9 +89,9 @@ CREATE TABLE IF NOT EXISTS user_answers (
 -- Создание таблицы user_progress
 CREATE TABLE IF NOT EXISTS user_progress (
     id BIGSERIAL PRIMARY KEY,
-    user_id BIGINT REFERENCES users(id) ON DELETE CASCADE,
+    user_id BIGINT,
     quiz_id BIGINT REFERENCES quizzes(id) ON DELETE CASCADE,
-    progress BOOLEAN,
+    progress FLOAT,
     time_modified TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     time_created TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
