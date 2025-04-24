@@ -54,25 +54,36 @@ export default function LessonQuizTest({ user }) {
         }
     };
 
-    const handleFinish = () => {
+    const saveProgress = (path) => {
         const total = quiz.questions.length;
         const progress = Math.round((correctCount / total) * 100);
-        const userId = user?.id || 1;
+        const userId = user?.id ? user.id : 1;
 
-        fetch('/api/save_progress', {
+        return fetch('/api/save_progress', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ userId, quizId: quiz.id, progress })
         })
-            .then(res => { if (!res.ok) throw new Error('Ошибка сети'); return res.json(); })
-            .then(() => navigate(`/lessons/${courseId}`))
+            .then(res => { if (!res.ok) throw new Error('Ошибка сети'); })
+            .then((data) => {
+                console.log(data.json);
+                navigate(path);
+            } )
             .catch(() => {
                 setShowSaveError(true);
                 setTimeout(() => {
                     setShowSaveError(false);
-                    navigate(`/lessons/${courseId}`);
+                    navigate(path);
                 }, 1000);
             });
+    }
+
+    const finishQuiz = () => {
+       saveProgress(`/lessons/${courseId}`);
+    };
+
+    const repeatQuiz = () => {
+        saveProgress(`/lessons/${courseId}/${lessonId}/quiz`);
     };
 
     if (loading) return <div>Загрузка...</div>;
@@ -98,11 +109,15 @@ export default function LessonQuizTest({ user }) {
                         })}
                     />
                 </div>
-                <div className="results">
-                    <p className="correct">Правильные ответы: {correctCount}</p>
-                    <p className="incorrect">Неправильные ответы: {total - correctCount}</p>
+
+                <div className="quiz-footer">
+                    <div className="results">
+                        <p className="correct">Правильные ответы: {correctCount}</p>
+                        <p className="incorrect">Неправильные ответы: {total - correctCount}</p>
+                    </div>
+                    <button className="btn" onClick={finishQuiz}>Завершить тест</button>
+                    <button className="btn" onClick={repeatQuiz}>Пройти заново</button>
                 </div>
-                <button className="btn" onClick={handleFinish}>Завершить тест</button>
             </div>
         );
     }

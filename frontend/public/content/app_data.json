@@ -577,102 +577,6 @@
                             "lesson_id": 3,
                             "questions": [
                                 {
-                                    "id": 16,
-                                    "text": "Для чего в первую очередь используется платформа TradingView?",
-                                    "type": 1,
-                                    "quiz_id": 3,
-                                    "answers": [
-                                        {
-                                            "id": 61,
-                                            "text": "Покупка криптовалют напрямую",
-                                            "correct": false,
-                                            "question_id": 16
-                                        },
-                                        {
-                                            "id": 62,
-                                            "text": "Создание NFT",
-                                            "correct": false,
-                                            "question_id": 16
-                                        },
-                                        {
-                                            "id": 63,
-                                            "text": "Анализ графиков и технический анализ",
-                                            "correct": true,
-                                            "question_id": 16
-                                        },
-                                        {
-                                            "id": 64,
-                                            "text": "Майндинг криптовалют",
-                                            "correct": false,
-                                            "question_id": 16
-                                        }
-                                    ]
-                                },
-                                {
-                                    "id": 17,
-                                    "text": "Как называется инструмент на TradingView, с помощью которого можно рисовать уровни поддержки и сопротивления?",
-                                    "type": 1,
-                                    "quiz_id": 3,
-                                    "answers": [
-                                        {
-                                            "id": 65,
-                                            "text": "Магнит",
-                                            "correct": false,
-                                            "question_id": 17
-                                        },
-                                        {
-                                            "id": 66,
-                                            "text": "Горизонтальная линия",
-                                            "correct": true,
-                                            "question_id": 17
-                                        },
-                                        {
-                                            "id": 67,
-                                            "text": "Эллипс",
-                                            "correct": false,
-                                            "question_id": 17
-                                        },
-                                        {
-                                            "id": 68,
-                                            "text": "Линия тренда",
-                                            "correct": false,
-                                            "question_id": 17
-                                        }
-                                    ]
-                                },
-                                {
-                                    "id": 18,
-                                    "text": "Что позволяет сделать функция «Список наблюдения» (Watchlist)?",
-                                    "type": 1,
-                                    "quiz_id": 3,
-                                    "answers": [
-                                        {
-                                            "id": 69,
-                                            "text": "Просматривать только графики в реальном времени",
-                                            "correct": false,
-                                            "question_id": 18
-                                        },
-                                        {
-                                            "id": 70,
-                                            "text": "Следить за выбранными активами и быстро переключаться между ними",
-                                            "correct": true,
-                                            "question_id": 18
-                                        },
-                                        {
-                                            "id": 71,
-                                            "text": "Запускать автоматические сделки",
-                                            "correct": false,
-                                            "question_id": 18
-                                        },
-                                        {
-                                            "id": 72,
-                                            "text": "Сохранять настройки графика в облако",
-                                            "correct": false,
-                                            "question_id": 18
-                                        }
-                                    ]
-                                },
-                                {
                                     "id": 19,
                                     "text": "Для чего используется функция «Алерт» (оповещение) на TradingView?",
                                     "type": 1,
@@ -2641,7 +2545,7 @@
         {
             "id": 3,
             "name": "curator_btn_avatar",
-            "value": ""
+            "value": "https://i.pravatar.cc/150?img=3"
         },
         {
             "id": 4,
