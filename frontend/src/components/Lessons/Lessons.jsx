@@ -3,43 +3,43 @@ import { useNavigate, useParams, Link } from 'react-router-dom';
 import './lessons.css';
 import ArrowIcon from "../../assets/images/ArrowIcon.jsx";
 import BackIcon from "../../assets/images/BackIcon.jsx";
+import { useAppData } from "../../contexts/AppDataContext.jsx";
+import handleImageError from "../helpers/handleImageError.js";
 
 export default function Lessons({ user }) {
     const navigate = useNavigate();
     const { courseId } = useParams();
+    const { data, loading, error } = useAppData();
+
     const [lessons, setLessons] = useState([]);
     const [courseTitle, setCourseTitle] = useState('');
     const [courseDescr, setCourseDescr] = useState('');
 
     useEffect(() => {
-        fetch("/content/app_data.json")
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error("Ошибка загрузки курсов");
-                }
-                return response.json();
-            })
-            .then((data) => {
-                const courses = data.courses || [];
-                const course = courses.find((c) => String(c.id) === courseId);
+        if (!loading && data) {
+            const courses = data.courses || [];
+            const course = courses.find(c => String(c.id) === courseId);
 
-                if (course) {
-                    setCourseTitle(course.title);
-                    setCourseDescr(course.description);
-                    setLessons(course.lessons || []);
-                } else {
-                    console.warn("Курс не найден");
-                }
-            })
-            .catch((error) => {
-                console.error("Ошибка загрузки данных курса:", error);
-            });
-    }, [courseId]);
+            if (course) {
+                setCourseTitle(course.title);
+                setCourseDescr(course.description);
+                setLessons(course.lessons);
+            } else {
+                console.warn("Курс не найден");
+                setLessons([]);
+                setCourseTitle('');
+                setCourseDescr('');
+            }
+        }
+    }, [data, loading, courseId]);
 
-    const handleImageError = (e) => {
-        e.target.src = '/images/default-event.avif';
-        e.target.onerror = null;
-    };
+    if (loading) {
+        return <div className="loading">Загрузка уроков...</div>;
+    }
+
+    if (error) {
+        return <div className="error">Ошибка: {error}</div>;
+    }
 
     return (
         <div className="page-container content">
@@ -56,8 +56,7 @@ export default function Lessons({ user }) {
                 <p>{courseDescr}</p>
             </div>
 
-
-            {lessons.map((lesson, index) => (
+            {lessons.length ? lessons.map((lesson, index) => (
                 <div className="lesson-block" key={lesson.id}>
                     <p>Урок {index + 1}</p>
                     <div
@@ -68,7 +67,7 @@ export default function Lessons({ user }) {
                             <img
                                 src={lesson.image || "/images/default-event.avif"}
                                 alt=""
-                                onError={handleImageError}
+                                onError={handleImageError()}
                             />
                             <span>{lesson.title}</span>
                         </div>
@@ -77,7 +76,9 @@ export default function Lessons({ user }) {
                         </div>
                     </div>
                 </div>
-            ))}
+            )) : (
+                <div>Уроки не найдены</div>
+            )}
         </div>
     );
 }

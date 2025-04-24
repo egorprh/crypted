@@ -1,53 +1,39 @@
-import React, { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
-import "./eventpage.css";
-import BackIcon from "../../assets/images/BackIcon.jsx";
+import React, { useState, useEffect } from 'react';
+import { useParams, Link } from 'react-router-dom';
+import './eventpage.css';
+import BackIcon from '../../assets/images/BackIcon.jsx';
+import { useAppData } from '../../contexts/AppDataContext.jsx';
+import handleImageError from "../helpers/handleImageError.js";
+import getConfigValue from "../helpers/getConfigValue.js";
 
 export default function EventPage() {
     const { id } = useParams();
+    const { data, loading, error } = useAppData();
+
     const [event, setEvent] = useState(null);
-    const [config, setConfig] = useState({});
-    const [loading, setLoading] = useState(true);
+    const [config, setConfig] = useState([]);
+
+    const botLink = getConfigValue(config, "bot_link");
 
     useEffect(() => {
-        fetch("/content/app_data.json")
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error("Ошибка загрузки данных");
-                }
-                return response.json();
-            })
-            .then((data) => {
-                const foundEvent = data.events?.find(e => e.id.toString() === id);
-                setConfig(data.config);
-                setEvent(foundEvent);
-                setLoading(false);
-            })
-            .catch((error) => {
-                console.error("Ошибка загрузки данных:", error);
-                setLoading(false);
-            });
-    }, [id]);
-
-    const handleImageError = (e) => {
-        e.target.src = '/images/default-event.avif';
-        e.target.onerror = null;
-    };
+        if (data) {
+            const foundEvent = data.events?.find((e) => e.id.toString() === id);
+            setEvent(foundEvent);
+            setConfig(data.config || []);
+        }
+    }, [data, id]);
 
     if (loading) {
         return <div className="content">Загрузка...</div>;
     }
 
+    if (error) {
+        return <div className="content">Ошибка: {error}</div>;
+    }
+
     if (!event) {
         return <div className="content">Событие не найдено</div>;
     }
-
-    const getConfigValue = (name) => {
-        const item = config.find(c => c.name === name);
-        return item ? item.value : null;
-    };
-
-    const botLink = getConfigValue("bot_link");
 
     return (
         <div className="content">
@@ -64,7 +50,7 @@ export default function EventPage() {
                         className="event-image"
                         src={event.image || '/images/default-event.avif'}
                         alt="Event preview"
-                        onError={handleImageError}
+                        onError={handleImageError()}
                     />
 
                     <div className="event-details">

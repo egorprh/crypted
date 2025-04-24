@@ -2,31 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PageLink from "../ui/PageLink/PageLink.jsx";
 import './home.css';
+import { useAppData } from "../../contexts/AppDataContext.jsx";
 
 export default function Home({ user }) {
     const navigate = useNavigate();
-    const [courses, setCourses] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-
-    useEffect(() => {
-        fetch("/content/app_data.json")
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error("Ошибка загрузки курсов");
-                }
-                return response.json();
-            })
-            .then((data) => {
-                setCourses(data.courses);
-                setLoading(false);
-            })
-            .catch((error) => {
-                console.error("Ошибка загрузки курсов:", error);
-                setError(error.message);
-                setLoading(false);
-            });
-    }, []);
+    const {data, loading, error} = useAppData();
 
     if (error) return <div className="error">Ошибка: {error}</div>;
 
@@ -44,7 +24,7 @@ export default function Home({ user }) {
                     ?
                     <div className="loading">Загрузка заданий...</div>
                     :
-                    courses.length ? courses.map((course) => (
+                    data && data.courses && data.courses.length ? data.courses.map((course) => (
                         <div
                             key={course.id}
                             className="card course-card"

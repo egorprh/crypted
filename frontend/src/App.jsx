@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useAppData } from "./contexts/AppDataContext.jsx";
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 import Home from "./components/Home/Home.jsx";
@@ -6,7 +7,6 @@ import Calendar from "./components/Calendar/Calendar.jsx";
 import Homework from "./components/Homework/Homework.jsx";
 import Questions from "./components/Qustions/Questions.jsx";
 import Lessons from "./components/Lessons/Lessons.jsx";
-import TestPage from "./components/TestPage/TestPage.jsx";
 import EventPage from "./components/EventPage/EventPage.jsx";
 import Lesson from "./components/Lesson/Lesson.jsx";
 import LessonMaterials from "./components/LessonMaterials/LessonMaterials.jsx";
@@ -16,10 +16,11 @@ import LessonQuizTest from "./components/LessonQuizTest/LessonQuizTest.jsx";
 import Layout from "./components/Layouts/Layout.jsx";
 import QuizLayout from "./components/Layouts/QuizLayout.jsx";
 import Preloader from "./components/ui/Preloader/Preloader.jsx";
+import QuizResults from "./components/QuizResults/QuizResults.jsx";
 
 export default function App() {
   const [user, setUser] = useState(null);
-  const [appReady, setAppReady] = useState(false);
+  const {appReady} = useAppData();
 
   useEffect(() => {
     const tg = window.Telegram?.WebApp;
@@ -30,6 +31,7 @@ export default function App() {
 
     if (!u) {
       setUser({
+        id: 2,
         username: 'luckyman',
         photo_url: 'https://i.pravatar.cc/150?img=3',
       });
@@ -51,18 +53,6 @@ export default function App() {
         body: JSON.stringify(userData),
       }).catch(err => console.error("Ошибка записи пользователя:", err));
     }
-
-    fetch('/get_app_data?user_id=1', {
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json' },
-    })
-        .then((res) => res.json())
-        .then(() => setAppReady(true))
-        .catch(err => {
-          console.error("Ошибка получения данных:", err);
-          setAppReady(true)
-        });
-
   }, []);
 
   if (!appReady) {
@@ -76,7 +66,8 @@ export default function App() {
             <Route path="/" element={<Home user={user} />} />
             <Route path="/calendar" element={<Calendar />} />
             <Route path="/calendar/event/:id" element={<EventPage />} />
-            <Route path="/homework" element={<Homework />} />
+            <Route path="/homework" element={<Homework user={user} />} />
+            <Route path="/homework/results/:quizId" element={<QuizResults user={user} />} />
             <Route path="/faq" element={<Questions />} />
             <Route element={<LessonLayout />}>
               <Route path="/lessons/:courseId/:lessonId/content" element={<Lesson />} />
@@ -84,7 +75,6 @@ export default function App() {
               <Route path="/lessons/:courseId/:lessonId/quiz" element={<LessonQuiz />} />
             </Route>
             <Route path="/lessons/:courseId" element={<Lessons user={user} />} />
-            <Route path="/tests/:testId" element={<TestPage />} />
           </Route>
           <Route element={<QuizLayout />}>
             <Route path="/lessons/:courseId/:lessonId/quiz/start" element={<LessonQuizTest user={user} />} />

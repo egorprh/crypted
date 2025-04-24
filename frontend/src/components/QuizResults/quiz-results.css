@@ -1,0 +1,29 @@
+.quiz-results-content h1 {
+    font-size: var(--fs-md);
+    text-align: left;
+    margin-top: 0;
+}
+
+.quiz-results-content h2 {
+    font-size: var(--fs-sm);
+    margin-bottom: 10px;
+}
+
+.quiz-results-content .quiz {
+    gap: 30px;
+}
+
+.quiz-results-content .quiz-answers {
+    margin-top: 0;
+    gap: 8px;
+}
+
+.quiz-results-content .quiz-answer input[type="radio"] {
+    width: 16px;
+    height: 16px;
+}
+
+.quiz-results-content .quiz-answer input[type="radio"]:checked::before {
+    top: 2px;
+    left: 2px;
+}
