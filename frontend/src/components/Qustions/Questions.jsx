@@ -1,40 +1,19 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import './questions.css';
 import ArrowIcon from "../../assets/images/ArrowIcon.jsx";
+import { useAppData } from "../../contexts/AppDataContext.jsx";
+import getConfigValue from "../helpers/getConfigValue.js";
+import handleImageError from "../helpers/handleImageError.js";
 
 export default function Questions() {
-    const [questions, setQuestions] = useState([]);
-    const [config, setConfig] = useState([]);
-    const [error, setError] = useState(null);
-    const [loading, setLoading] = useState(true);
+    const {data, loading, error} = useAppData();
     const [expandedQuestions, setExpandedQuestions] = useState({});
 
-    useEffect(() => {
-        fetch("/content/app_data.json")
-            .then((response) => {
-                if (!response.ok) throw new Error("Ошибка загрузки данных");
-                return response.json();
-            })
-            .then((data) => {
-                setQuestions(data.faq || []);
-                setConfig(data.config || []);
-                setLoading(false);
-            })
-            .catch((error) => {
-                console.error("Ошибка загрузки данных:", error);
-                setError("Ошибка загрузки данных");
-                setLoading(false);
-            });
-    }, []);
+    const config = data && data.config || [];
 
-    const getConfigValue = (name) => {
-        const item = config.find(c => c.name === name);
-        return item ? item.value : null;
-    };
-
-    const curatorText = getConfigValue("curator_btn_text") || "Написать";
-    const curatorLink = getConfigValue("curator_btn_link");
-    const avatar = getConfigValue("curator_btn_avatar") || "/images/user.png";
+    const curatorText = getConfigValue(config, "curator_btn_text") || "Написать";
+    const curatorLink = getConfigValue(config, "curator_btn_link");
+    const avatar = getConfigValue(config, "curator_btn_avatar");
 
     const toggleQuestion = (id) => {
         setExpandedQuestions(prev => ({
@@ -56,7 +35,12 @@ export default function Questions() {
                         <button className="btn disabled" disabled>{curatorText}</button>
                     )}
                 </div>
-                <img className="questions-img" src={avatar} alt="Куратор" />
+                <img
+                    className="questions-img"
+                    src={avatar || "/images/user.png"}
+                    alt="Куратор"
+                    onError={handleImageError("/images/user.png")}
+                />
             </div>
 
             <h2>Часто задаваемые вопросы</h2>
@@ -65,7 +49,7 @@ export default function Questions() {
                 {loading ? (
                     <div className="loading">Загрузка вопросов...</div>
                 ) : (
-                    questions.length ? questions.map((item, i) => (
+                    data && data.faq && data.faq.length ? data.faq.map((item, i) => (
                         <div key={item.id} className="card questions-card">
                             <div className="question-header" onClick={() => toggleQuestion(item.id)}>
                                 <p>{i + 1}. {item.question}</p>

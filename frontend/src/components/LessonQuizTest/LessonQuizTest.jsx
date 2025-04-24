@@ -3,13 +3,13 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { buildStyles, CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import './lesson-quiz-test.css';
+import { useAppData } from '../../contexts/AppDataContext.jsx';
 
 export default function LessonQuizTest({ user }) {
     const { courseId, lessonId } = useParams();
     const navigate = useNavigate();
+    const { data, loading, error } = useAppData();
 
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState('');
     const [quiz, setQuiz] = useState(null);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [selectedAnswer, setSelectedAnswer] = useState(null);
@@ -20,26 +20,18 @@ export default function LessonQuizTest({ user }) {
     const [showSaveError, setShowSaveError] = useState(false);
 
     useEffect(() => {
-        setLoading(true);
-        fetch("/content/app_data.json")
-            .then(res => res.json())
-            .then(data => {
-                const course = data.courses.find(c => String(c.id) === courseId);
-                const foundLesson = course?.lessons.find(l => String(l.id) === lessonId);
-                if (!foundLesson) throw new Error("Урок не найден");
-                if (!foundLesson.quizzes || foundLesson.quizzes.length === 0) {
-                    throw new Error("Тест не найден");
-                }
+        if (!loading && data) {
+            const course = data.courses?.find(c => String(c.id) === courseId);
+            const foundLesson = course?.lessons?.find(l => String(l.id) === lessonId);
+            if (foundLesson?.quizzes?.length) {
                 setQuiz(foundLesson.quizzes[0]);
-            })
-            .catch(err => {
-                console.error("Ошибка загрузки:", err);
-                setError(err.message);
-            })
-            .finally(() => setLoading(false));
-    }, [courseId, lessonId]);
+            } else {
+                setQuiz(null);
+            }
+        }
+    }, [loading, data, courseId, lessonId]);
 
-    const handleAnswerSelect = (answerId) => {
+    const handleAnswerSelect = answerId => {
         if (isAnswered) return;
         setSelectedAnswer(answerId);
     };
@@ -47,17 +39,13 @@ export default function LessonQuizTest({ user }) {
     const handleCheck = () => {
         if (selectedAnswer == null) return;
         setIsAnswered(true);
-
         const answer = quiz.questions[currentQuestionIndex].answers.find(a => a.id === selectedAnswer);
-        if (answer?.correct) {
-            setCorrectCount(prev => prev + 1);
-        }
-
+        if (answer?.correct) setCorrectCount(prev => prev + 1);
         setWasCorrect(!!answer?.correct);
     };
 
     const handleNextQuestion = () => {
-        if (currentQuestionIndex === quiz.questions.length - 1) {
+        if (currentQuestionIndex + 1 >= quiz.questions.length) {
             setShowSummary(true);
         } else {
             setCurrentQuestionIndex(prev => prev + 1);
@@ -69,27 +57,16 @@ export default function LessonQuizTest({ user }) {
     const handleFinish = () => {
         const total = quiz.questions.length;
         const progress = Math.round((correctCount / total) * 100);
+        const userId = user?.id || 1;
 
-        const userId = user?.id ? user.id : 1; // Используем id пользователя, если он есть, иначе 1
         fetch('/api/save_progress', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                userId: userId,
-                quizId: quiz.id,
-                progress: progress
-            })
+            body: JSON.stringify({ userId, quizId: quiz.id, progress })
         })
-            .then(response => {
-                if (!response.ok) throw new Error('Ошибка сети');
-                return response.json();
-            })
-            .then(data => {
-                console.log('Прогресс сохранен:', data);
-                navigate(`/lessons/${courseId}`);
-            })
-            .catch(error => {
-                console.error('Ошибка при сохранении прогресса:', error);
+            .then(res => { if (!res.ok) throw new Error('Ошибка сети'); return res.json(); })
+            .then(() => navigate(`/lessons/${courseId}`))
+            .catch(() => {
                 setShowSaveError(true);
                 setTimeout(() => {
                     setShowSaveError(false);
@@ -107,18 +84,14 @@ export default function LessonQuizTest({ user }) {
         const progress = Math.round((correctCount / total) * 100);
         return (
             <div className="quiz">
-                {showSaveError && (
-                    <div className="save-error">
-                        <p>⚠️ Не удалось сохранить прогресс</p>
-                    </div>
-                )}
+                {showSaveError && <div className="save-error"><p>⚠️ Не удалось сохранить прогресс</p></div>}
                 <h1>Результаты теста</h1>
                 <div className="results-circle">
                     <CircularProgressbar
                         value={progress}
                         text={`${progress}%`}
                         styles={buildStyles({
-                            pathColor: progress >= 70 ? 'var(--success)' : 'var(--danger)', // зелёный если >=70%, иначе красный
+                            pathColor: progress >= 70 ? 'var(--success)' : 'var(--danger)',
                             textColor: 'var(--white)',
                             trailColor: '#eee',
                             backgroundColor: 'var(--white)',
@@ -129,7 +102,6 @@ export default function LessonQuizTest({ user }) {
                     <p className="correct">Правильные ответы: {correctCount}</p>
                     <p className="incorrect">Неправильные ответы: {total - correctCount}</p>
                 </div>
-
                 <button className="btn" onClick={handleFinish}>Завершить тест</button>
             </div>
         );
@@ -149,12 +121,7 @@ export default function LessonQuizTest({ user }) {
                     {question.answers.map(answer => {
                         const isSelected = selectedAnswer === answer.id;
                         const highlight = isAnswered
-                            ? answer.correct
-                                ? 'correct'
-                                : isSelected
-                                    ? 'incorrect'
-                                    : ''
-                            : '';
+                            ? answer.correct ? 'correct' : (isSelected ? 'incorrect' : '') : '';
                         return (
                             <label key={answer.id} className={`quiz-answer ${highlight}`}>
                                 <input
@@ -171,19 +138,10 @@ export default function LessonQuizTest({ user }) {
                 </div>
             </div>
             <div className="actions">
-                {!isAnswered && (
-                    <button className="btn" onClick={handleCheck} disabled={selectedAnswer == null}>
-                        Проверить
-                    </button>
-                )}
-                {isAnswered && (
-                    <button
-                        className={`btn ${wasCorrect ? 'btn-correct' : 'btn-incorrect'}`}
-                        onClick={handleNextQuestion}
-                    >
-                        {`${wasCorrect ? 'Правильно' : 'Неправильно'}, к следующему`}
-                    </button>
-                )}
+                {!isAnswered
+                    ? <button className="btn" onClick={handleCheck} disabled={selectedAnswer == null}>Проверить</button>
+                    : <button className={`btn ${wasCorrect ? 'btn-correct' : 'btn-incorrect'}`} onClick={handleNextQuestion}>{wasCorrect ? 'Правильно, к следующему' : 'Неправильно, к следующему'}</button>
+                }
             </div>
         </div>
     );

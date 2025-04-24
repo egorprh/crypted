@@ -30,14 +30,7 @@
                         {
                             "id": 1,
                             "title": "Материал к уроку 1",
-                            "description": "Весь материал по данной теме, вы можете найти в нашей методичке, и просмотривать его в любое время.",
-                            "url": "https://example.com/material1",
-                            "lesson_id": 1
-                        },
-                        {
-                            "id": 1,
-                            "title": "Материал к уроку 1 (2)",
-                            "description": "Весь материал по данной теме, вы можете найти в нашей методичке, и просмотривать его в любое время.",
+                            "description": "description",
                             "url": "https://example.com/material1",
                             "lesson_id": 1
                         }
@@ -2543,7 +2536,7 @@
         {
             "id": 1,
             "title": "Вебинар: Основы трейдинга",
-            "description": "",
+            "description": "На этом вебинаре мы расскажем о базовых принципах трейдинга и ответим на ваши вопросы.",
             "author": "Александр Трейдер",
             "image": "https://example.com/images/webinar_1.jpg",
             "date": "2023-12-15"
@@ -2581,7 +2574,22 @@
             "date": "2024-01-05"
         }
     ],
-    "homework": [],
+    "homework": [
+        {
+            "id": 1,
+            "quiz_id": 2,
+            "user_id": 1,
+            "progress": 20.0,
+            "title": "Урок 2: Как выбрать криптобиржу?"
+        },
+        {
+            "id": 2,
+            "quiz_id": 6,
+            "user_id": 1,
+            "progress": 60.0,
+            "title": "Урок 6: Риск-менеджмент"
+        }
+    ],
     "faq": [
         {
             "id": 1,
@@ -2628,12 +2636,12 @@
         {
             "id": 2,
             "name": "curator_btn_link",
-            "value": "link"
+            "value": "@egorprh"
         },
         {
             "id": 3,
             "name": "curator_btn_avatar",
-            "value": "https://i.pravatar.cc/150?img=3"
+            "value": ""
         },
         {
             "id": 4,

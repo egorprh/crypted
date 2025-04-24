@@ -16,10 +16,11 @@ import LessonQuizTest from "./components/LessonQuizTest/LessonQuizTest.jsx";
 import Layout from "./components/Layouts/Layout.jsx";
 import QuizLayout from "./components/Layouts/QuizLayout.jsx";
 import Preloader from "./components/ui/Preloader/Preloader.jsx";
+import { useAppData } from "./contexts/AppDataContext.jsx";
 
 export default function App() {
   const [user, setUser] = useState(null);
-  const [appReady, setAppReady] = useState(false);
+  const {appReady} = useAppData();
 
   useEffect(() => {
     const tg = window.Telegram?.WebApp;
@@ -51,18 +52,6 @@ export default function App() {
         body: JSON.stringify(userData),
       }).catch(err => console.error("Ошибка записи пользователя:", err));
     }
-
-    fetch('/get_app_data?user_id=1', {
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json' },
-    })
-        .then((res) => res.json())
-        .then(() => setAppReady(true))
-        .catch(err => {
-          console.error("Ошибка получения данных:", err);
-          setAppReady(true)
-        });
-
   }, []);
 
   if (!appReady) {
