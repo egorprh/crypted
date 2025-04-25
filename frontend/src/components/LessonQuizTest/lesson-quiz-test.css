@@ -158,17 +158,3 @@ progress::-webkit-progress-value {
     background-color: var(--danger);
     color: white;
 }
-
-.save-error {
-    width: max-content;
-    position: fixed;
-    top: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: var(--secondary);
-    color: var(--white);
-    padding: 10px 15px;
-    border-radius: var(--brs-sm);
-    text-align: center;
-    z-index: 1000;
-}

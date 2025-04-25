@@ -1,0 +1,17 @@
+.quiz-block {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+
+.quiz-input {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid var(--gray-200);
+    border-radius: var(--brs-sm);
+}
+
+.quiz-input:focus {
+    outline: none;
+    border: 2px solid var(--logo-bg);
+}
