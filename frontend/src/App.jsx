@@ -17,6 +17,7 @@ import Layout from "./components/Layouts/Layout.jsx";
 import QuizLayout from "./components/Layouts/QuizLayout.jsx";
 import Preloader from "./components/ui/Preloader/Preloader.jsx";
 import QuizResults from "./components/QuizResults/QuizResults.jsx";
+import EnterSurvey from "./components/EnterSurvey/EnterSurvey.jsx";
 
 export default function App() {
   const [user, setUser] = useState(null);
@@ -64,6 +65,7 @@ export default function App() {
         <Routes>
           <Route element={<Layout user={user} />}>
             <Route path="/" element={<Home user={user} />} />
+            <Route path="/lessons/enter-survey" element={<EnterSurvey user={user} />} />
             <Route path="/calendar" element={<Calendar />} />
             <Route path="/calendar/event/:id" element={<EventPage />} />
             <Route path="/homework" element={<Homework user={user} />} />

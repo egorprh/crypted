@@ -85,3 +85,11 @@
   transform: rotate(-20deg);
   transform-origin: center;
 }
+
+.survey-banner {
+  margin-bottom: 20px;
+}
+
+.survey-banner p {
+  margin-bottom: 10px;
+}

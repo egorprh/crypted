@@ -4,6 +4,7 @@ import { buildStyles, CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import './lesson-quiz-test.css';
 import { useAppData } from '../../contexts/AppDataContext.jsx';
+import Alert from "../ui/Alert/Alert.jsx";
 
 export default function LessonQuizTest({ user }) {
     const { courseId, lessonId } = useParams();
@@ -95,7 +96,7 @@ export default function LessonQuizTest({ user }) {
         const progress = Math.round((correctCount / total) * 100);
         return (
             <div className="quiz">
-                {showSaveError && <div className="save-error"><p>⚠️ Не удалось сохранить прогресс</p></div>}
+                {showSaveError && <Alert text="Не удалось сохранить прогресс" /> }
                 <h1>Результаты теста</h1>
                 <div className="results-circle">
                     <CircularProgressbar
