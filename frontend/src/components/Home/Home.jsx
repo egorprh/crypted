@@ -8,6 +8,24 @@ export default function Home({ user }) {
     const navigate = useNavigate();
     const {data, loading, error} = useAppData();
 
+    const userId = user?.id ? user.id : 1;
+
+    const sendCourseViewed = (courseId, userId) => {
+        return fetch('/api/course_viewed', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ courseId, userId }),
+        })
+            .then(() => console.log('Course viewув'));
+    };
+
+    const handleCourseClick = (courseId) => {
+        sendCourseViewed(courseId, userId);
+        navigate(`/lessons/${courseId}`);
+    };
+
     if (error) return <div className="error">Ошибка: {error}</div>;
 
     return (
@@ -28,7 +46,7 @@ export default function Home({ user }) {
                         <div
                             key={course.id}
                             className="card course-card"
-                            onClick={() => navigate(`/lessons/${course.id}`)}
+                            onClick={() => handleCourseClick(course.id)}
                         >
                             <div className="course-header">
                                 <img src='/images/logo.png' alt="Course" className="logo"/>
