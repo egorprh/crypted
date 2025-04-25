@@ -2540,7 +2540,7 @@
         {
             "id": 2,
             "name": "curator_btn_link",
-            "value": "@egorprh"
+            "value": "https://t.me/egorprh"
         },
         {
             "id": 3,
@@ -2550,7 +2550,7 @@
         {
             "id": 4,
             "name": "bot_link",
-            "value": "@CryptEduBot"
+            "value": "https://t.me/CryptEduBot"
         }
     ],
     "enter_survey": {

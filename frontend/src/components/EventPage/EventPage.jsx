@@ -48,7 +48,7 @@ export default function EventPage() {
 
                     <img
                         className="event-image"
-                        src={event.image || '/images/default-event.avif'}
+                        src={event.image || '/images/default-event.png'}
                         alt="Event preview"
                         onError={handleImageError()}
                     />

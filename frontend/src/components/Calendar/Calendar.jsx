@@ -23,7 +23,7 @@ export default function Calendar() {
                                 src={event.image}
                                 alt="Event preview"
                                 className="event-image"
-                                onError={handleImageError('/images/default-event.avif')}
+                                onError={handleImageError('/images/default-event.png')}
                                 loading="lazy"
                             />
                             <div className="event-info">

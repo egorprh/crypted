@@ -65,7 +65,7 @@ export default function Lessons({ user }) {
                     >
                         <div className="info">
                             <img
-                                src={lesson.image || "/images/default-event.avif"}
+                                src={lesson.image || "/images/default-event.png"}
                                 alt=""
                                 onError={handleImageError()}
                             />
