@@ -18,7 +18,7 @@ export default function Home({ user }) {
             },
             body: JSON.stringify({ courseId, userId }),
         })
-            .then(() => console.log('Course viewув'));
+            .catch((err) => console.error(err));
     };
 
     const handleCourseClick = (courseId) => {
