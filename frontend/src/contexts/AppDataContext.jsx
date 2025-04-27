@@ -9,7 +9,7 @@ export const AppDataProvider = ({ children }) => {
     const [appReady, setAppReady] = useState(false);
 
     useEffect(() => {
-        fetch('/get_app_data?user_id=1')
+        fetch('/api/get_app_data?user_id=1')
             .then(res => res.json())
             .then(data => console.log(data))
             .catch(err => console.error(err));

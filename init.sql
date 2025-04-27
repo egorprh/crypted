@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS courses (
 -- Создание таблицы user_actions_log
 CREATE TABLE IF NOT EXISTS user_actions_log (
     id BIGSERIAL PRIMARY KEY,
-    userid BIGINT NOT NULL,
+    user_id BIGINT NOT NULL,
     action VARCHAR(255) NOT NULL,
     instance_id BIGINT REFERENCES courses(id) ON DELETE CASCADE,
     time_modified TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
@@ -119,6 +119,7 @@ CREATE TABLE IF NOT EXISTS answers (
 -- Создание таблицы user_answers
 CREATE TABLE IF NOT EXISTS user_answers (
     id BIGSERIAL PRIMARY KEY,
+    user_id BIGINT REFERENCES user(id) ON DELETE CASCADE
     answer_id BIGINT REFERENCES answers(id) ON DELETE CASCADE,
     text TEXT,
     type TEXT, -- quiz or survey
@@ -194,23 +195,6 @@ INSERT INTO courses (title, description, oldprice, newprice, image, visible, typ
 -- Добавляем таблицу опросов
 INSERT INTO surveys (title, description) VALUES
 ('Входное тестирование', 'Пройди входное тестирование для доступа к курсам');
-
--- Создание связи между опросом и вопросами
-INSERT INTO survey_questions (survey_id, question_id)
-SELECT
-    (SELECT id FROM surveys WHERE title = 'Входное тестирование'),
-    id
-FROM questions
-WHERE text IN (
-    'Укажите, пожалуйста, ваш номер телефона.',
-    'Какой у вас уровень опыта в криптотрейдинге?',
-    'Какой стиль торговли вам ближе?',
-    'Какие источники данных вы предпочитаете использовать для анализа рынка?',
-    'Какие криптовалютные пары вы торгуете чаще всего?',
-    'Хотели бы вы тестировать новые алгоритмы компании Dept на демо-счете?',
-    'Сколько вам лет?',
-    'В какой сфере деятельности вы находитесь на данный момент?'
-);
 
         -- 2. Добавляем 10 уроков
 INSERT INTO lessons (title, description, video_url, course_id, image)
@@ -323,6 +307,23 @@ VALUES ('Сколько вам лет?', 'text') RETURNING id;
 -- Вопрос 8: В какой сфере деятельности вы находитесь на данный момент?
 INSERT INTO questions (text, type) 
 VALUES ('В какой сфере деятельности вы находитесь на данный момент?', 'text') RETURNING id;
+
+-- Создание связи между опросом и вопросами
+INSERT INTO survey_questions (survey_id, question_id)
+SELECT
+    (SELECT id FROM surveys WHERE title = 'Входное тестирование'),
+    id
+FROM questions
+WHERE text IN (
+    'Укажите, пожалуйста, ваш номер телефона.',
+    'Какой у вас уровень опыта в криптотрейдинге?',
+    'Какой стиль торговли вам ближе?',
+    'Какие источники данных вы предпочитаете использовать для анализа рынка?',
+    'Какие криптовалютные пары вы торгуете чаще всего?',
+    'Хотели бы вы тестировать новые алгоритмы компании Dept на демо-счете?',
+    'Сколько вам лет?',
+    'В какой сфере деятельности вы находитесь на данный момент?'
+);
 
 
 

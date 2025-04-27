@@ -15,6 +15,7 @@ import json
 # 1) Получение данных для приложения: вопросы, ивенты, курсы+уроки+ответы, домашка для пользователя, входное тестирование
 # 3) Сохранение результата теста
 # 4) Отпрвка в бота при нажатии кнопки "Начать" (с сохранением этого факта)
+# 5) Сохранение пользователя
 ###
 
 db = PGApi()
@@ -56,7 +57,7 @@ async def trigger_event(event_name: str, user_id: int, instance_id: int):
     """
     params = {
         "user_id": user_id,
-        "course_id": instance_id,
+        "instance_id": instance_id,
         "action": event_name,
     }
     event_id = await db.insert_record('user_actions_log', params)
@@ -75,6 +76,21 @@ async def ping():
 
 
 # Cобытие просмотра курса 
+@app.post("/api/save_user")
+async def course_viewed(request: Request):
+    request = await request.json()
+    params = {
+        "telegram_id": request["id"],
+        "username": request["username"],
+        "first_name": request["first_name"],
+        "last_name": request["last_name"],
+    }
+    # Вызов метода insert_record
+    if await db.get_record('users', {'telegram_id':request["id"]}) is None:
+        await db.insert_record('users', params)
+
+
+# Cобытие просмотра курса 
 @app.post("/api/course_viewed")
 async def course_viewed(request: Request):
     request = await request.json()
@@ -90,6 +106,7 @@ async def submit_enter_survey(request: Request):
     request = await request.json()
     user_id = request["userId"]
     user = await db.get_record("users", {"telegram_id": user_id})
+    #TODO Почему сразу падаем, а не в фоне?
     asyncio.create_task(trigger_event('enter_survey', user["id"], request["surveyId"]))
 
     # Записывем ответы пользователей
@@ -155,7 +172,7 @@ async def save_progress(request: Request):
         raise HTTPException(status_code=500, detail="Failed to save progress")
 
 
-@app.get("/get_app_data")
+@app.get("/api/get_app_data")
 async def get_app_data(user_id: int):
     user = await db.get_record("users", {"telegram_id": user_id})
 
@@ -169,8 +186,7 @@ async def get_app_data(user_id: int):
                 quiz["questions"] = await db.get_records_sql(
                     f"""SELECT q.* FROM quiz_questions qq
                     JOIN questions q ON qq.question_id = q.id
-                    AND qq.quiz_id = :quiz_id AND q.visible = :visible""",
-                    {"quiz_id": quiz["id"], "visible": True})
+                    AND qq.quiz_id = $1 AND q.visible = $2""", quiz["id"], True)
                 for question in quiz["questions"]:
                     question["answers"] = await db.get_records("answers", {"question_id": question["id"]})
 
@@ -195,36 +211,37 @@ async def get_app_data(user_id: int):
         homework["questions"] = await db.get_records_sql(
                     """SELECT qq.id, q.id AS qid, q.text, q.type FROM quiz_questions qq
                     JOIN questions q ON qq.question_id = q.id
-                    AND qq.quiz_id = :quiz_id AND q.visible = :visible""",
-                    {"quiz_id": homework["quiz_id"], "visible": True})
+                    AND qq.quiz_id = $1 AND q.visible = $2""", homework["quiz_id"], True)
         for question in homework["questions"]:
             question["answers"] = await db.get_records("answers", {"question_id": question["qid"]})
             for answer in question["answers"]:
                 # Берем последний ответ пользователя на вопрос
                 user_answer = await db.get_record("""
                     SELECT * FROM user_answers 
-                    WHERE type = 'quiz' AND user_id = :user_id AND instance_qid = :question_id AND answer_id = :answer_id
+                    WHERE type = 'quiz' AND user_id = $1 AND instance_qid = $2 AND answer_id = $3
                     ORDER BY time_created DESC LIMIT 1""",
-                    {"question_id": question["qid"], "user_id": user["id"], "answer_id": answer["id"]})
+                    question["qid"], user["id"], answer["id"])
+                user_answer = user_answer[0]
                 answer["user_answer"] = user_answer["answer"] if True else False
 
     # Формируем данные для возврата
     data = {
         "courses": courses, 
         "events": events,
-        "homework": homework,
+        "homework": homeworks,
         "faq": faq,
         "config": config
     }
 
     # Если пользователь не прошел входное тестирование, добавляем его
-    if await db.get_record("user_actions_log", {"user_id": user["id"], "action": "enter_survey"}) is None:
-        enter_survey = await db.get_records_sql(f"""SELECT * FROM surveys WHERE visible = :visible LIMIT 1""", {"visible": True})
+    if await db.get_record("user_actions_log", {"userid": user["id"], "action": "enter_survey"}) is None:
+        enter_survey = await db.get_records_sql(f"""SELECT * FROM surveys WHERE visible = $1 LIMIT 1""", True)
+        enter_survey = enter_survey[0]
         enter_survey["questions"] = await db.get_records_sql(
                         """SELECT sq.id, q.text, q.type FROM survey_questions sq
                         JOIN questions q ON sq.question_id = q.id
-                        AND sq.quiz_id = :quiz_id AND q.visible = :visible""",
-                        {"quiz_id": enter_survey["id"], "visible": True})
+                        AND sq.survey_id = $1 AND q.visible = $2""",
+                        enter_survey["id"], True)
         for question in enter_survey["questions"]:
                 question["answers"] = await db.get_records("answers", {"question_id": question["id"]})
 

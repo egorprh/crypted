@@ -29,31 +29,36 @@ export default function App() {
     tg?.expand();
 
     const u = tg?.initDataUnsafe?.user;
+    var userData = {}
 
     if (!u) {
+      userData = {
+        telegram_id: 0,
+        username: 'luckyman',
+        first_name: 'luckyman',
+        last_name: 'luckyman',
+      };
       setUser({
         id: 2,
         username: 'luckyman',
-        photo_url: 'https://i.pravatar.cc/150?img=3',
+        photo_url: '/images/user.png',
       });
     } else {
       setUser(u);
 
-      const now = new Date().toISOString();
-      const userData = {
+      userData = {
         telegram_id: u.id,
         username: u.username,
         first_name: u.first_name,
         last_name: u.last_name,
-        timecreated: now,
       };
-
-      fetch('/api/save_user', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(userData),
-      }).catch(err => console.error("Ошибка записи пользователя:", err));
     }
+
+    // fetch('/api/save_user', {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify(userData),
+    // }).catch(err => console.error("Ошибка записи пользователя:", err));
   }, []);
 
   if (!appReady) {
