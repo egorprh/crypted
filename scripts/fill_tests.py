@@ -10,7 +10,6 @@ def parse_test_data(file_path):
     parsed_tests = []
 
     for test in tests:
-        
         # Извлекаем название теста
         test_name = test.split(': ')[1].split('?')[0] + '?'
         print(f"Test Name: {test_name}")
@@ -67,10 +66,16 @@ def generate_sql(tests, lesson_ids):
 
             # Добавляем вопрос
             sql_queries.append(
-                f"INSERT INTO questions (text, type, quiz_id) "
-                f"VALUES ('{q_text}', 1, {quiz_id}) RETURNING id;"
+                f"INSERT INTO questions (text, type) "
+                f"VALUES ('{q_text}', 1) RETURNING id;"
             )
             question_id = f"(SELECT id FROM questions WHERE text = '{q_text}')"
+
+            # Добавляем связку между тестом и вопросом
+            sql_queries.append(
+                f"INSERT INTO quiz_questions (quiz_id, question_id) "
+                f"VALUES ({quiz_id}, {question_id});"
+            )
 
             for answer_letter, answer_text in question["answers"]:
                 is_correct_bool = "TRUE" if answer_letter == question["correct_answer"] else "FALSE"

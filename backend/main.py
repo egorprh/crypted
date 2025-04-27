@@ -1,3 +1,4 @@
+import asyncio
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
@@ -30,140 +31,6 @@ async def lifespan(app: FastAPI):
 #https://habr.com/ru/articles/799337/
 app = FastAPI(lifespan=lifespan)
 
-
-@app.get("/ping")
-async def ping():
-    return {"status": "ok", "message": "Pong"}
-
-
-@app.get("/get_courses")
-async def get_courses():
-    courses = await db.get_records("courses")
-
-    for course in courses:
-        lessons = await db.get_records("lessons", {"course_id": course["id"]})
-        for lesson in lessons:
-            lesson["materials"] = await db.get_records("materials", {"lesson_id": lesson["id"]})
-            lesson["quizzes"] = await db.get_records("quizzes", {"lesson_id": lesson["id"]})
-            for quiz in lesson["quizzes"]:
-                quiz["questions"] = await db.get_records("questions", {"quiz_id": quiz["id"]})
-                for question in quiz["questions"]:
-                    question["answers"] = await db.get_records("answers", {"question_id": question["id"]})
-
-        course["lessons"] = lessons
-
-    return remove_timestamps(courses)
-
-
-@app.get("/get_events")
-async def get_events():
-    events = await db.get_records("events")
-    return remove_timestamps(events)
-
-
-@app.get("/get_faq")
-async def get_faq():
-    faq = await db.get_records("faq")
-    return remove_timestamps(faq)
-
-
-@app.get("/get_homework")
-async def get_homework(user_id: int):
-    up_sql = f"""
-    SELECT up.id, up.quiz_id, up.user_id, up.progress, c.title AS course_title, l.title AS lesson_title 
-    FROM user_progress up 
-    LEFT JOIN quizzes q ON up.quiz_id = q.id 
-    LEFT JOIN lessons l ON q.lesson_id = l.id 
-    LEFT JOIN courses c ON l.course_id = c.id 
-    LEFT JOIN users u ON up.user_id = u.id 
-    WHERE up.user_id = {user_id}
-    """
-    homework = await db.get_records_sql(up_sql)
-
-    return remove_timestamps(homework)
-
-
-@app.get("/get_config")
-async def get_config():
-    config = await db.get_records("config")
-    return remove_timestamps(config)
-
-
-# Обработчик POST-запроса
-@app.post("/api/save_progress")
-async def save_progress(request: Request):
-    """
-    Сохраняет прогресс пользователя в таблицу UserProgress.
-    """
-
-    request = await request.json()
-
-    try:
-        # Подготовка данных для вставки
-        params = {
-            "user_id": request["userId"],
-            "quiz_id": request["quizId"],
-            "progress": request["progress"],
-        }
-
-        # Вызов метода insert_record
-        up = await db.get_record("user_progress", params)
-        if up is None:
-            record_id = await db.insert_record('user_progress', params)
-        else:
-            # Если запись существует, обновляем её
-            record_id = up["id"]
-            await db.update_record("user_progress", record_id, params)
-
-        # Возвращаем успешный ответ
-        return {
-            "status": "success",
-            "message": f"Progress saved successfully with ID: {record_id}",
-            "data": {"id": record_id},
-        }
-
-    except Exception as e:
-        # Логируем ошибку (можно использовать logging)
-        print(f"Error saving progress: {e}")
-
-        # Возвращаем ошибку
-        raise HTTPException(status_code=500, detail="Failed to save progress")
-
-
-
-# API-метод для обработки POST-запроса
-# @app.post("/send_user_notification")
-# async def send_user_notification(request: Request):
-#     """
-#     Принимает данные о пользователе и отправляет уведомление в Telegram.
-#     """
-#     try:
-#         # Получаем данные из тела запроса
-#         data = await request.json()
-#         user_id = data.get("user_id")
-#         user_name = data.get("user_name")
-
-#         # Проверяем, что все необходимые поля присутствуют
-#         if not user_id or not user_name:
-#             raise ValueError("Отсутствуют обязательные поля 'user_id' или 'user_name'")
-
-#         # Формируем текст сообщения
-#         message_text = f"Пользователь {user_name} (ID: {user_id}) начал обучение."
-
-#         # Отправляем сообщение через Telegram
-#         success = send_telegram_message(chat_id="CHAT_ID", message_text=message_text)
-
-#         if success:
-#             return {"status": "success", "message": "Уведомление успешно отправлено"}
-#         else:
-#             raise HTTPException(status_code=500, detail="Не удалось отправить уведомление")
-
-#     except ValueError as ve:
-#         raise HTTPException(status_code=400, detail=str(ve))
-#     except Exception as e:
-#         raise HTTPException(status_code=500, detail=f"Произошла ошибка: {str(e)}")
-
-
 def remove_timestamps(data):
     """
     Рекурсивно удаляет ключи time_created и time_modified из всех объектов.
@@ -181,36 +48,165 @@ def remove_timestamps(data):
     else:
         # Если это не список и не словарь, возвращаем как есть
         return data
+    
+
+async def trigger_event(event_name: str, user_id: int, instance_id: int):
+    """
+    Триггерит событие с указанным именем и данными.
+    """
+    params = {
+        "user_id": user_id,
+        "course_id": instance_id,
+        "action": event_name,
+    }
+    event_id = await db.insert_record('user_actions_log', params)
+
+    # Отправка уведолмения в Telegram
+    # asyncio.create_task(send_telegram_message(params))
+
+    print(f"Triggered event: {params}")
+
+    return event_id
+
+
+@app.get("/ping")
+async def ping():
+    return {"status": "ok", "message": "Pong"}
+
+
+# Cобытие просмотра курса 
+@app.post("/api/course_viewed")
+async def course_viewed(request: Request):
+    request = await request.json()
+    user_id = request["userId"]
+    user = await db.get_record("users", {"telegram_id": user_id})
+    asyncio.create_task(trigger_event('course_viewed', user["id"], request["courseId"]))
+    return {"status": "success", "message": "Course viewed event triggered."}
+
+
+# Cобытие просмотра курса 
+@app.post("/api/submit_enter_survey")
+async def submit_enter_survey(request: Request):
+    request = await request.json()
+    user_id = request["userId"]
+    user = await db.get_record("users", {"telegram_id": user_id})
+    asyncio.create_task(trigger_event('enter_survey', user["id"], request["surveyId"]))
+
+    # Записывем ответы пользователей
+    for request_answer in request["answers"]:
+        params = {
+                "user_id": user["id"],
+                "instance_qid": request_answer["questionId"],
+                "type": 'survey',
+                "answer_id": request_answer["answerId"],
+                "text": request_answer["answer"],
+        }
+        # Вызов метода insert_record
+        await db.insert_record('user_answers', params)
+
+    return {"status": "success", "message": "Survey entered event triggered."}
+
+
+# сохранение ответов пользователя на тест
+@app.post("/api/save_progress")
+async def save_progress(request: Request):
+    """
+    Сохраняет прогресс пользователя в таблицу UserProgress.
+    """
+
+    request = await request.json()
+
+    try:
+        user_id = request["userId"]
+        user = await db.get_record("users", {"telegram_id": user_id})
+
+        # Подготовка данных для вставки
+        params = {
+            "user_id": user["id"],
+            "quiz_id": request["quizId"],
+            "progress": request["progress"],
+        }
+        record_id = await db.insert_record('user_progress', params)
+
+        # Записывем ответы пользователей
+        for request_answer in request["answers"]:
+            params = {
+                "user_id": user["id"],
+                "instance_qid": request_answer["questionId"],
+                "type": 'quiz',
+                "answer_id": request_answer["answerId"],
+                "text": request_answer["answer"],
+            }
+            # Вызов метода insert_record
+            await db.insert_record('user_answers', params)
+
+        # Возвращаем успешный ответ
+        return {
+            "status": "success",
+            "message": f"Progress saved successfully with ID: {record_id}",
+            "data": {"id": record_id},
+        }
+
+    except Exception as e:
+        # Логируем ошибку (можно использовать logging)
+        print(f"Error saving progress: {e}")
+
+        # Возвращаем ошибку
+        raise HTTPException(status_code=500, detail="Failed to save progress")
 
 
 @app.get("/get_app_data")
 async def get_app_data(user_id: int):
-    courses = await db.get_records("courses")
+    user = await db.get_record("users", {"telegram_id": user_id})
 
+    courses = await db.get_records("courses", {"visible": True})
     for course in courses:
         lessons = await db.get_records("lessons", {"course_id": course["id"]})
         for lesson in lessons:
             lesson["materials"] = await db.get_records("materials", {"lesson_id": lesson["id"]})
             lesson["quizzes"] = await db.get_records("quizzes", {"lesson_id": lesson["id"]})
             for quiz in lesson["quizzes"]:
-                quiz["questions"] = await db.get_records("questions", {"quiz_id": quiz["id"]})
+                quiz["questions"] = await db.get_records_sql(
+                    f"""SELECT q.* FROM quiz_questions qq
+                    JOIN questions q ON qq.question_id = q.id
+                    AND qq.quiz_id = :quiz_id AND q.visible = :visible""",
+                    {"quiz_id": quiz["id"], "visible": True})
                 for question in quiz["questions"]:
                     question["answers"] = await db.get_records("answers", {"question_id": question["id"]})
 
         course["lessons"] = lessons
 
     events = await db.get_records("events")
+
     faq = await db.get_records("faq")
+
     config = await db.get_records("config")
 
-    up_sql = f"""SELECT up.id, up.quiz_id, up.user_id, up.progress, c.title, l.title FROM user_progress up 
-    LEFT JOIN quizzes q ON up.quiz_id = q.id 
-    LEFT JOIN lessons l ON q.lesson_id = l.id 
-    LEFT JOIN courses c ON l.course_id = c.id 
-    LEFT JOIN users u ON up.user_id = u.id 
+    homeworks_sql = f"""
+        SELECT up.id, up.quiz_id, up.user_id, up.progress, c.title AS course_title, l.title AS lesson_title FROM user_progress up 
+        LEFT JOIN quizzes q ON up.quiz_id = q.id 
+        LEFT JOIN lessons l ON q.lesson_id = l.id 
+        LEFT JOIN courses c ON l.course_id = c.id 
+        LEFT JOIN users u ON up.user_id = u.id 
+        WHERE up.user_id = {user["id"]} ORDER BY up.id DESC
     """
-
-    homework = await db.get_records_sql(up_sql)
+    homeworks = await db.get_records_sql(homeworks_sql)
+    for homework in homeworks:
+        homework["questions"] = await db.get_records_sql(
+                    """SELECT qq.id, q.id AS qid, q.text, q.type FROM quiz_questions qq
+                    JOIN questions q ON qq.question_id = q.id
+                    AND qq.quiz_id = :quiz_id AND q.visible = :visible""",
+                    {"quiz_id": homework["quiz_id"], "visible": True})
+        for question in homework["questions"]:
+            question["answers"] = await db.get_records("answers", {"question_id": question["qid"]})
+            for answer in question["answers"]:
+                # Берем последний ответ пользователя на вопрос
+                user_answer = await db.get_record("""
+                    SELECT * FROM user_answers 
+                    WHERE type = 'quiz' AND user_id = :user_id AND instance_qid = :question_id AND answer_id = :answer_id
+                    ORDER BY time_created DESC LIMIT 1""",
+                    {"question_id": question["qid"], "user_id": user["id"], "answer_id": answer["id"]})
+                answer["user_answer"] = user_answer["answer"] if True else False
 
     # Формируем данные для возврата
     data = {
@@ -221,6 +217,19 @@ async def get_app_data(user_id: int):
         "config": config
     }
 
+    # Если пользователь не прошел входное тестирование, добавляем его
+    if await db.get_record("user_actions_log", {"user_id": user["id"], "action": "enter_survey"}) is None:
+        enter_survey = await db.get_records_sql(f"""SELECT * FROM surveys WHERE visible = :visible LIMIT 1""", {"visible": True})
+        enter_survey["questions"] = await db.get_records_sql(
+                        """SELECT sq.id, q.text, q.type FROM survey_questions sq
+                        JOIN questions q ON sq.question_id = q.id
+                        AND sq.quiz_id = :quiz_id AND q.visible = :visible""",
+                        {"quiz_id": enter_survey["id"], "visible": True})
+        for question in enter_survey["questions"]:
+                question["answers"] = await db.get_records("answers", {"question_id": question["id"]})
+
+        data["enter_survey"] = enter_survey
+
     # Удаляем ключи time_created и time_modified
     data = remove_timestamps(data)
 
@@ -229,6 +238,8 @@ async def get_app_data(user_id: int):
         json.dump(data, f, ensure_ascii=False, indent=4)
 
     return data
+
+
 
 # Static frontend
 app.mount("/", StaticFiles(directory="../frontend/dist", html=True), name="static")
