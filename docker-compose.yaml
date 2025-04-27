@@ -23,27 +23,27 @@ services:
       - ./postgres-data:/var/lib/postgresql/data
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
 
-  pgadmin:
-    container_name: pgadmin
-    image: dpage/pgadmin4:9.2
-    environment:
-      PGADMIN_DEFAULT_EMAIL: "$PGADMIN_DEFAULT_EMAIL"
-      PGADMIN_DEFAULT_PASSWORD: "$PGADMIN_DEFAULT_PASSWORD"
-      PGADMIN_CONFIG_SERVER_MODE: "False"
-    volumes:
-      - ./pgadmin-data:/var/lib/pgadmin
-    ports:
-      - "5050:80"
-    restart: unless-stopped
-    depends_on:
-      - postgressql
-    deploy:
-      resources:
-        limits:
-          cpus: '0.5'
-          memory: 1G
-    networks:
-      - appnetwork
+  # pgadmin:
+  #   container_name: pgadmin
+  #   image: dpage/pgadmin4:9.2
+  #   environment:
+  #     PGADMIN_DEFAULT_EMAIL: "$PGADMIN_DEFAULT_EMAIL"
+  #     PGADMIN_DEFAULT_PASSWORD: "$PGADMIN_DEFAULT_PASSWORD"
+  #     PGADMIN_CONFIG_SERVER_MODE: "False"
+  #   volumes:
+  #     - ./pgadmin-data:/var/lib/pgadmin
+  #   ports:
+  #     - "5050:80"
+  #   restart: unless-stopped
+  #   depends_on:
+  #     - postgressql
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         cpus: '0.5'
+  #         memory: 1G
+  #   networks:
+  #     - appnetwork
 
   app:
     container_name: app
@@ -71,3 +71,4 @@ networks:
 
 
 # https://habr.com/ru/companies/ruvds/articles/450312/
+# https://habr.com/ru/articles/578744/
