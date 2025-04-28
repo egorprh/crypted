@@ -40,7 +40,7 @@ export default function EnterSurvey({ user }) {
             if (!answer) {
                 newErrors[question.id] = 'Это поле обязательно';
                 if (!firstInvalidQuestionId) firstInvalidQuestionId = question.id;
-            } else if (isAgeQuestion(question) && !/^\d{1,3}$/.test(answer)) {
+            } else if (question.type === 'age' && !/^\d{1,3}$/.test(answer)) {
                 newErrors[question.id] = 'Введите корректный возраст';
                 if (!firstInvalidQuestionId) firstInvalidQuestionId = question.id;
             }
