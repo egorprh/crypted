@@ -65,40 +65,45 @@ export default function LessonQuizTest({ user }) {
         }
     };
 
-    const finishQuiz = async () => {
+    const finishQuiz = () => {
         const total = quiz.questions.length;
         const progress = Math.round((correctCount / total) * 100);
         const userId = user?.id ? user.id : 1;
 
-        try {
-            const res = await fetch('/api/save_progress', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    userId,
-                    quizId: quiz.id,
-                    progress,
-                    answers: userAnswers
-                })
-            });
-
-            if (!res.ok) throw new Error('Ошибка сети');
-
-            // init data after submitting answers
-            const appDataRes = await fetch("/content/app_data.json");
-            if (!appDataRes.ok) throw new Error("Ошибка загрузки данных");
-            const newData = await appDataRes.json();
-            setData(newData);
-            setLoading(false);
-
-            navigate(`/lessons/${courseId}`);
-        } catch (error) {
-            setShowSaveError(true);
-            setTimeout(() => {
-                setShowSaveError(false);
+        fetch('/api/save_progress', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                userId,
+                quizId: quiz.id,
+                progress,
+                answers: userAnswers
+            })
+        })
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error('Ошибка сети');
+                }
+                return fetch("/content/app_data.json");
+            })
+            .then(appDataRes => {
+                if (!appDataRes.ok) {
+                    throw new Error("Ошибка загрузки данных");
+                }
+                return appDataRes.json();
+            })
+            .then(newData => {
+                setData(newData);
+                setLoading(false);
                 navigate(`/lessons/${courseId}`);
-            }, 1000);
-        }
+            })
+            .catch(error => {
+                setShowSaveError(true);
+                setTimeout(() => {
+                    setShowSaveError(false);
+                    navigate(`/lessons/${courseId}`);
+                }, 1000);
+            });
     };
 
     if (loading) return <div>Загрузка...</div>;
