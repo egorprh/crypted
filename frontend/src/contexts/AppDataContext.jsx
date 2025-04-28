@@ -4,12 +4,45 @@ const AppDataContext = createContext();
 
 export const AppDataProvider = ({ children }) => {
     const [data, setData] = useState(null);
-    const [loading, setLoading] = useState(true);
+    const [user, setUser] = useState(null);
     const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(true);
     const [appReady, setAppReady] = useState(false);
 
     useEffect(() => {
-        fetch('/api/get_app_data?user_id=1')
+        const tg = window.Telegram?.WebApp;
+        tg?.ready();
+        tg?.expand();
+
+        const u = tg?.initDataUnsafe?.user;
+        var userData = {}
+
+        if (!u) {
+            userData = {
+                telegram_id: 0,
+                username: 'luckyman',
+                first_name: 'luckyman',
+                last_name: 'luckyman',
+            };
+            setUser({
+                id: 1,
+                username: 'luckyman',
+                photo_url: '/images/user.png',
+            });
+        } else {
+            setUser(u);
+
+            userData = {
+                telegram_id: u.id,
+                username: u.username,
+                first_name: u.first_name,
+                last_name: u.last_name,
+            };
+        }
+
+        const userId = user?.id ? user.id : 1;
+
+        fetch(`/api/get_app_data?user_id=${userId}`)
             .then(res => res.json())
             .then(data => console.log(data))
             .catch(err => console.error(err));
@@ -31,7 +64,7 @@ export const AppDataProvider = ({ children }) => {
     }, []);
 
     return (
-        <AppDataContext.Provider value={{ data, loading, error, appReady }}>
+        <AppDataContext.Provider value={{ data, setData, loading, setLoading, error, setError, appReady, user }}>
             {children}
         </AppDataContext.Provider>
     );

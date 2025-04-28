@@ -51,7 +51,7 @@ body {
   max-width: 600px;
   height: 100%;
   margin-inline: auto;
-  background-color: var(--logo-bg);
+  background: linear-gradient(to bottom, var(--logo-bg) 120px, var(--bg) 120px);
 }
 
 main {

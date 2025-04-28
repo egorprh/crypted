@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate, useOutletContext } from 'react-router-dom';
+import '../Lesson/lesson.css';
 import './lesson-quiz.css';
 
 export default function LessonQuiz() {
@@ -19,7 +20,7 @@ export default function LessonQuiz() {
     return (
         <div className="lesson-container">
             <div className="quiz-intro">
-                <h3>{quiz.title}</h3>
+                <h2>{quiz.title}</h2>
                 <p>{quiz.description}</p>
                 <p>
                     Максимальный балл за этот тест — <strong>{quiz.questions.length}</strong>. Правильный ответ только один.

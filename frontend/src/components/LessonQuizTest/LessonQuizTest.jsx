@@ -9,7 +9,7 @@ import Alert from "../ui/Alert/Alert.jsx";
 export default function LessonQuizTest({ user }) {
     const { courseId, lessonId } = useParams();
     const navigate = useNavigate();
-    const { data, loading, error } = useAppData();
+    const { data, loading, error, setData, setLoading } = useAppData();
 
     const [quiz, setQuiz] = useState(null);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -19,6 +19,8 @@ export default function LessonQuizTest({ user }) {
     const [showSummary, setShowSummary] = useState(false);
     const [wasCorrect, setWasCorrect] = useState(false);
     const [showSaveError, setShowSaveError] = useState(false);
+
+    const [userAnswers, setUserAnswers] = useState([]);
 
     useEffect(() => {
         if (!loading && data) {
@@ -43,6 +45,14 @@ export default function LessonQuizTest({ user }) {
         const answer = quiz.questions[currentQuestionIndex].answers.find(a => a.id === selectedAnswer);
         if (answer?.correct) setCorrectCount(prev => prev + 1);
         setWasCorrect(!!answer?.correct);
+
+        setUserAnswers(prevAnswers => [
+            ...prevAnswers,
+            {
+                questionId: quiz.questions[currentQuestionIndex].id,
+                answerId: selectedAnswer
+            }
+        ]);
     };
 
     const handleNextQuestion = () => {
@@ -55,36 +65,45 @@ export default function LessonQuizTest({ user }) {
         }
     };
 
-    const saveProgress = (path) => {
+    const finishQuiz = () => {
         const total = quiz.questions.length;
         const progress = Math.round((correctCount / total) * 100);
         const userId = user?.id ? user.id : 1;
 
-        return fetch('/api/save_progress', {
+        fetch('/api/save_progress', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ userId, quizId: quiz.id, progress })
+            body: JSON.stringify({
+                userId,
+                quizId: quiz.id,
+                progress,
+                answers: userAnswers
+            })
         })
-            .then(res => { if (!res.ok) throw new Error('Ошибка сети'); })
-            .then((data) => {
-                console.log(data.json);
-                navigate(path);
-            } )
-            .catch(() => {
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error('Ошибка сети');
+                }
+                return fetch("/content/app_data.json");
+            })
+            .then(appDataRes => {
+                if (!appDataRes.ok) {
+                    throw new Error("Ошибка загрузки данных");
+                }
+                return appDataRes.json();
+            })
+            .then(newData => {
+                setData(newData);
+                setLoading(false);
+                navigate(`/lessons/${courseId}`);
+            })
+            .catch(error => {
                 setShowSaveError(true);
                 setTimeout(() => {
                     setShowSaveError(false);
-                    navigate(path);
+                    navigate(`/lessons/${courseId}`);
                 }, 1000);
             });
-    }
-
-    const finishQuiz = () => {
-       saveProgress(`/lessons/${courseId}`);
-    };
-
-    const repeatQuiz = () => {
-        saveProgress(`/lessons/${courseId}/${lessonId}/quiz`);
     };
 
     if (loading) return <div>Загрузка...</div>;
@@ -117,7 +136,6 @@ export default function LessonQuizTest({ user }) {
                         <p className="incorrect">Неправильные ответы: {total - correctCount}</p>
                     </div>
                     <button className="btn" onClick={finishQuiz}>Завершить тест</button>
-                    <button className="btn" onClick={repeatQuiz}>Пройти заново</button>
                 </div>
             </div>
         );
