@@ -2,6 +2,7 @@
     font-size: var(--fs-md);
     text-align: left;
     margin-top: 0;
+    margin-bottom: 4px;
 }
 
 .quiz-results-content h2 {
