@@ -15,7 +15,7 @@ export default function Homework({ user }) {
 
     useEffect(() => {
         if (data?.homework?.length) {
-            const userHomework = data.homework.filter(hw => hw.user_id === userId);
+            const userHomework = data.homework;
             setHomework(userHomework);
         } else {
             setHomework([]);

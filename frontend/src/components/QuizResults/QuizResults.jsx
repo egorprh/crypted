@@ -32,7 +32,7 @@ export default function QuizResults({ user }) {
         }
 
         if (data?.homework) {
-            const userHomework = data.homework.find(hw => hw.quiz_id === Number(quizId) && hw.user_id === userId);
+            const userHomework = data.homework.find(hw => hw.quiz_id === Number(quizId));
 
             if (userHomework) {
                 setQuestions(userHomework?.questions || []);
