@@ -8,7 +8,7 @@ import getConfigValue from "../helpers/getConfigValue.js";
 
 export default function EventPage() {
     const { id } = useParams();
-    const { data, loading, error } = useAppData();
+    const { data, error } = useAppData();
 
     const [event, setEvent] = useState(null);
     const [config, setConfig] = useState([]);
@@ -22,10 +22,6 @@ export default function EventPage() {
             setConfig(data.config || []);
         }
     }, [data, id]);
-
-    if (loading) {
-        return <div className="content">Загрузка...</div>;
-    }
 
     if (error) {
         return <div className="content">Ошибка: {error}</div>;

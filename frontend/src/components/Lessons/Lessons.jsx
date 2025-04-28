@@ -33,10 +33,6 @@ export default function Lessons({ user }) {
         }
     }, [data, loading, courseId]);
 
-    if (loading) {
-        return <div className="loading">Загрузка уроков...</div>;
-    }
-
     if (error) {
         return <div className="error">Ошибка: {error}</div>;
     }

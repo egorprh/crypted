@@ -36,9 +36,6 @@ export default function LessonLayout() {
         }
     }, [location.pathname, currentTab]);
 
-    if (loading) {
-        return <div className="page-container content">Загрузка урока...</div>;
-    }
     if (error) {
         return <div className="page-container content">Ошибка: {error}</div>;
     }

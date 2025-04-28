@@ -1,3 +1,7 @@
+.survey {
+    padding: 5px;
+}
+
 .quiz-block {
     display: flex;
     flex-direction: column;
@@ -14,4 +18,18 @@
 .quiz-input:focus {
     outline: none;
     border: 2px solid var(--logo-bg);
+}
+
+.quiz-question.error h2 {
+    margin-bottom: 0;
+}
+
+.quiz-question h2 {
+    font-size: 18px;
+}
+
+.error-text {
+    color: var(--danger);
+    font-size: var(--fs-xxs);
+    margin: 4px 0 10px;
 }

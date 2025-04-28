@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate, useOutletContext } from 'react-router-dom';
 import DownloadIcon from "../../assets/images/DownloadIcon.jsx";
+import '../Lesson/lesson.css';
 import './lesson-materials.css';
 
 export default function LessonMaterials() {

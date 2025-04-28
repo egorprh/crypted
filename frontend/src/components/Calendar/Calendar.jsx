@@ -20,11 +20,10 @@ export default function Calendar() {
                     data.events.map((event) => (
                         <Link to={`/calendar/event/${event.id}`} key={event.id} className="card event-card">
                             <img
-                                src={event.image}
+                                src={event.image || '/images/default-event.png'}
                                 alt="Event preview"
                                 className="event-image"
                                 onError={handleImageError('/images/default-event.png')}
-                                loading="lazy"
                             />
                             <div className="event-info">
                                 <div>
