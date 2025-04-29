@@ -42,19 +42,20 @@ export default function EventPage() {
                 <div>
                     <h2 className="title">{event.title}</h2>
 
-                    <img
-                        className="event-image"
-                        src={event.image || '/images/default-event.png'}
-                        alt="Event preview"
-                        onError={handleImageError()}
-                    />
+                    {event.image && (
+                        <img
+                            className="event-image"
+                            src={event.image}
+                            alt="Event preview"
+                        />
+                    )}
 
                     <div className="event-details">
                         <div className="d-flex">
                             <p className="event-date badge">{event.date}</p>
                             <p className="event-author">by {event.author}</p>
                         </div>
-                        <p className="event-description">{event.description}</p>
+                        <div className="event-description" dangerouslySetInnerHTML={{ __html: event.description }} />
                     </div>
 
                     <div className="event-note">

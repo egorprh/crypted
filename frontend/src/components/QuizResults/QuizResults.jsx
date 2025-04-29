@@ -14,6 +14,7 @@ export default function QuizResults({ user }) {
     const [questions, setQuestions] = useState([]);
     const [courseId, setCourseId] = useState(null);
     const [lessonId, setLessonId] = useState(null);
+    const [progress, setProgress] = useState(null);
 
     const userId = user?.id ? user.id : 1;
 
@@ -36,6 +37,7 @@ export default function QuizResults({ user }) {
 
             if (userHomework) {
                 setQuestions(userHomework?.questions || []);
+                setProgress(userHomework.progress);
             } else {
                 console.error('Не найдено домашнее задание для этого quizId');
                 navigate("/homework");
@@ -57,6 +59,12 @@ export default function QuizResults({ user }) {
                 <BackIcon/>
                 Назад
             </Link>
+
+            {progress && (
+                <div className="quiz-progress-summary">
+                    <p className="progress-text">Ваш результат: {progress}% правильных ответов!</p>
+                </div>
+            )}
 
             <h1>Ваши ответы</h1>
 

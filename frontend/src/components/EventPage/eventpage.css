@@ -3,7 +3,6 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    max-width: 800px;
     margin: 0 auto;
 }
 
@@ -12,7 +11,7 @@
 }
 
 .event-page h2 {
-    margin-bottom: 5px;
+    margin-bottom: 15px;
 }
 
 .event-page .btn {
@@ -25,13 +24,14 @@
 }
 
 .event-page .event-image {
+    width: 100%;
     height: auto;
     margin-bottom: 20px;
     border-radius: var(--brs-md);
 }
 
 .event-description {
-    margin: 10px 0 20px;
+    margin: 15px 0;
 }
 
 .event-note {
