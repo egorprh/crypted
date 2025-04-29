@@ -35,7 +35,7 @@ export default function App() {
               <Route path="/lessons/enter-survey" element={<EnterSurvey user={user} />} />
               <Route path="/calendar" element={<Calendar />} />
               <Route path="/calendar/event/:id" element={<EventPage />} />
-              <Route path="/homework" element={<Homework user={user} />} />
+              <Route path="/homework" element={<Homework />} />
               <Route path="/homework/results/:quizId" element={<QuizResults user={user} />} />
               <Route path="/faq" element={<Questions />} />
               <Route element={<LessonLayout />}>

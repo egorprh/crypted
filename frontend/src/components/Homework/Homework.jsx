@@ -5,13 +5,11 @@ import NextIcon from "../../assets/images/NextIcon.jsx";
 import './homework.css';
 import { useAppData } from "../../contexts/AppDataContext.jsx";
 
-export default function Homework({ user }) {
+export default function Homework() {
     const navigate = useNavigate();
     const { data } = useAppData();
     const [homework, setHomework] = useState([]);
     const [loading, setLoading] = useState(true);
-
-    const userId = user?.id ? user.id : 1;
 
     useEffect(() => {
         if (data?.homework?.length) {
@@ -21,7 +19,7 @@ export default function Homework({ user }) {
             setHomework([]);
         }
         setLoading(false);
-    }, [data?.homework, userId]);
+    }, [data?.homework]);
 
     const handleTaskClick = (quizId) => {
         navigate(`/homework/results/${quizId}`);
