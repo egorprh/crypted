@@ -3,7 +3,6 @@ import { useParams, Link } from 'react-router-dom';
 import './eventpage.css';
 import BackIcon from '../../assets/images/BackIcon.jsx';
 import { useAppData } from '../../contexts/AppDataContext.jsx';
-import handleImageError from "../helpers/handleImageError.js";
 import getConfigValue from "../helpers/getConfigValue.js";
 
 export default function EventPage() {

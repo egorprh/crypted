@@ -42,6 +42,7 @@ CREATE TABLE IF NOT EXISTS lessons (
     video_url VARCHAR(255),
     course_id BIGINT REFERENCES courses(id) ON DELETE CASCADE,
     image VARCHAR(255),
+    visible BOOLEAN DEFAULT TRUE,
     time_modified TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     time_created TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
@@ -52,6 +53,7 @@ CREATE TABLE IF NOT EXISTS materials (
     title VARCHAR(255),
     description VARCHAR(255),
     url VARCHAR(255),
+    visible BOOLEAN DEFAULT TRUE,
     lesson_id BIGINT REFERENCES lessons(id) ON DELETE CASCADE,
     time_modified TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     time_created TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
@@ -62,6 +64,7 @@ CREATE TABLE IF NOT EXISTS quizzes (
     id BIGSERIAL PRIMARY KEY,
     title VARCHAR(255),
     description TEXT,
+    visible BOOLEAN DEFAULT TRUE,
     lesson_id BIGINT REFERENCES lessons(id) ON DELETE CASCADE,
     time_modified TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     time_created TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
@@ -120,6 +123,7 @@ CREATE TABLE IF NOT EXISTS answers (
 CREATE TABLE IF NOT EXISTS user_answers (
     id BIGSERIAL PRIMARY KEY,
     user_id BIGINT REFERENCES users(id) ON DELETE CASCADE,
+    attempt_id BIGINT,
     answer_id BIGINT DEFAULT 0,
     text TEXT,
     type TEXT, -- quiz or survey
@@ -128,8 +132,8 @@ CREATE TABLE IF NOT EXISTS user_answers (
     time_created TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
--- Создание таблицы user_progress
-CREATE TABLE IF NOT EXISTS user_progress (
+-- Создание таблицы quiz_attempts
+CREATE TABLE IF NOT EXISTS quiz_attempts (
     id BIGSERIAL PRIMARY KEY,
     user_id BIGINT,
     quiz_id BIGINT REFERENCES quizzes(id) ON DELETE CASCADE,
@@ -146,6 +150,7 @@ CREATE TABLE IF NOT EXISTS events (
     author VARCHAR(255),
     image VARCHAR(255),
     date VARCHAR(255),
+    visible BOOLEAN DEFAULT FALSE,
     time_modified TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     time_created TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
@@ -155,6 +160,7 @@ CREATE TABLE IF NOT EXISTS faq (
     id BIGSERIAL PRIMARY KEY,
     question TEXT,
     answer TEXT,
+    visible BOOLEAN DEFAULT TRUE,
     time_modified TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     time_created TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
@@ -182,8 +188,8 @@ INSERT INTO faq (question, answer) VALUES
 
 -- Вставка 5 событий в таблицу events
 INSERT INTO events (title, description, author, image, date) VALUES
-('Вебинар: Основы трейдинга', 'На этом вебинаре мы расскажем о базовых принципах трейдинга и ответим на ваши вопросы.', 'Александр Трейдер', 'https://example.com/images/webinar_1.jpg', '2023-12-15'),
-('Мастер-класс: Анализ графиков', 'Узнайте, как правильно анализировать графики и находить точки входа.', 'Мария Аналитик', 'https://example.com/images/masterclass_1.jpg', '2023-12-20'),
+('Вебинар: Основы трейдинга', 'На этом вебинаре мы расскажем о базовых принципах трейдинга и ответим на ваши вопросы.', 'Александр Трейдер', '/images/event1.jpg', '2023-12-15'),
+('Мастер-класс: Анализ графиков', 'Узнайте, как правильно анализировать графики и находить точки входа.', 'Мария Аналитик', 'https://xakep.ru/wp-content/uploads/2019/08/234890/crypto-h.jpg', '2023-12-20'),
 ('Конкурс: Лучший трейдер месяца', 'Примите участие в конкурсе и получите призы за лучшие результаты торговли.', 'Команда D-Product', 'https://example.com/images/contest_1.jpg', '2023-12-25'),
 ('Трансляция: Реальные сделки', 'Смотрите прямую трансляцию реальных сделок и учите стратегии профессионалов.', 'Иван Профессионал', 'https://example.com/images/live_trading.jpg', '2023-12-30'),
 ('Открытая встреча: Стратегии успеха', 'Обсудим стратегии успешного трейдинга и поделимся опытом.', 'Анна Ментор', 'https://example.com/images/meeting_1.jpg', '2024-01-05');

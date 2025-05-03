@@ -1,6 +1,9 @@
 import asyncio
 import traceback
 from fastapi import FastAPI, HTTPException, Request
+from fastapi.exception_handlers import http_exception_handler
+from fastapi.responses import RedirectResponse
+from starlette.exceptions import HTTPException as StarletteHTTPException
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from contextlib import asynccontextmanager
@@ -149,8 +152,8 @@ async def submit_enter_survey(request: Request):
 
 
 # сохранение ответов пользователя на тест к уроку
-@app.post("/api/save_progress")
-async def save_progress(request: Request):
+@app.post("/api/save_attempt")
+async def save_attempt(request: Request):
     """
     Сохраняет прогресс пользователя в таблицу UserProgress.
     """
@@ -167,12 +170,13 @@ async def save_progress(request: Request):
             "quiz_id": request["quizId"],
             "progress": request["progress"],
         }
-        record_id = await db.insert_record('user_progress', params)
+        record_id = await db.insert_record('quiz_attempts', params)
 
         # Записывем ответы пользователей
         for request_answer in request["answers"]:
             params = {
                 "user_id": user["id"],
+                "attempt_id": record_id,
                 "instance_qid": request_answer["questionId"],
                 "type": 'quiz',
                 "answer_id": request_answer["answerId"],
@@ -201,12 +205,13 @@ async def save_progress(request: Request):
 async def get_app_data(user_id: int):
     user = await db.get_record("users", {"telegram_id": user_id})
 
+    # TODO Добавить сортирвки и визибл
     courses = await db.get_records("courses", {"visible": True})
     for course in courses:
         lessons = await db.get_records("lessons", {"course_id": course["id"]})
         for lesson in lessons:
-            lesson["materials"] = await db.get_records("materials", {"lesson_id": lesson["id"]})
-            lesson["quizzes"] = await db.get_records("quizzes", {"lesson_id": lesson["id"]})
+            lesson["materials"] = await db.get_records("materials", {"lesson_id": lesson["id"], "visible": True})
+            lesson["quizzes"] = await db.get_records("quizzes", {"lesson_id": lesson["id"], "visible": True})
             for quiz in lesson["quizzes"]:
                 quiz["questions"] = await db.get_records_sql(
                     f"""SELECT q.* FROM quiz_questions qq
@@ -217,9 +222,9 @@ async def get_app_data(user_id: int):
 
         course["lessons"] = lessons
 
-    events = await db.get_records("events")
+    events = await db.get_records_sql("SELECT * FROM events WHERE visible = $1 ORDER BY date DESC ", True)
 
-    faq = await db.get_records("faq")
+    faq = await db.get_records_sql("SELECT * FROM faq WHERE visible = $1 ORDER BY id", True)
 
     config = await db.get_records("config")
 
@@ -231,13 +236,13 @@ async def get_app_data(user_id: int):
             up.progress, 
             c.title AS course_title, 
             l.title AS lesson_title
-        FROM user_progress up
+        FROM quiz_attempts up
         LEFT JOIN quizzes q ON up.quiz_id = q.id
         LEFT JOIN lessons l ON q.lesson_id = l.id
         LEFT JOIN courses c ON l.course_id = c.id
         WHERE up.id IN (
             SELECT MAX(up_inner.id)
-            FROM user_progress up_inner
+            FROM quiz_attempts up_inner
             WHERE up_inner.user_id = {user["id"]}
             GROUP BY up_inner.quiz_id
         )
@@ -255,9 +260,9 @@ async def get_app_data(user_id: int):
                 # Берем последний ответ пользователя на вопрос
                 user_answer = await db.get_records_sql("""
                     SELECT * FROM user_answers 
-                    WHERE type = 'quiz' AND user_id = $1 AND instance_qid = $2 AND answer_id = $3
+                    WHERE type = 'quiz' AND user_id = $1 AND instance_qid = $2 AND answer_id = $3 AND attempt_id = $4
                     ORDER BY id DESC LIMIT 1""",
-                    user["id"], question["qid"], answer["id"])
+                    user["id"], question["qid"], answer["id"], homework["id"])
 
                 answer["user_answer"] = len(user_answer) != 0
 
@@ -271,8 +276,8 @@ async def get_app_data(user_id: int):
     }
 
     # Если пользователь не прошел входное тестирование, добавляем его
-    if await db.get_record("user_actions_log", {"user_id": user["id"], "action": "enter_survey"}) is None:
-        enter_survey = await db.get_records_sql(f"""SELECT * FROM surveys WHERE visible = $1 LIMIT 1""", True)
+    enter_survey = await db.get_records_sql(f"""SELECT * FROM surveys WHERE visible = $1 LIMIT 1""", True)
+    if len(enter_survey) > 0 and await db.get_record("user_actions_log", {"user_id": user["id"], "action": "enter_survey"}) is None:
         enter_survey = enter_survey[0]
         enter_survey["questions"] = await db.get_records_sql(
                         """SELECT sq.id, q.text, q.type FROM survey_questions sq
@@ -292,6 +297,15 @@ async def get_app_data(user_id: int):
         json.dump(data, f, ensure_ascii=False, indent=4)
 
     return data
+
+# Обработчик для несуществующих маршрутов
+@app.exception_handler(StarletteHTTPException)
+async def custom_404_handler(request: Request, exc: StarletteHTTPException):
+    if exc.status_code == 404:
+        # Выполняем редирект на главную страницу или другую страницу
+        return RedirectResponse(url="/")
+    # Если статус-код не 404, возвращаем стандартный ответ
+    return await http_exception_handler(request, exc)
 
 
 

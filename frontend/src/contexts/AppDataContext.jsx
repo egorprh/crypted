@@ -63,21 +63,6 @@ export const AppDataProvider = ({ children }) => {
                 setLoading(false);
             })
             .finally(() => setAppReady(true));
-
-        // fetch("/content/app_data.json")
-        //     .then(res => {
-        //         if (!res.ok) throw new Error("Ошибка загрузки данных");
-        //         return res.json();
-        //     })
-        //     .then(data => {
-        //         setData(data);
-        //         setLoading(false);
-        //     })
-        //     .catch(error => {
-        //         setError(error.message);
-        //         setLoading(false);
-        //     })
-        //     .finally(() => setAppReady(true));
     }, []);
 
     return (

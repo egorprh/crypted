@@ -70,7 +70,7 @@ export default function LessonQuizTest({ user }) {
         const progress = Math.round((correctCount / total) * 100);
         const userId = user?.id ? user.id : 0;
 
-        fetch('/api/save_progress', {
+        fetch('/api/save_attempt', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -99,6 +99,7 @@ export default function LessonQuizTest({ user }) {
             })
             .catch(error => {
                 setShowSaveError(true);
+                console.error('Ошибка сохранения попытки:', error);
                 setTimeout(() => {
                     setShowSaveError(false);
                     navigate(`/lessons/${courseId}`);
