@@ -1,4 +1,5 @@
 import asyncio
+import traceback
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
@@ -24,9 +25,32 @@ db = PGApi()
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # app startup
-    await db.create()
-    yield
+    max_retries = 3  # Максимальное количество попыток подключения
+    retry_delay = 2  # Задержка между попытками (в секундах)
+    
+    attempt = 0
+    while attempt < max_retries:
+        try:
+            await db.create()  # Попытка подключения к базе данных
+            print("Приложение запущено")
+            break  # Если подключение успешно, выходим из цикла
+        except Exception as e:
+            attempt += 1
+            if attempt == max_retries:
+                print(f"Не удалось подключиться к базе данных после {max_retries} попыток. Ошибка: {e}")
+                raise  # Выбрасываем исключение, чтобы завершить работу приложения
+            print(f"Попытка {attempt} не удалась. Повторная попытка через {retry_delay} секунд...")
+            await asyncio.sleep(retry_delay)  # Ждем перед следующей попыткой
+    
+    yield  # Основной код приложения выполняется здесь
+    print("Приложение завершено")
+    
     # app teardown
+    try:
+        await db.close()  # Закрытие соединения с базой данных
+    except Exception as e:
+        print(f"Ошибка при закрытии соединения с базой данных: {e}")
+
 
 
 #https://habr.com/ru/articles/799337/
@@ -116,7 +140,7 @@ async def submit_enter_survey(request: Request):
                 "instance_qid": request_answer["questionId"],
                 "type": 'survey',
                 "answer_id": request_answer["answerId"],
-                "text": request_answer["answer"],
+                "text": request_answer["text"],
         }
         # Вызов метода insert_record
         await db.insert_record('user_answers', params)
@@ -124,7 +148,7 @@ async def submit_enter_survey(request: Request):
     return {"status": "success", "message": "Survey entered event triggered."}
 
 
-# сохранение ответов пользователя на тест
+# сохранение ответов пользователя на тест к уроку
 @app.post("/api/save_progress")
 async def save_progress(request: Request):
     """
@@ -152,7 +176,7 @@ async def save_progress(request: Request):
                 "instance_qid": request_answer["questionId"],
                 "type": 'quiz',
                 "answer_id": request_answer["answerId"],
-                "text": request_answer["answer"],
+                # "text": request_answer["answer"],
             }
             # Вызов метода insert_record
             await db.insert_record('user_answers', params)
@@ -167,6 +191,7 @@ async def save_progress(request: Request):
     except Exception as e:
         # Логируем ошибку (можно использовать logging)
         print(f"Error saving progress: {e}")
+        traceback.print_exc()  # Вывод полной трассировки ошибки
 
         # Возвращаем ошибку
         raise HTTPException(status_code=500, detail="Failed to save progress")
@@ -199,30 +224,42 @@ async def get_app_data(user_id: int):
     config = await db.get_records("config")
 
     homeworks_sql = f"""
-        SELECT up.id, up.quiz_id, up.user_id, up.progress, c.title AS course_title, l.title AS lesson_title FROM user_progress up 
-        LEFT JOIN quizzes q ON up.quiz_id = q.id 
-        LEFT JOIN lessons l ON q.lesson_id = l.id 
-        LEFT JOIN courses c ON l.course_id = c.id 
-        LEFT JOIN users u ON up.user_id = u.id 
-        WHERE up.user_id = {user["id"]} ORDER BY up.id DESC
+        SELECT 
+            up.id, 
+            up.quiz_id, 
+            up.user_id, 
+            up.progress, 
+            c.title AS course_title, 
+            l.title AS lesson_title
+        FROM user_progress up
+        LEFT JOIN quizzes q ON up.quiz_id = q.id
+        LEFT JOIN lessons l ON q.lesson_id = l.id
+        LEFT JOIN courses c ON l.course_id = c.id
+        WHERE up.id IN (
+            SELECT MAX(up_inner.id)
+            FROM user_progress up_inner
+            WHERE up_inner.user_id = {user["id"]}
+            GROUP BY up_inner.quiz_id
+        )
+        AND up.user_id = {user["id"]};
     """
     homeworks = await db.get_records_sql(homeworks_sql)
     for homework in homeworks:
-        homework["questions"] = await db.get_records_sql(
-                    """SELECT qq.id, q.id AS qid, q.text, q.type FROM quiz_questions qq
+        homework["questions"] = await db.get_records_sql("""
+                    SELECT qq.id, q.id AS qid, q.text, q.type FROM quiz_questions qq
                     JOIN questions q ON qq.question_id = q.id
                     AND qq.quiz_id = $1 AND q.visible = $2""", homework["quiz_id"], True)
         for question in homework["questions"]:
             question["answers"] = await db.get_records("answers", {"question_id": question["qid"]})
             for answer in question["answers"]:
                 # Берем последний ответ пользователя на вопрос
-                user_answer = await db.get_record("""
+                user_answer = await db.get_records_sql("""
                     SELECT * FROM user_answers 
                     WHERE type = 'quiz' AND user_id = $1 AND instance_qid = $2 AND answer_id = $3
-                    ORDER BY time_created DESC LIMIT 1""",
-                    question["qid"], user["id"], answer["id"])
-                user_answer = user_answer[0]
-                answer["user_answer"] = user_answer["answer"] if True else False
+                    ORDER BY id DESC LIMIT 1""",
+                    user["id"], question["qid"], answer["id"])
+
+                answer["user_answer"] = len(user_answer) != 0
 
     # Формируем данные для возврата
     data = {
@@ -234,7 +271,7 @@ async def get_app_data(user_id: int):
     }
 
     # Если пользователь не прошел входное тестирование, добавляем его
-    if await db.get_record("user_actions_log", {"userid": user["id"], "action": "enter_survey"}) is None:
+    if await db.get_record("user_actions_log", {"user_id": user["id"], "action": "enter_survey"}) is None:
         enter_survey = await db.get_records_sql(f"""SELECT * FROM surveys WHERE visible = $1 LIMIT 1""", True)
         enter_survey = enter_survey[0]
         enter_survey["questions"] = await db.get_records_sql(

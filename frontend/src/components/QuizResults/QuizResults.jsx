@@ -16,7 +16,7 @@ export default function QuizResults({ user }) {
     const [lessonId, setLessonId] = useState(null);
     const [progress, setProgress] = useState(null);
 
-    const userId = user?.id ? user.id : 1;
+    const userId = user?.id ? user.id : 0;
 
     useEffect(() => {
         if (data?.courses) {
@@ -60,11 +60,9 @@ export default function QuizResults({ user }) {
                 Назад
             </Link>
 
-            {progress && (
-                <div className="quiz-progress-summary">
+            <div className="quiz-progress-summary">
                     <p className="progress-text">Ваш результат: {progress}% правильных ответов!</p>
-                </div>
-            )}
+            </div>
 
             <h1>Ваши ответы</h1>
 
@@ -77,7 +75,7 @@ export default function QuizResults({ user }) {
                             <div className="quiz-answers">
                                 {question.answers.map(answer => {
                                     const isCorrect = answer.correct;
-                                    const isChosen = answer.user_choice;
+                                    const isChosen = answer.user_answer;
 
                                     let highlight = '';
                                     if (isCorrect) highlight = 'correct';

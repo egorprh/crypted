@@ -4,3 +4,8 @@ sqlalchemy
 asyncpg
 environs
 pyTelegramBotAPI
+
+# Уточнить реквайры
+# Телеграм бот
+# Логирование норм
+# ДДОС атака

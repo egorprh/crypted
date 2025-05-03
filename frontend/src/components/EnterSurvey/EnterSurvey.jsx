@@ -19,7 +19,7 @@ export default function EnterSurvey({ user }) {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState(false);
 
-    const userId = user?.id || 1;
+    const userId = user?.id || 0;
     const surveyId = data?.enter_survey?.id;
 
     const handleAnswerChange = (question, value) => {
@@ -70,7 +70,7 @@ export default function EnterSurvey({ user }) {
             const userAnswer = answers[question.id];
 
             if (question.type === 'quiz') {
-                const selectedOption = question.options.find(option => option.id === userAnswer);
+                const selectedOption = question.answers.find(option => option.id === userAnswer);
                 if (selectedOption) {
                     acc.push({
                         questionId: question.id,
@@ -131,12 +131,12 @@ export default function EnterSurvey({ user }) {
 
                 {data?.enter_survey?.questions.map((question) => (
                     <div key={question.id} className={`quiz-question ${errors[question.id] ? 'error' : ''}`}>
-                        <h2>{question.id}. {question.question}</h2>
+                        <h2>{question.id}. {question.text}</h2>
                         {errors[question.id] && (
                             <div className="error-text">{errors[question.id]}</div>
                         )}
                         <div className="quiz-answers">
-                            {question.type === 'quiz' && question.options.map((option) => (
+                            {question.type === 'quiz' && question.answers.map((option) => (
                                 <label className="quiz-answer" key={option.id}>
                                     <input
                                         type="radio"

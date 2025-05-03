@@ -68,7 +68,7 @@ export default function LessonQuizTest({ user }) {
     const finishQuiz = () => {
         const total = quiz.questions.length;
         const progress = Math.round((correctCount / total) * 100);
-        const userId = user?.id ? user.id : 1;
+        const userId = user?.id ? user.id : 0;
 
         fetch('/api/save_progress', {
             method: 'POST',
@@ -84,7 +84,7 @@ export default function LessonQuizTest({ user }) {
                 if (!res.ok) {
                     throw new Error('Ошибка сети');
                 }
-                return fetch("/content/app_data.json");
+                return fetch(`/api/get_app_data?user_id=${userId}`);
             })
             .then(appDataRes => {
                 if (!appDataRes.ok) {
@@ -102,7 +102,7 @@ export default function LessonQuizTest({ user }) {
                 setTimeout(() => {
                     setShowSaveError(false);
                     navigate(`/lessons/${courseId}`);
-                }, 1000);
+                }, 2000);
             });
     };
 

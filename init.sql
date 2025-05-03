@@ -119,8 +119,8 @@ CREATE TABLE IF NOT EXISTS answers (
 -- Создание таблицы user_answers
 CREATE TABLE IF NOT EXISTS user_answers (
     id BIGSERIAL PRIMARY KEY,
-    user_id BIGINT REFERENCES user(id) ON DELETE CASCADE
-    answer_id BIGINT REFERENCES answers(id) ON DELETE CASCADE,
+    user_id BIGINT REFERENCES users(id) ON DELETE CASCADE,
+    answer_id BIGINT DEFAULT 0,
     text TEXT,
     type TEXT, -- quiz or survey
     instance_qid BIGINT, -- id из quiz_questions или survey_questions
@@ -191,6 +191,10 @@ INSERT INTO events (title, description, author, image, date) VALUES
 -- 1. Добавляем курс
 INSERT INTO courses (title, description, oldprice, newprice, image, visible, type) VALUES
 ('Старт в торговле криптовалютой', 'Курс для новичков, желающих освоить основы торговли криптовалютами.', '300$', 'Бесплатно', 'course_image.jpg', TRUE, 'main');
+
+-- 1. Добавляем дефолтного юзера
+INSERT INTO users (telegram_id, username, first_name, last_name) VALUES
+(0, 'guest', 'Гость', '');
 
 -- Добавляем таблицу опросов
 INSERT INTO surveys (title, description) VALUES

@@ -40,7 +40,7 @@ export default function Homework() {
                                 className="card hw-card"
                                 onClick={() => handleTaskClick(hw.quiz_id)}
                             >
-                                <div className="card-title">{hw.title}</div>
+                                <div className="card-title">{hw.lesson_title}</div>
                                 <div className="hw-icon">
                                     <p className="hw-descr">
                                         Результаты теста: {hw.progress}%

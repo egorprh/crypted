@@ -12,7 +12,7 @@ export default function Home({ user }) {
     const { surveyPassed } = useSurvey();
     const [showAlert, setShowAlert] = useState(false);
 
-    const userId = user?.id || 1;
+    const userId = user?.id || 0;
 
     const handleCourseClick = (courseId) => {
         if (data?.enter_survey && !surveyPassed) {

@@ -25,7 +25,7 @@ export const AppDataProvider = ({ children }) => {
                 last_name: 'luckyman',
             };
             setUser({
-                id: 1,
+                id: 0,
                 username: 'luckyman',
                 photo_url: '/images/user.png',
             });
@@ -38,16 +38,18 @@ export const AppDataProvider = ({ children }) => {
                 first_name: u.first_name,
                 last_name: u.last_name,
             };
+
+            fetch('/api/save_user', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(userData),
+            }).catch(err => console.error("Ошибка записи пользователя:", err));
         }
 
-        const userId = user?.id ? user.id : 1;
+        const userId = user?.id ? user.id : 0;
 
+        // TODO Кнопка рефреша данных
         fetch(`/api/get_app_data?user_id=${userId}`)
-            .then(res => res.json())
-            .then(data => console.log(data))
-            .catch(err => console.error(err));
-
-        fetch("/content/app_data.json")
             .then(res => {
                 if (!res.ok) throw new Error("Ошибка загрузки данных");
                 return res.json();
@@ -61,6 +63,21 @@ export const AppDataProvider = ({ children }) => {
                 setLoading(false);
             })
             .finally(() => setAppReady(true));
+
+        // fetch("/content/app_data.json")
+        //     .then(res => {
+        //         if (!res.ok) throw new Error("Ошибка загрузки данных");
+        //         return res.json();
+        //     })
+        //     .then(data => {
+        //         setData(data);
+        //         setLoading(false);
+        //     })
+        //     .catch(error => {
+        //         setError(error.message);
+        //         setLoading(false);
+        //     })
+        //     .finally(() => setAppReady(true));
     }, []);
 
     return (

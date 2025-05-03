@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Suspense, lazy } from 'react';
+import React, {Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useAppData } from './contexts/AppDataContext.jsx';
 import Preloader from './components/ui/Preloader/Preloader.jsx';
