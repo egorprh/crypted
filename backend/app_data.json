@@ -17,12 +17,14 @@
                     "video_url": "https://kinescope.io/embed/ommU9afW4HccMLEvKsFfbE",
                     "course_id": 1,
                     "image": "lesson1.jpg",
+                    "visible": true,
                     "materials": [
                         {
                             "id": 1,
                             "title": "Материал к уроку 1",
                             "description": "description",
                             "url": "https://example.com/material1",
+                            "visible": true,
                             "lesson_id": 1
                         }
                     ],
@@ -31,6 +33,7 @@
                             "id": 1,
                             "title": "Что ты знаешь о криптовалютах?",
                             "description": "Тест для проверки знаний по теме",
+                            "visible": true,
                             "lesson_id": 1,
                             "questions": [
                                 {
@@ -364,12 +367,14 @@
                     "video_url": "https://rutube.ru/play/embed/918aa9a7b659832a9a504f7046099444/",
                     "course_id": 1,
                     "image": "lesson2.jpg",
+                    "visible": true,
                     "materials": [
                         {
                             "id": 2,
                             "title": "Материал к уроку 2",
                             "description": "Понимание ключевых показателей трейдинга.",
                             "url": "https://example.com/material2",
+                            "visible": true,
                             "lesson_id": 2
                         }
                     ],
@@ -378,6 +383,7 @@
                             "id": 2,
                             "title": "Как выбрать криптобиржу?",
                             "description": "Тест для проверки знаний по теме",
+                            "visible": true,
                             "lesson_id": 2,
                             "questions": [
                                 {
@@ -551,12 +557,14 @@
                     "video_url": "https://vkvideo.ru/video_ext.php?oid=-223280655&id=456240038&hd=2",
                     "course_id": 1,
                     "image": "lesson3.jpg",
+                    "visible": true,
                     "materials": [
                         {
                             "id": 3,
                             "title": "Материал к уроку 3",
                             "description": "",
                             "url": "https://example.com/material3",
+                            "visible": true,
                             "lesson_id": 3
                         },
                         {
@@ -564,6 +572,7 @@
                             "title": "Материал к уроку 3_2",
                             "description": "",
                             "url": "/content/app_data.json",
+                            "visible": true,
                             "lesson_id": 3
                         }
                     ],
@@ -572,6 +581,7 @@
                             "id": 3,
                             "title": "Насколько хорошо ты знаешь TradingView?",
                             "description": "Тест для проверки знаний по теме",
+                            "visible": true,
                             "lesson_id": 3,
                             "questions": [
                                 {
@@ -745,12 +755,14 @@
                     "video_url": "https://www.youtube.com/embed/DLGjMJyOaXQ?si=P-i8Q1IgsmcCRwoo",
                     "course_id": 1,
                     "image": "lesson4.jpg",
+                    "visible": true,
                     "materials": [
                         {
                             "id": 5,
                             "title": "Материал к уроку 4",
                             "description": "",
                             "url": "https://example.com/material4",
+                            "visible": true,
                             "lesson_id": 4
                         }
                     ],
@@ -759,6 +771,7 @@
                             "id": 4,
                             "title": "Какой стиль трейдинга тебе подходит?",
                             "description": "Тест для проверки знаний по теме",
+                            "visible": true,
                             "lesson_id": 4,
                             "questions": [
                                 {
@@ -1086,18 +1099,370 @@
                     ]
                 },
                 {
+                    "id": 5,
+                    "title": "Урок 5: WinRate и RR",
+                    "description": "Понимание ключевых показателей трейдинга.",
+                    "video_url": "https://example.com/video5",
+                    "course_id": 1,
+                    "image": "lesson5.jpg",
+                    "visible": true,
+                    "materials": [
+                        {
+                            "id": 6,
+                            "title": "Материал к уроку 5",
+                            "description": "",
+                            "url": "https://example.com/material5",
+                            "visible": true,
+                            "lesson_id": 5
+                        }
+                    ],
+                    "quizzes": [
+                        {
+                            "id": 5,
+                            "title": "Понимаешь ли ты WinRate и RR?",
+                            "description": "Тест для проверки знаний по теме",
+                            "visible": true,
+                            "lesson_id": 5,
+                            "questions": [
+                                {
+                                    "id": 39,
+                                    "text": "Что показывает показатель WinRate?",
+                                    "type": "quiz",
+                                    "visible": true,
+                                    "answers": [
+                                        {
+                                            "id": 143,
+                                            "text": "Среднюю прибыль на сделку",
+                                            "correct": false,
+                                            "question_id": 39
+                                        },
+                                        {
+                                            "id": 144,
+                                            "text": "Количество убыточных сделок",
+                                            "correct": false,
+                                            "question_id": 39
+                                        },
+                                        {
+                                            "id": 145,
+                                            "text": "Процент прибыльных сделок от общего количества",
+                                            "correct": true,
+                                            "question_id": 39
+                                        },
+                                        {
+                                            "id": 146,
+                                            "text": "Общее число открытых позиций",
+                                            "correct": false,
+                                            "question_id": 39
+                                        }
+                                    ]
+                                },
+                                {
+                                    "id": 40,
+                                    "text": "Если трейдер совершил 100 сделок, и 60 из них прибыльные, какой у него WinRate?",
+                                    "type": "quiz",
+                                    "visible": true,
+                                    "answers": [
+                                        {
+                                            "id": 147,
+                                            "text": "60%",
+                                            "correct": true,
+                                            "question_id": 40
+                                        },
+                                        {
+                                            "id": 148,
+                                            "text": "40%",
+                                            "correct": false,
+                                            "question_id": 40
+                                        },
+                                        {
+                                            "id": 149,
+                                            "text": "6%",
+                                            "correct": false,
+                                            "question_id": 40
+                                        },
+                                        {
+                                            "id": 150,
+                                            "text": "160%",
+                                            "correct": false,
+                                            "question_id": 40
+                                        }
+                                    ]
+                                },
+                                {
+                                    "id": 41,
+                                    "text": "Какой уровень WinRate считается сбалансированным и подходящим для большинства стратегий?",
+                                    "type": "quiz",
+                                    "visible": true,
+                                    "answers": [
+                                        {
+                                            "id": 151,
+                                            "text": "Менее 30%",
+                                            "correct": false,
+                                            "question_id": 41
+                                        },
+                                        {
+                                            "id": 152,
+                                            "text": "50–70%",
+                                            "correct": true,
+                                            "question_id": 41
+                                        },
+                                        {
+                                            "id": 153,
+                                            "text": "Ровно 100%",
+                                            "correct": false,
+                                            "question_id": 41
+                                        },
+                                        {
+                                            "id": 154,
+                                            "text": "Только выше 80%",
+                                            "correct": false,
+                                            "question_id": 41
+                                        }
+                                    ]
+                                },
+                                {
+                                    "id": 42,
+                                    "text": "Что такое RR в трейдинге?",
+                                    "type": "quiz",
+                                    "visible": true,
+                                    "answers": [
+                                        {
+                                            "id": 155,
+                                            "text": "Рейтинг риска",
+                                            "correct": false,
+                                            "question_id": 42
+                                        },
+                                        {
+                                            "id": 156,
+                                            "text": "Доходность по годам",
+                                            "correct": false,
+                                            "question_id": 42
+                                        },
+                                        {
+                                            "id": 157,
+                                            "text": "Соотношение потенциальной прибыли к риску на сделку",
+                                            "correct": true,
+                                            "question_id": 42
+                                        },
+                                        {
+                                            "id": 158,
+                                            "text": "Количество успешных стратегий",
+                                            "correct": false,
+                                            "question_id": 42
+                                        }
+                                    ]
+                                },
+                                {
+                                    "id": 43,
+                                    "text": "Если трейдер рискует $100, чтобы заработать $300, какой у него RR?",
+                                    "type": "quiz",
+                                    "visible": true,
+                                    "answers": [
+                                        {
+                                            "id": 159,
+                                            "text": "3:1",
+                                            "correct": false,
+                                            "question_id": 43
+                                        },
+                                        {
+                                            "id": 160,
+                                            "text": "1:3",
+                                            "correct": true,
+                                            "question_id": 43
+                                        },
+                                        {
+                                            "id": 161,
+                                            "text": "1:1",
+                                            "correct": false,
+                                            "question_id": 43
+                                        },
+                                        {
+                                            "id": 162,
+                                            "text": "0.33",
+                                            "correct": false,
+                                            "question_id": 43
+                                        }
+                                    ]
+                                },
+                                {
+                                    "id": 44,
+                                    "text": "При каком RR можно быть прибыльным даже с WinRate 30%?",
+                                    "type": "quiz",
+                                    "visible": true,
+                                    "answers": [
+                                        {
+                                            "id": 163,
+                                            "text": "1:1",
+                                            "correct": false,
+                                            "question_id": 44
+                                        },
+                                        {
+                                            "id": 164,
+                                            "text": "1:2",
+                                            "correct": false,
+                                            "question_id": 44
+                                        },
+                                        {
+                                            "id": 165,
+                                            "text": "1:3",
+                                            "correct": true,
+                                            "question_id": 44
+                                        },
+                                        {
+                                            "id": 166,
+                                            "text": "0.5:1",
+                                            "correct": false,
+                                            "question_id": 44
+                                        }
+                                    ]
+                                },
+                                {
+                                    "id": 45,
+                                    "text": "Что произойдет, если у трейдера высокий WinRate, но низкий RR (например, 1:1)?",
+                                    "type": "quiz",
+                                    "visible": true,
+                                    "answers": [
+                                        {
+                                            "id": 167,
+                                            "text": "Он точно будет в минусе",
+                                            "correct": false,
+                                            "question_id": 45
+                                        },
+                                        {
+                                            "id": 168,
+                                            "text": "Он может быть в плюсе, но его прибыльность будет ограничена",
+                                            "correct": true,
+                                            "question_id": 45
+                                        },
+                                        {
+                                            "id": 169,
+                                            "text": "Он всегда будет зарабатывать больше, чем с RR 1:3",
+                                            "correct": false,
+                                            "question_id": 45
+                                        },
+                                        {
+                                            "id": 170,
+                                            "text": "Он потеряет депозит быстрее",
+                                            "correct": false,
+                                            "question_id": 45
+                                        }
+                                    ]
+                                },
+                                {
+                                    "id": 46,
+                                    "text": "Какой подход позволяет трейдеру зарабатывать даже при низком проценте прибыльных сделок?",
+                                    "type": "quiz",
+                                    "visible": true,
+                                    "answers": [
+                                        {
+                                            "id": 171,
+                                            "text": "Частые входы в рынок без стоп-лосса",
+                                            "correct": false,
+                                            "question_id": 46
+                                        },
+                                        {
+                                            "id": 172,
+                                            "text": "Удвоение лота после каждой убыточной сделки",
+                                            "correct": false,
+                                            "question_id": 46
+                                        },
+                                        {
+                                            "id": 173,
+                                            "text": "Использование высокого RR (например, 1:4 и выше)",
+                                            "correct": true,
+                                            "question_id": 46
+                                        },
+                                        {
+                                            "id": 174,
+                                            "text": "Торговля исключительно по новостям",
+                                            "correct": false,
+                                            "question_id": 46
+                                        }
+                                    ]
+                                },
+                                {
+                                    "id": 47,
+                                    "text": "Почему не стоит оценивать стратегию только по WinRate?",
+                                    "type": "quiz",
+                                    "visible": true,
+                                    "answers": [
+                                        {
+                                            "id": 175,
+                                            "text": "Потому что этот показатель влияет только на комиссии",
+                                            "correct": false,
+                                            "question_id": 47
+                                        },
+                                        {
+                                            "id": 176,
+                                            "text": "Потому что WinRate зависит от брокера",
+                                            "correct": false,
+                                            "question_id": 47
+                                        },
+                                        {
+                                            "id": 177,
+                                            "text": "Потому что он не показывает, сколько зарабатывается по каждой сделке",
+                                            "correct": true,
+                                            "question_id": 47
+                                        },
+                                        {
+                                            "id": 178,
+                                            "text": "Потому что он применяется только к форексу",
+                                            "correct": false,
+                                            "question_id": 47
+                                        }
+                                    ]
+                                },
+                                {
+                                    "id": 48,
+                                    "text": "Что из ниже перечисленного наиболее важно для стабильной прибыльности?",
+                                    "type": "quiz",
+                                    "visible": true,
+                                    "answers": [
+                                        {
+                                            "id": 179,
+                                            "text": "Частота торговли",
+                                            "correct": false,
+                                            "question_id": 48
+                                        },
+                                        {
+                                            "id": 180,
+                                            "text": "Высокий леверидж",
+                                            "correct": false,
+                                            "question_id": 48
+                                        },
+                                        {
+                                            "id": 181,
+                                            "text": "Баланс между WinRate и RR + соблюдение риск-менеджмента",
+                                            "correct": true,
+                                            "question_id": 48
+                                        },
+                                        {
+                                            "id": 182,
+                                            "text": "Количество подписчиков в Telegram",
+                                            "correct": false,
+                                            "question_id": 48
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
                     "id": 6,
                     "title": "Урок 6: Риск-менеджмент",
                     "description": "Основы управления рисками.",
                     "video_url": "https://example.com/video6",
                     "course_id": 1,
                     "image": "lesson6.jpg",
+                    "visible": true,
                     "materials": [
                         {
                             "id": 7,
                             "title": "Материал к уроку 6",
                             "description": "",
                             "url": "https://example.com/material6",
+                            "visible": true,
                             "lesson_id": 6
                         }
                     ],
@@ -1106,6 +1471,7 @@
                             "id": 6,
                             "title": "Понимаешь ли ты суть риск-менеджмента?",
                             "description": "Тест для проверки знаний по теме",
+                            "visible": true,
                             "lesson_id": 6,
                             "questions": [
                                 {
@@ -1279,12 +1645,14 @@
                     "video_url": "https://example.com/video7",
                     "course_id": 1,
                     "image": "lesson7.jpg",
+                    "visible": true,
                     "materials": [
                         {
                             "id": 8,
                             "title": "Материал к уроку 7",
                             "description": "",
                             "url": "https://example.com/material7",
+                            "visible": true,
                             "lesson_id": 7
                         }
                     ],
@@ -1293,6 +1661,7 @@
                             "id": 7,
                             "title": "Насколько ты понимаешь рыночную механику?",
                             "description": "Тест для проверки знаний по теме",
+                            "visible": true,
                             "lesson_id": 7,
                             "questions": [
                                 {
@@ -1626,12 +1995,14 @@
                     "video_url": "https://example.com/video8",
                     "course_id": 1,
                     "image": "lesson8.jpg",
+                    "visible": true,
                     "materials": [
                         {
                             "id": 9,
                             "title": "Материал к уроку 8",
                             "description": "",
                             "url": "https://example.com/material8",
+                            "visible": true,
                             "lesson_id": 8
                         }
                     ],
@@ -1640,6 +2011,7 @@
                             "id": 8,
                             "title": "Что делает трейдинг свободой?",
                             "description": "Тест для проверки знаний по теме",
+                            "visible": true,
                             "lesson_id": 8,
                             "questions": [
                                 {
@@ -1813,12 +2185,14 @@
                     "video_url": "https://example.com/video9",
                     "course_id": 1,
                     "image": "lesson9.jpg",
+                    "visible": true,
                     "materials": [
                         {
                             "id": 10,
                             "title": "Материал к уроку 9",
                             "description": "",
                             "url": "https://example.com/material9",
+                            "visible": true,
                             "lesson_id": 9
                         }
                     ],
@@ -1827,6 +2201,7 @@
                             "id": 9,
                             "title": "Умеешь ли ты правильно заходить в сделки?",
                             "description": "Тест для проверки знаний по теме",
+                            "visible": true,
                             "lesson_id": 9,
                             "questions": [
                                 {
@@ -2000,12 +2375,14 @@
                     "video_url": "https://example.com/video10",
                     "course_id": 1,
                     "image": "lesson10.jpg",
+                    "visible": true,
                     "materials": [
                         {
                             "id": 11,
                             "title": "Материал к уроку 10",
                             "description": "",
                             "url": "https://example.com/material10",
+                            "visible": true,
                             "lesson_id": 10
                         }
                     ],
@@ -2014,6 +2391,7 @@
                             "id": 10,
                             "title": "Знаешь ли ты, чем уникален D-Product?",
                             "description": "Тест для проверки знаний по теме",
+                            "visible": true,
                             "lesson_id": 10,
                             "questions": [
                                 {
@@ -2179,395 +2557,11 @@
                             ]
                         }
                     ]
-                },
-                {
-                    "id": 5,
-                    "title": "Урок 5: WinRate и RR",
-                    "description": "Понимание ключевых показателей трейдинга.",
-                    "video_url": "",
-                    "course_id": 1,
-                    "image": "lesson5.jpg",
-                    "materials": [
-                        {
-                            "id": 6,
-                            "title": "Материал к уроку 5",
-                            "description": "",
-                            "url": "https://example.com/material5",
-                            "lesson_id": 5
-                        }
-                    ],
-                    "quizzes": [
-                        {
-                            "id": 5,
-                            "title": "Понимаешь ли ты WinRate и RR?",
-                            "description": "Тест для проверки знаний по теме",
-                            "lesson_id": 5,
-                            "questions": [
-                                {
-                                    "id": 39,
-                                    "text": "Что показывает показатель WinRate?",
-                                    "type": "quiz",
-                                    "visible": true,
-                                    "answers": [
-                                        {
-                                            "id": 143,
-                                            "text": "Среднюю прибыль на сделку",
-                                            "correct": false,
-                                            "question_id": 39
-                                        },
-                                        {
-                                            "id": 144,
-                                            "text": "Количество убыточных сделок",
-                                            "correct": false,
-                                            "question_id": 39
-                                        },
-                                        {
-                                            "id": 145,
-                                            "text": "Процент прибыльных сделок от общего количества",
-                                            "correct": true,
-                                            "question_id": 39
-                                        },
-                                        {
-                                            "id": 146,
-                                            "text": "Общее число открытых позиций",
-                                            "correct": false,
-                                            "question_id": 39
-                                        }
-                                    ]
-                                },
-                                {
-                                    "id": 40,
-                                    "text": "Если трейдер совершил 100 сделок, и 60 из них прибыльные, какой у него WinRate?",
-                                    "type": "quiz",
-                                    "visible": true,
-                                    "answers": [
-                                        {
-                                            "id": 147,
-                                            "text": "60%",
-                                            "correct": true,
-                                            "question_id": 40
-                                        },
-                                        {
-                                            "id": 148,
-                                            "text": "40%",
-                                            "correct": false,
-                                            "question_id": 40
-                                        },
-                                        {
-                                            "id": 149,
-                                            "text": "6%",
-                                            "correct": false,
-                                            "question_id": 40
-                                        },
-                                        {
-                                            "id": 150,
-                                            "text": "160%",
-                                            "correct": false,
-                                            "question_id": 40
-                                        }
-                                    ]
-                                },
-                                {
-                                    "id": 41,
-                                    "text": "Какой уровень WinRate считается сбалансированным и подходящим для большинства стратегий?",
-                                    "type": "quiz",
-                                    "visible": true,
-                                    "answers": [
-                                        {
-                                            "id": 151,
-                                            "text": "Менее 30%",
-                                            "correct": false,
-                                            "question_id": 41
-                                        },
-                                        {
-                                            "id": 152,
-                                            "text": "50–70%",
-                                            "correct": true,
-                                            "question_id": 41
-                                        },
-                                        {
-                                            "id": 153,
-                                            "text": "Ровно 100%",
-                                            "correct": false,
-                                            "question_id": 41
-                                        },
-                                        {
-                                            "id": 154,
-                                            "text": "Только выше 80%",
-                                            "correct": false,
-                                            "question_id": 41
-                                        }
-                                    ]
-                                },
-                                {
-                                    "id": 42,
-                                    "text": "Что такое RR в трейдинге?",
-                                    "type": "quiz",
-                                    "visible": true,
-                                    "answers": [
-                                        {
-                                            "id": 155,
-                                            "text": "Рейтинг риска",
-                                            "correct": false,
-                                            "question_id": 42
-                                        },
-                                        {
-                                            "id": 156,
-                                            "text": "Доходность по годам",
-                                            "correct": false,
-                                            "question_id": 42
-                                        },
-                                        {
-                                            "id": 157,
-                                            "text": "Соотношение потенциальной прибыли к риску на сделку",
-                                            "correct": true,
-                                            "question_id": 42
-                                        },
-                                        {
-                                            "id": 158,
-                                            "text": "Количество успешных стратегий",
-                                            "correct": false,
-                                            "question_id": 42
-                                        }
-                                    ]
-                                },
-                                {
-                                    "id": 43,
-                                    "text": "Если трейдер рискует $100, чтобы заработать $300, какой у него RR?",
-                                    "type": "quiz",
-                                    "visible": true,
-                                    "answers": [
-                                        {
-                                            "id": 159,
-                                            "text": "3:1",
-                                            "correct": false,
-                                            "question_id": 43
-                                        },
-                                        {
-                                            "id": 160,
-                                            "text": "1:3",
-                                            "correct": true,
-                                            "question_id": 43
-                                        },
-                                        {
-                                            "id": 161,
-                                            "text": "1:1",
-                                            "correct": false,
-                                            "question_id": 43
-                                        },
-                                        {
-                                            "id": 162,
-                                            "text": "0.33",
-                                            "correct": false,
-                                            "question_id": 43
-                                        }
-                                    ]
-                                },
-                                {
-                                    "id": 44,
-                                    "text": "При каком RR можно быть прибыльным даже с WinRate 30%?",
-                                    "type": "quiz",
-                                    "visible": true,
-                                    "answers": [
-                                        {
-                                            "id": 163,
-                                            "text": "1:1",
-                                            "correct": false,
-                                            "question_id": 44
-                                        },
-                                        {
-                                            "id": 164,
-                                            "text": "1:2",
-                                            "correct": false,
-                                            "question_id": 44
-                                        },
-                                        {
-                                            "id": 165,
-                                            "text": "1:3",
-                                            "correct": true,
-                                            "question_id": 44
-                                        },
-                                        {
-                                            "id": 166,
-                                            "text": "0.5:1",
-                                            "correct": false,
-                                            "question_id": 44
-                                        }
-                                    ]
-                                },
-                                {
-                                    "id": 45,
-                                    "text": "Что произойдет, если у трейдера высокий WinRate, но низкий RR (например, 1:1)?",
-                                    "type": "quiz",
-                                    "visible": true,
-                                    "answers": [
-                                        {
-                                            "id": 167,
-                                            "text": "Он точно будет в минусе",
-                                            "correct": false,
-                                            "question_id": 45
-                                        },
-                                        {
-                                            "id": 168,
-                                            "text": "Он может быть в плюсе, но его прибыльность будет ограничена",
-                                            "correct": true,
-                                            "question_id": 45
-                                        },
-                                        {
-                                            "id": 169,
-                                            "text": "Он всегда будет зарабатывать больше, чем с RR 1:3",
-                                            "correct": false,
-                                            "question_id": 45
-                                        },
-                                        {
-                                            "id": 170,
-                                            "text": "Он потеряет депозит быстрее",
-                                            "correct": false,
-                                            "question_id": 45
-                                        }
-                                    ]
-                                },
-                                {
-                                    "id": 46,
-                                    "text": "Какой подход позволяет трейдеру зарабатывать даже при низком проценте прибыльных сделок?",
-                                    "type": "quiz",
-                                    "visible": true,
-                                    "answers": [
-                                        {
-                                            "id": 171,
-                                            "text": "Частые входы в рынок без стоп-лосса",
-                                            "correct": false,
-                                            "question_id": 46
-                                        },
-                                        {
-                                            "id": 172,
-                                            "text": "Удвоение лота после каждой убыточной сделки",
-                                            "correct": false,
-                                            "question_id": 46
-                                        },
-                                        {
-                                            "id": 173,
-                                            "text": "Использование высокого RR (например, 1:4 и выше)",
-                                            "correct": true,
-                                            "question_id": 46
-                                        },
-                                        {
-                                            "id": 174,
-                                            "text": "Торговля исключительно по новостям",
-                                            "correct": false,
-                                            "question_id": 46
-                                        }
-                                    ]
-                                },
-                                {
-                                    "id": 47,
-                                    "text": "Почему не стоит оценивать стратегию только по WinRate?",
-                                    "type": "quiz",
-                                    "visible": true,
-                                    "answers": [
-                                        {
-                                            "id": 175,
-                                            "text": "Потому что этот показатель влияет только на комиссии",
-                                            "correct": false,
-                                            "question_id": 47
-                                        },
-                                        {
-                                            "id": 176,
-                                            "text": "Потому что WinRate зависит от брокера",
-                                            "correct": false,
-                                            "question_id": 47
-                                        },
-                                        {
-                                            "id": 177,
-                                            "text": "Потому что он не показывает, сколько зарабатывается по каждой сделке",
-                                            "correct": true,
-                                            "question_id": 47
-                                        },
-                                        {
-                                            "id": 178,
-                                            "text": "Потому что он применяется только к форексу",
-                                            "correct": false,
-                                            "question_id": 47
-                                        }
-                                    ]
-                                },
-                                {
-                                    "id": 48,
-                                    "text": "Что из ниже перечисленного наиболее важно для стабильной прибыльности?",
-                                    "type": "quiz",
-                                    "visible": true,
-                                    "answers": [
-                                        {
-                                            "id": 179,
-                                            "text": "Частота торговли",
-                                            "correct": false,
-                                            "question_id": 48
-                                        },
-                                        {
-                                            "id": 180,
-                                            "text": "Высокий леверидж",
-                                            "correct": false,
-                                            "question_id": 48
-                                        },
-                                        {
-                                            "id": 181,
-                                            "text": "Баланс между WinRate и RR + соблюдение риск-менеджмента",
-                                            "correct": true,
-                                            "question_id": 48
-                                        },
-                                        {
-                                            "id": 182,
-                                            "text": "Количество подписчиков в Telegram",
-                                            "correct": false,
-                                            "question_id": 48
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                    ]
                 }
             ]
         }
     ],
-    "events": [
-        {
-            "id": 4,
-            "title": "Трансляция: Реальные сделки",
-            "description": "Смотрите прямую трансляцию реальных сделок и учите стратегии профессионалов.",
-            "author": "Иван Профессионал",
-            "image": "",
-            "date": "2023-12-30",
-            "visible": true
-        },
-        {
-            "id": 3,
-            "title": "Конкурс: Лучший трейдер месяца",
-            "description": "Примите участие в конкурсе и получите призы за лучшие результаты торговли.",
-            "author": "Команда D-Product",
-            "image": "https://example.com/images/contest_1.jpg",
-            "date": "2023-12-25",
-            "visible": true
-        },
-        {
-            "id": 2,
-            "title": "Мастер-класс: Анализ графиков",
-            "description": "Узнайте, как правильно анализировать графики и находить точки входа.",
-            "author": "Мария Аналитик",
-            "image": "https://xakep.ru/wp-content/uploads/2019/08/234890/crypto-h.jpg",
-            "date": "2023-12-20",
-            "visible": true
-        },
-        {
-            "id": 1,
-            "title": "Вебинар: Основы трейдинга",
-            "description": "На этом вебинаре мы расскажем о базовых принципах трейдинга и ответим на ваши вопросы.",
-            "author": "Александр Трейдер",
-            "image": "/images/event1.png",
-            "date": "2023-12-15",
-            "visible": true
-        }
-    ],
+    "events": [],
     "homework": [],
     "faq": [
         {
@@ -2634,5 +2628,198 @@
             "name": "bot_link",
             "value": "https://t.me/CryptEduBot"
         }
-    ]
+    ],
+    "enter_survey": {
+        "id": 1,
+        "title": "Входное тестирование",
+        "description": "Пройди входное тестирование для доступа к курсам",
+        "visible": true,
+        "questions": [
+            {
+                "id": 1,
+                "text": "Укажите, пожалуйста, ваш номер телефона.",
+                "type": "phone",
+                "answers": []
+            },
+            {
+                "id": 2,
+                "text": "Какой у вас уровень опыта в криптотрейдинге?",
+                "type": "quiz",
+                "answers": [
+                    {
+                        "id": 1,
+                        "text": "Начинающий (менее 1 года)",
+                        "correct": false,
+                        "question_id": 2
+                    },
+                    {
+                        "id": 2,
+                        "text": "Средний (1–3 года)",
+                        "correct": false,
+                        "question_id": 2
+                    },
+                    {
+                        "id": 3,
+                        "text": "Опытный (более 3 лет)",
+                        "correct": false,
+                        "question_id": 2
+                    },
+                    {
+                        "id": 4,
+                        "text": "Не занимаюсь трейдингом",
+                        "correct": false,
+                        "question_id": 2
+                    }
+                ]
+            },
+            {
+                "id": 3,
+                "text": "Какой стиль торговли вам ближе?",
+                "type": "quiz",
+                "answers": [
+                    {
+                        "id": 5,
+                        "text": "Дневной трейдинг (day trading)",
+                        "correct": false,
+                        "question_id": 3
+                    },
+                    {
+                        "id": 6,
+                        "text": "Скальпинг",
+                        "correct": false,
+                        "question_id": 3
+                    },
+                    {
+                        "id": 7,
+                        "text": "Свинг-трейдинг (swing trading)",
+                        "correct": false,
+                        "question_id": 3
+                    },
+                    {
+                        "id": 8,
+                        "text": "Долгосрочные инвестиции",
+                        "correct": false,
+                        "question_id": 3
+                    },
+                    {
+                        "id": 9,
+                        "text": "Не торгую сам(а), использую алгоритмы",
+                        "correct": false,
+                        "question_id": 3
+                    }
+                ]
+            },
+            {
+                "id": 4,
+                "text": "Какие источники данных вы предпочитаете использовать для анализа рынка?",
+                "type": "quiz",
+                "answers": [
+                    {
+                        "id": 10,
+                        "text": "Графики с бирж (Binance, Bybit и т. д.)",
+                        "correct": false,
+                        "question_id": 4
+                    },
+                    {
+                        "id": 11,
+                        "text": "TradingView",
+                        "correct": false,
+                        "question_id": 4
+                    },
+                    {
+                        "id": 12,
+                        "text": "Telegram/Discord каналы",
+                        "correct": false,
+                        "question_id": 4
+                    },
+                    {
+                        "id": 13,
+                        "text": "Собственные алгоритмы/скрипты",
+                        "correct": false,
+                        "question_id": 4
+                    },
+                    {
+                        "id": 14,
+                        "text": "Новости и макроэкономические данные",
+                        "correct": false,
+                        "question_id": 4
+                    }
+                ]
+            },
+            {
+                "id": 5,
+                "text": "Какие криптовалютные пары вы торгуете чаще всего?",
+                "type": "quiz",
+                "answers": [
+                    {
+                        "id": 15,
+                        "text": "BTC/USDT",
+                        "correct": false,
+                        "question_id": 5
+                    },
+                    {
+                        "id": 16,
+                        "text": "ETH/USDT",
+                        "correct": false,
+                        "question_id": 5
+                    },
+                    {
+                        "id": 17,
+                        "text": "Альткоины (SOL, AVAX, MATIC и т. д.)",
+                        "correct": false,
+                        "question_id": 5
+                    },
+                    {
+                        "id": 18,
+                        "text": "Торгую только фьючерсы",
+                        "correct": false,
+                        "question_id": 5
+                    },
+                    {
+                        "id": 19,
+                        "text": "Не торгую самостоятельно",
+                        "correct": false,
+                        "question_id": 5
+                    }
+                ]
+            },
+            {
+                "id": 6,
+                "text": "Хотели бы вы тестировать новые алгоритмы компании Dept на демо-счете?",
+                "type": "quiz",
+                "answers": [
+                    {
+                        "id": 20,
+                        "text": "Да, было бы интересно",
+                        "correct": false,
+                        "question_id": 6
+                    },
+                    {
+                        "id": 21,
+                        "text": "Возможно, если они покажут хорошие результаты",
+                        "correct": false,
+                        "question_id": 6
+                    },
+                    {
+                        "id": 22,
+                        "text": "Нет, я не использую алгоритмы в торговле",
+                        "correct": false,
+                        "question_id": 6
+                    }
+                ]
+            },
+            {
+                "id": 7,
+                "text": "Сколько вам лет?",
+                "type": "text",
+                "answers": []
+            },
+            {
+                "id": 8,
+                "text": "В какой сфере деятельности вы находитесь на данный момент?",
+                "type": "text",
+                "answers": []
+            }
+        ]
+    }
 }

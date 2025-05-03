@@ -61,6 +61,7 @@ services:
     volumes:
       - ./backend:/app
       - ./frontend/dist:/frontend/dist
+      - ./logs:/app/logs
     depends_on:
       postgressql:
         condition: service_healthy
@@ -72,3 +73,5 @@ networks:
 
 # https://habr.com/ru/companies/ruvds/articles/450312/
 # https://habr.com/ru/articles/578744/
+# docker-compose build --no-cache
+

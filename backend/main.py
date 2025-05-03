@@ -1,8 +1,9 @@
 import asyncio
+import time
 import traceback
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.exception_handlers import http_exception_handler
-from fastapi.responses import RedirectResponse
+from fastapi.responses import JSONResponse, RedirectResponse
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
@@ -10,19 +11,15 @@ from contextlib import asynccontextmanager
 from typing import Any, AsyncGenerator, Dict
 from db.pgapi import PGApi
 from db.models import UserProgress
-# from telegram_bot import send_telegram_message
+#from telegram_bot import send_service_message, bot
 import json
+from logger import logger  # Импортируем логгер
 
-
-###
-# Сервисы:
-# 1) Получение данных для приложения: вопросы, ивенты, курсы+уроки+ответы, домашка для пользователя, входное тестирование
-# 3) Сохранение результата теста
-# 4) Отпрвка в бота при нажатии кнопки "Начать" (с сохранением этого факта)
-# 5) Сохранение пользователя
-###
 
 db = PGApi()
+
+# Хранилище для отслеживания запросов
+request_timestamps: Dict[str, float] = {}
 
 # https://medium.com/@marcnealer/fastapi-after-the-getting-started-867ecaa99de9
 @asynccontextmanager
@@ -35,29 +32,53 @@ async def lifespan(app: FastAPI):
     while attempt < max_retries:
         try:
             await db.create()  # Попытка подключения к базе данных
-            print("Приложение запущено")
+            logger.info("Приложение запущено")
             break  # Если подключение успешно, выходим из цикла
         except Exception as e:
             attempt += 1
             if attempt == max_retries:
-                print(f"Не удалось подключиться к базе данных после {max_retries} попыток. Ошибка: {e}")
+                logger.info(f"Не удалось подключиться к базе данных после {max_retries} попыток. Ошибка: {e}")
                 raise  # Выбрасываем исключение, чтобы завершить работу приложения
-            print(f"Попытка {attempt} не удалась. Повторная попытка через {retry_delay} секунд...")
+            logger.info(f"Попытка {attempt} не удалась. Повторная попытка через {retry_delay} секунд...")
             await asyncio.sleep(retry_delay)  # Ждем перед следующей попыткой
     
     yield  # Основной код приложения выполняется здесь
-    print("Приложение завершено")
+    logger.info("Приложение завершено")
     
     # app teardown
     try:
         await db.close()  # Закрытие соединения с базой данных
     except Exception as e:
-        print(f"Ошибка при закрытии соединения с базой данных: {e}")
+        logger.info(f"Ошибка при закрытии соединения с базой данных: {e}")
 
 
 
 #https://habr.com/ru/articles/799337/
 app = FastAPI(lifespan=lifespan)
+
+
+# Миддлвар для ограничения запросов
+# @app.middleware("http")
+# async def rate_limit_middleware(request: Request, call_next):
+#     client_ip = request.client.host  # Получаем IP-адрес клиента
+#     current_time = time.time()
+
+#     # Проверяем, был ли запрос с этого IP недавно
+#     if client_ip in request_timestamps:
+#         last_request_time = request_timestamps[client_ip]
+#         if current_time - last_request_time < 1:  # Ограничение: 1 запрос каждые 5 секунд
+#             logger.warning(f"Слишком частые запросы с IP: {client_ip}")
+#             return JSONResponse(
+#                 status_code=429,
+#                 content={"detail": "Слишком много запросов. Попробуйте снова через 5 секунд."},
+#             )
+
+#     # Обновляем время последнего запроса
+#     request_timestamps[client_ip] = current_time
+
+#     # Продолжаем обработку запроса
+#     response = await call_next(request)
+#     return response
 
 def remove_timestamps(data):
     """
@@ -92,7 +113,7 @@ async def trigger_event(event_name: str, user_id: int, instance_id: int):
     # Отправка уведолмения в Telegram
     # asyncio.create_task(send_telegram_message(params))
 
-    print(f"Triggered event: {params}")
+    logger.info(f"Triggered event: {params}")
 
     return event_id
 
@@ -194,7 +215,7 @@ async def save_attempt(request: Request):
 
     except Exception as e:
         # Логируем ошибку (можно использовать logging)
-        print(f"Error saving progress: {e}")
+        logger.info(f"Error saving progress: {e}")
         traceback.print_exc()  # Вывод полной трассировки ошибки
 
         # Возвращаем ошибку
@@ -205,18 +226,17 @@ async def save_attempt(request: Request):
 async def get_app_data(user_id: int):
     user = await db.get_record("users", {"telegram_id": user_id})
 
-    # TODO Добавить сортирвки и визибл
     courses = await db.get_records("courses", {"visible": True})
     for course in courses:
         lessons = await db.get_records("lessons", {"course_id": course["id"]})
         for lesson in lessons:
-            lesson["materials"] = await db.get_records("materials", {"lesson_id": lesson["id"], "visible": True})
-            lesson["quizzes"] = await db.get_records("quizzes", {"lesson_id": lesson["id"], "visible": True})
+            lesson["materials"] = await db.get_records_sql("SELECT * FROM materials WHERE lesson_id = $1 AND visible = $2 ORDER BY id", lesson["id"], True)
+            lesson["quizzes"] = await db.get_records_sql("SELECT * FROM quizzes WHERE lesson_id = $1 AND visible = $2 ORDER BY id", lesson["id"], True)
             for quiz in lesson["quizzes"]:
                 quiz["questions"] = await db.get_records_sql(
                     f"""SELECT q.* FROM quiz_questions qq
                     JOIN questions q ON qq.question_id = q.id
-                    AND qq.quiz_id = $1 AND q.visible = $2""", quiz["id"], True)
+                    AND qq.quiz_id = $1 AND q.visible = $2 ORDER BY id""", quiz["id"], True)
                 for question in quiz["questions"]:
                     question["answers"] = await db.get_records("answers", {"question_id": question["id"]})
 
@@ -246,14 +266,14 @@ async def get_app_data(user_id: int):
             WHERE up_inner.user_id = {user["id"]}
             GROUP BY up_inner.quiz_id
         )
-        AND up.user_id = {user["id"]};
+        AND up.user_id = {user["id"]} ORDER BY up.id DESC;
     """
     homeworks = await db.get_records_sql(homeworks_sql)
     for homework in homeworks:
         homework["questions"] = await db.get_records_sql("""
                     SELECT qq.id, q.id AS qid, q.text, q.type FROM quiz_questions qq
                     JOIN questions q ON qq.question_id = q.id
-                    AND qq.quiz_id = $1 AND q.visible = $2""", homework["quiz_id"], True)
+                    AND qq.quiz_id = $1 AND q.visible = $2 ORDER BY qq.id""", homework["quiz_id"], True)
         for question in homework["questions"]:
             question["answers"] = await db.get_records("answers", {"question_id": question["qid"]})
             for answer in question["answers"]:

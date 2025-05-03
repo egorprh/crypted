@@ -4,6 +4,7 @@ FROM python:latest
 WORKDIR /app/
 
 COPY requirements.txt /app/
+COPY /logs/app.log /app/logs/app.log
 RUN pip install -r requirements.txt
 
 COPY backend/ /app/
