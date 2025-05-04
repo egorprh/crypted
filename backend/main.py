@@ -10,8 +10,7 @@ from fastapi.responses import FileResponse
 from contextlib import asynccontextmanager
 from typing import Any, AsyncGenerator, Dict
 from db.pgapi import PGApi
-from db.models import UserProgress
-#from telegram_bot import send_service_message, bot
+from telegram_bot import send_service_message, bot
 import json
 from logger import logger  # Импортируем логгер
 
@@ -110,8 +109,8 @@ async def trigger_event(event_name: str, user_id: int, instance_id: int):
     }
     event_id = await db.insert_record('user_actions_log', params)
 
-    # Отправка уведолмения в Telegram
-    # asyncio.create_task(send_telegram_message(params))
+    # Отправка уведомления в Telegram
+    asyncio.create_task(send_service_message(bot, params))
 
     logger.info(f"Triggered event: {params}")
 
@@ -125,7 +124,7 @@ async def ping():
 
 # Cобытие просмотра курса 
 @app.post("/api/save_user")
-async def course_viewed(request: Request):
+async def save_user(request: Request):
     request = await request.json()
     params = {
         "telegram_id": request["id"],

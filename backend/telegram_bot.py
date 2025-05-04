@@ -1,8 +1,11 @@
-import asyncio
+from aiogram.client.default import DefaultBotProperties
+from aiogram.enums import ParseMode
 from aiogram import Bot, Dispatcher, types
 from dotenv import load_dotenv
 import os
 import json
+from logger import logger  # Импортируем логгер
+
 
 load_dotenv('./.env')  # Загружаем переменные окружения из файла .env
 
@@ -10,29 +13,18 @@ load_dotenv('./.env')  # Загружаем переменные окружен�
 bot_token = os.getenv("BOT_TOKEN")
 user_ids = os.getenv("ADMINS").split(',')
 
-bot = Bot(token=bot_token)
+bot = Bot(token=bot_token, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
 dp = Dispatcher()
 
-async def send_service_message(data: dict):
+async def send_service_message(bot: Bot, data: dict):
     formatted_json = json.dumps(data, indent=4, ensure_ascii=False)
 
     for user_id in user_ids:
         try:
             await bot.send_message(
                 chat_id=int(user_id),
-                text=f"<b>Сервисное сообщение:</b>\n<pre>{formatted_json}</pre>",
-                parse_mode=types.ParseMode.HTML
+                text=f"<b>Пользователь перешел в курс:</b>\n<pre>{formatted_json}</pre>",
             )
+            logger.info(f"Сообщение успешно отправлено пользователю {user_id}")
         except Exception as e:
-            print(f"Не удалось отправить сообщение пользователю {user_id}: {e}")
-
-
-async def main():
-    try:
-        print("🚀 Бот запущен...")
-        await dp.start_polling(bot)
-    finally:
-        await bot.session.close()
-
-if __name__ == "__main__":
-    asyncio.run(main())
+            logger.error(f"Не удалось отправить сообщение пользователю {user_id}: {e}")
