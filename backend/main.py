@@ -117,7 +117,7 @@ async def trigger_event(event_name: str, user_id: int, instance_id: int):
     return event_id
 
 
-@app.get("/ping")
+@app.get("/api/ping")
 async def ping():
     return {"status": "ok", "message": "Pong"}
 
@@ -127,13 +127,13 @@ async def ping():
 async def save_user(request: Request):
     request = await request.json()
     params = {
-        "telegram_id": request["id"],
+        "telegram_id": request["telegram_id"],
         "username": request["username"],
         "first_name": request["first_name"],
         "last_name": request["last_name"],
     }
     # Вызов метода insert_record
-    if await db.get_record('users', {'telegram_id':request["id"]}) is None:
+    if await db.get_record('users', {'telegram_id':request["telegram_id"]}) is None:
         await db.insert_record('users', params)
 
 
@@ -296,7 +296,8 @@ async def get_app_data(user_id: int):
 
     # Если пользователь не прошел входное тестирование, добавляем его
     enter_survey = await db.get_records_sql(f"""SELECT * FROM surveys WHERE visible = $1 LIMIT 1""", True)
-    if len(enter_survey) > 0 and await db.get_record("user_actions_log", {"user_id": user["id"], "action": "enter_survey"}) is None:
+    user_actions = await db.get_records("user_actions_log", {"user_id": user["id"], "action": "enter_survey"})
+    if len(enter_survey) > 0 and len(user_actions) == 0:
         enter_survey = enter_survey[0]
         enter_survey["questions"] = await db.get_records_sql(
                         """SELECT sq.id, q.text, q.type FROM survey_questions sq

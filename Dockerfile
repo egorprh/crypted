@@ -1,15 +1,11 @@
-# Билдим бэк (FastAPI + Uvicorn)
-FROM python:latest
+# Базовый Python образ
+FROM python:3.11-slim
 
-WORKDIR /app/
-
-COPY requirements.txt /app/
+WORKDIR /app
 COPY /logs/app.log /app/logs/app.log
-RUN pip install -r requirements.txt
-
 COPY backend/ /app/
-COPY frontend/dist /frontend/dist
-EXPOSE 8000
+COPY requirements.txt /app/
 
-#Автосервер FastAPI + отдача фронта
+RUN pip install --no-cache-dir -r requirements.txt
+
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]

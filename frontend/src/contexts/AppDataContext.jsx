@@ -46,7 +46,7 @@ export const AppDataProvider = ({ children }) => {
             }).catch(err => console.error("Ошибка записи пользователя:", err));
         }
 
-        const userId = user?.id ? user.id : 0;
+        const userId = u?.id ? u.id : 0;
 
         // TODO Кнопка рефреша данных
         fetch(`/api/get_app_data?user_id=${userId}`)
