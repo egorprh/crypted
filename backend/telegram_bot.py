@@ -11,20 +11,21 @@ load_dotenv('./.env')  # Загружаем переменные окружен�
 
 # Инициализация бота
 bot_token = os.getenv("BOT_TOKEN")
-user_ids = os.getenv("ADMINS").split(',')
+channel_id = os.getenv("PRIVATE_CHANNEL_ID")
 
 bot = Bot(token=bot_token, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
 dp = Dispatcher()
 
-async def send_service_message(bot: Bot, data: dict):
-    formatted_json = json.dumps(data, indent=4, ensure_ascii=False)
+async def send_service_message(bot: Bot, text: str):
 
-    for user_id in user_ids:
-        try:
-            await bot.send_message(
-                chat_id=int(user_id),
-                text=f"<b>Пользователь перешел в курс:</b>\n<pre>{formatted_json}</pre>",
-            )
-            logger.info(f"Сообщение успешно отправлено пользователю {user_id}")
-        except Exception as e:
-            logger.error(f"Не удалось отправить сообщение пользователю {user_id}: {e}")
+    await bot.send_message(channel_id, text)
+
+    # for user_id in user_ids:
+    #     try:
+    #         await bot.send_message(
+    #             chat_id=int(user_id),
+    #             text=f"<b>Пользователь перешел в курс:</b>\n<pre>{formatted_json}</pre>",
+    #         )
+    #         logger.info(f"Сообщение успешно отправлено пользователю {user_id}")
+    #     except Exception as e:
+    #         logger.error(f"Не удалось отправить сообщение пользователю {user_id}: {e}")

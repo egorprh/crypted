@@ -109,8 +109,27 @@ async def trigger_event(event_name: str, user_id: int, instance_id: int):
     }
     event_id = await db.insert_record('user_actions_log', params)
 
-    # Отправка уведомления в Telegram
-    asyncio.create_task(send_service_message(bot, params))
+    user = await db.get_record("users", {"id": user_id})
+
+    if event_name == 'course_viewed':
+        course = await db.get_record("courses", {"id": instance_id})
+        text = f"""
+        Переход в курс DSpace!
+
+Пользователь @{user["username"]} зашел в курс "{course['title']}"
+        """
+    elif event_name == 'enter_survey':
+        text = f"""
+        Новое прохождение тестирования в DSpace!
+
+Ник в телеге: @{user["username"]}
+ФИО: скоро будет
+Телефон: скоро будет
+Возвраст: скоро будет
+        """
+    
+    if text:
+        asyncio.create_task(send_service_message(bot, text))
 
     logger.info(f"Triggered event: {params}")
 

@@ -149,7 +149,7 @@ export default function EnterSurvey({ user }) {
                                 </label>
                             ))}
                         </div>
-                        {(question.type === 'phone' || question.type === 'text') && (
+                        {(question.type === 'phone' || question.type === 'text' || question.type === 'age') && (
                             <input
                                 className="quiz-input"
                                 type="text"

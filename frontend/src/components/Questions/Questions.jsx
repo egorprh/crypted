@@ -37,9 +37,9 @@ export default function Questions() {
                 </div>
                 <img
                     className="questions-img"
-                    src={avatar || "/images/user.png"}
+                    src={avatar || "/images/curator.png"}
                     alt="Куратор"
-                    onError={handleImageError("/images/user.png")}
+                    onError={handleImageError("/images/curator.png")}
                 />
             </div>
 
