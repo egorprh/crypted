@@ -98,7 +98,7 @@ def remove_timestamps(data):
         return data
     
 
-async def trigger_event(event_name: str, user_id: int, instance_id: int):
+async def trigger_event(event_name: str, user_id: int, instance_id: int, data: Any = None):
     """
     Триггерит событие с указанным именем и данными.
     """
@@ -119,13 +119,11 @@ async def trigger_event(event_name: str, user_id: int, instance_id: int):
 Пользователь @{user["username"]} зашел в курс "{course['title']}"
         """
     elif event_name == 'enter_survey':
+        formatted_answers = "\n".join([f"<b>{question['question']}</b>: {question['answer']}" for question in data])
         text = f"""
-        Новое прохождение тестирования в DSpace!
+        Пользователь @{user["username"]} прошел входное тестирование в DSpace!
 
-Ник в телеге: @{user["username"]}
-ФИО: скоро будет
-Телефон: скоро будет
-Возвраст: скоро будет
+{formatted_answers}
         """
     
     if text:
@@ -173,10 +171,10 @@ async def submit_enter_survey(request: Request):
     user_id = request["userId"]
     user = await db.get_record("users", {"telegram_id": user_id})
     #TODO Почему сразу падаем, а не в фоне?
-    asyncio.create_task(trigger_event('enter_survey', user["id"], request["surveyId"]))
+    asyncio.create_task(trigger_event('enter_survey', user["id"], request["surveyId"], request["verboseAnswers"]))
 
     # Записывем ответы пользователей
-    for request_answer in request["answers"]:
+    for request_answer in request["formattedAnswers"]:
         params = {
                 "user_id": user["id"],
                 "instance_qid": request_answer["questionId"],

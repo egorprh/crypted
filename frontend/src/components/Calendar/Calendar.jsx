@@ -12,7 +12,7 @@ export default function Calendar() {
 
     return (
         <div className="content main-content">
-            <h2 className="title">Ближайшие ивенты</h2>
+            <h2 className="title">Ближайшие события</h2>
 
             <div className="wrapper events-wrapper">
                 {loading ? (
@@ -36,7 +36,7 @@ export default function Calendar() {
                         </Link>
                     ))
                 ) : (
-                    <ContentNotFound message="Нет ближайших ивентов" />
+                    <ContentNotFound message="Нет запланированных событий" />
                 )}
             </div>
         </div>
