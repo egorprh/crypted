@@ -1,9 +1,12 @@
 from datetime import datetime
+import os
 from typing import Any, Dict, Optional, Type, Union
 from pydantic import BaseModel
 import asyncpg
 from asyncpg import Pool, Connection
 import db.models as models
+from logger import logger  # Импортируем логгер
+import subprocess
 
 from config import load_config
 
@@ -188,3 +191,38 @@ class PGApi:
                 print(sql)
                 # Выполняем запрос
                 await self.execute(sql, execute=True)
+
+
+    async def create_db_dump(self, dump_dir: str = "./db_dumps"):
+        """
+        Создает дамп базы данных и сохраняет его в указанной директории.
+        :param dump_dir: Директория для сохранения дампа.
+        """
+        # Убедитесь, что директория для дампов существует
+        os.makedirs(dump_dir, exist_ok=True)
+
+        # Формируем имя файла дампа с текущей датой
+        timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        dump_file = os.path.join(dump_dir, f"db_dump.sql")
+
+        # Загружаем конфигурацию
+        config = load_config("../.env")
+
+        # Устанавливаем переменную окружения PGPASSWORD
+        os.environ["PGPASSWORD"] = config.db.password
+
+        # Команда для создания дампа
+        command = [
+            "pg_dump",
+            f"--host={config.db.host}",
+            f"--username={config.db.user}",
+            f"--dbname={config.db.database}",
+            f"--file={dump_file}"
+        ]
+
+        try:
+            # Выполняем команду через subprocess
+            subprocess.run(command, check=True)
+            logger.info(f"Дамп базы данных успешно создан: {dump_file}")
+        except subprocess.CalledProcessError as e:
+            logger.error(f"Ошибка при создании дампа базы данных: {e}")

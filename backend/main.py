@@ -20,6 +20,22 @@ db = PGApi()
 # Хранилище для отслеживания запросов
 request_timestamps: Dict[str, float] = {}
 
+
+async def daily_db_backup():
+    """
+    Фоновая задача для создания дампа базы данных раз в день.
+    """
+    while True:
+        try:
+            logger.info("Запуск фоновой задачи для создания дампа базы данных.")
+            await db.create_db_dump()
+            logger.info("Дамп базы данных успешно создан.")
+        except Exception as e:
+            logger.error(f"Ошибка при создании дампа базы данных: {e}")
+        # Ожидаем 24 часа перед следующим выполнением
+        await asyncio.sleep(24*60*60)
+
+
 # https://medium.com/@marcnealer/fastapi-after-the-getting-started-867ecaa99de9
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -31,7 +47,10 @@ async def lifespan(app: FastAPI):
     while attempt < max_retries:
         try:
             await db.create()  # Попытка подключения к базе данных
+            # Запуск фоновой задачи
+            asyncio.create_task(daily_db_backup())
             logger.info("Приложение запущено")
+            await send_service_message(bot, "DeptSpace запущен!")
             break  # Если подключение успешно, выходим из цикла
         except Exception as e:
             attempt += 1
@@ -40,9 +59,10 @@ async def lifespan(app: FastAPI):
                 raise  # Выбрасываем исключение, чтобы завершить работу приложения
             logger.info(f"Попытка {attempt} не удалась. Повторная попытка через {retry_delay} секунд...")
             await asyncio.sleep(retry_delay)  # Ждем перед следующей попыткой
-    
+
     yield  # Основной код приложения выполняется здесь
-    logger.info("Приложение завершено")
+    logger.info("Приложение остановлено")
+    await send_service_message(bot, "DeptSpace остановлен! Проверьте, если это не запланировано")
     
     # app teardown
     try:
