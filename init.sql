@@ -212,14 +212,14 @@ VALUES
 
 -- 3. Добавляем материалы для каждого урока
 INSERT INTO materials (title, url, description, lesson_id) VALUES
-('Материал к уроку 1', '/materials/Что_такое_криптовалюта_и_почему_она_лучше.pdf', '', 1),
-('Материал к уроку 2', '/materials/Как_выбрать_биржу_и_пополнить_счёт.pdf', '', 2),
-('Материал к уроку 4', '/materials/Виды стратегий, и как её выбрать.pdf', '', 4),
-('Материал к уроку 5', '/materials/Винрэйт и RR.pdf', '', 5),
-('Материал к уроку 6', '/materials/РМ.pdf', '', 6),
-('Материал к уроку 7', '/materials/Как работает рынок.pdf', '', 7),
-('Материал к уроку 8', '/materials/Свобода.pdf', '', 8),
-('Материал к уроку 9', '/materials/dept - это экосистема.pdf', '', 9);
+('Материал к уроку 1', 'https://disk.yandex.ru/i/wCwZaP1QKiviUQ', '', 1),
+('Материал к уроку 2', 'https://disk.yandex.ru/i/C3pGGzCro5D62w', '', 2),
+('Материал к уроку 4', 'https://disk.yandex.ru/i/Mr8WyyUJeVJl2w', '', 4),
+('Материал к уроку 5', 'https://disk.yandex.ru/i/L7vCn2AoBsqB6w', '', 5),
+('Материал к уроку 6', 'https://disk.yandex.ru/i/ypFuArErYUfWXw', '', 6),
+('Материал к уроку 7', 'https://disk.yandex.ru/i/TDZpkYAyQGuoyA', '', 7),
+('Материал к уроку 8', 'https://disk.yandex.ru/i/Vc9EUOBx8l32Rw', '', 8),
+('Материал к уроку 9', 'https://disk.yandex.ru/i/8gOImnUBDV5T9g', '', 9);
 
 -- Добавляем конфиг
 INSERT INTO config (name, value) VALUES
