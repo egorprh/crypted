@@ -8,6 +8,7 @@ import '../LessonQuizTest/lesson-quiz-test.css';
 import '../QuizResults/quiz-results.css';
 import './enter-survey.css';
 import Alert from "../ui/Alert/Alert.jsx";
+import ContentNotFound from "../ContentNotFound/ContentNotFound.jsx";
 
 export default function EnterSurvey({ user }) {
     const navigate = useNavigate();
@@ -66,34 +67,49 @@ export default function EnterSurvey({ user }) {
 
         setIsSubmitting(true);
 
-        const formattedAnswers = data?.enter_survey?.questions.reduce((acc, question) => {
+        const formattedAnswers = [];
+        const verboseAnswers = [];
+
+        data?.enter_survey?.questions.forEach((question) => {
             const userAnswer = answers[question.id];
 
             if (question.type === 'quiz') {
                 const selectedOption = question.answers.find(option => option.id === userAnswer);
                 if (selectedOption) {
-                    acc.push({
+                    formattedAnswers.push({
                         questionId: question.id,
                         answerId: selectedOption.id,
                         text: ""
                     });
+                    verboseAnswers.push({
+                        question: question.text,
+                        answer: selectedOption.text
+                    });
                 }
-            } else if (question.type === 'phone' || question.type === 'text') {
+            } else if (question.type === 'phone' || question.type === 'text' || question.type === 'age') {
                 if (userAnswer) {
-                    acc.push({
+                    formattedAnswers.push({
                         questionId: question.id,
                         answerId: 0,
                         text: userAnswer
                     });
+                    verboseAnswers.push({
+                        question: question.text,
+                        answer: userAnswer
+                    });
                 }
             }
-            return acc;
-        }, []);
+        });
 
         fetch('/api/submit_enter_survey', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ userId, surveyId, answers: formattedAnswers }),
+            body: JSON.stringify({
+                userId,
+                surveyId,
+                formattedAnswers,
+                verboseAnswers
+            }),
         })
             .then((res) => {
                 if (res.ok) {
@@ -110,7 +126,7 @@ export default function EnterSurvey({ user }) {
                 setTimeout(() => setError(false), 1000);
                 setIsSubmitting(false);
             });
-    };
+        };
 
     return (
         <div className="survey content quiz-results-content">
@@ -122,47 +138,51 @@ export default function EnterSurvey({ user }) {
             </Link>
 
             <form className="quiz" onSubmit={handleSubmit} noValidate>
-                <div>
+                <div className="quiz-wrapper">
                     <h1>Входное тестирование</h1>
                     {data?.enter_survey?.description && (
                         <p className="survey-description">{data.enter_survey.description}</p>
                     )}
-                </div>
 
-                {data?.enter_survey?.questions.map((question) => (
-                    <div key={question.id} className={`quiz-question ${errors[question.id] ? 'error' : ''}`}>
-                        <h2>{question.id}. {question.text}</h2>
-                        {errors[question.id] && (
-                            <div className="error-text">{errors[question.id]}</div>
-                        )}
-                        <div className="quiz-answers">
-                            {question.type === 'quiz' && question.answers.map((option) => (
-                                <label className="quiz-answer" key={option.id}>
-                                    <input
-                                        type="radio"
-                                        name={`q-${question.id}`}
-                                        value={option.id}
-                                        checked={answers[question.id] === option.id}
-                                        onChange={() => handleAnswerChange(question, option.id)}
-                                    />
-                                    {option.text}
-                                </label>
-                            ))}
-                        </div>
-                        {(question.type === 'phone' || question.type === 'text' || question.type === 'age') && (
-                            <input
-                                className="quiz-input"
-                                type="text"
-                                name={`q-${question.id}`}
-                                placeholder={question.type === 'phone'
-                                    ? "Введите номер телефона"
-                                    : "Введите ваш ответ"}
-                                value={answers[question.id] || ''}
-                                onChange={(e) => handleAnswerChange(question, e.target.value)}
-                            />
-                        )}
-                    </div>
-                ))}
+                    {data?.enter_survey?.questions?.length
+                        ?
+                        data.enter_survey.questions.map((question) => (
+                        <div key={question.id} className={`quiz-question ${errors[question.id] ? 'error' : ''}`}>
+                            <h2>{question.id}. {question.text}</h2>
+                            {errors[question.id] && (
+                                <div className="error-text">{errors[question.id]}</div>
+                            )}
+                            <div className="quiz-answers">
+                                {question.type === 'quiz' && question.answers?.map((option) => (
+                                    <label className="quiz-answer" key={option.id}>
+                                        <input
+                                            type="radio"
+                                            name={`q-${question.id}`}
+                                            value={option.id}
+                                            checked={answers[question.id] === option.id}
+                                            onChange={() => handleAnswerChange(question, option.id)}
+                                        />
+                                        {option.text}
+                                    </label>
+                                ))}
+                            </div>
+                            {(question.type === 'phone' || question.type === 'text' || question.type === 'age') && (
+                                <input
+                                    className="quiz-input"
+                                    type="text"
+                                    name={`q-${question.id}`}
+                                    placeholder={question.type === 'phone'
+                                        ? "Введите номер телефона"
+                                        : "Введите ваш ответ"}
+                                    value={answers[question.id] || ''}
+                                    onChange={(e) => handleAnswerChange(question, e.target.value)}
+                                />
+                            )}
+                        </div>))
+                        :
+                        <ContentNotFound message="Вопросы не найдены" />
+                    }
+                </div>
 
                 <button className="btn" type="submit" disabled={isSubmitting}>
                     Отправить

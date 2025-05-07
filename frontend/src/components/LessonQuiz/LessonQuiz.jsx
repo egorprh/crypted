@@ -2,13 +2,14 @@ import React from 'react';
 import { useNavigate, useOutletContext } from 'react-router-dom';
 import '../Lesson/lesson.css';
 import './lesson-quiz.css';
+import ContentNotFound from "../ContentNotFound/ContentNotFound.jsx";
 
 export default function LessonQuiz() {
     const navigate = useNavigate();
     const {lesson, courseId, lessonId} = useOutletContext();
 
     if (!lesson || !lesson.quizzes || lesson.quizzes.length === 0) {
-        return <div className="lesson-quiz">Тест не найден.</div>;
+        return <ContentNotFound message="Тест не найден" />;
     }
 
     const quiz = lesson.quizzes[0];
@@ -23,7 +24,7 @@ export default function LessonQuiz() {
                 <h2>{quiz.title}</h2>
                 <p>{quiz.description}</p>
                 <p>
-                    Максимальный балл за этот тест — <strong>{quiz.questions.length}</strong>. Правильный ответ только один.
+                    Максимальный балл за этот тест — <strong>{quiz.questions?.length}</strong>. Правильный ответ только один.
                 </p>
             </div>
             <button className="btn" onClick={handleStart}>Начать</button>

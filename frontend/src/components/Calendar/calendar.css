@@ -1,3 +1,7 @@
+.events-wrapper {
+  flex-grow: 1;
+}
+
 .event-card {
   text-decoration: none;
 }

@@ -5,6 +5,7 @@ import ArrowIcon from "../../assets/images/ArrowIcon.jsx";
 import BackIcon from "../../assets/images/BackIcon.jsx";
 import { useAppData } from "../../contexts/AppDataContext.jsx";
 import handleImageError from "../helpers/handleImageError.js";
+import ContentNotFound from "../ContentNotFound/ContentNotFound.jsx";
 
 export default function Lessons({ user }) {
     const navigate = useNavigate();
@@ -52,7 +53,7 @@ export default function Lessons({ user }) {
                 <p>{courseDescr}</p>
             </div>
 
-            {lessons.length ? lessons.map((lesson, index) => (
+            {lessons?.length ? lessons?.map((lesson, index) => (
                 <div className="lesson-block" key={lesson.id}>
                     <p>Урок {index + 1}</p>
                     <div
@@ -73,7 +74,7 @@ export default function Lessons({ user }) {
                     </div>
                 </div>
             )) : (
-                <div>Уроки не найдены</div>
+               <ContentNotFound message="Уроки не найдены" />
             )}
         </div>
     );

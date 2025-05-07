@@ -142,18 +142,18 @@ export default function LessonQuizTest({ user }) {
         );
     }
 
-    const question = quiz.questions[currentQuestionIndex];
+    const question = quiz?.questions && quiz.questions[currentQuestionIndex];
 
     return (
         <div className="quiz">
             <div className="quiz-question">
                 <div className="progress">
-                    <p>Вопрос {currentQuestionIndex + 1} из {quiz.questions.length}</p>
-                    <progress value={currentQuestionIndex + 1} max={quiz.questions.length}></progress>
+                    <p>Вопрос {currentQuestionIndex + 1} из {quiz?.questions?.length || 0}</p>
+                    <progress value={currentQuestionIndex + 1} max={quiz?.questions?.length}></progress>
                 </div>
-                <h2>{question.text}</h2>
+                <h2>{question?.text}</h2>
                 <div className="quiz-answers">
-                    {question.answers.map(answer => {
+                    {question?.answers?.map(answer => {
                         const isSelected = selectedAnswer === answer.id;
                         const highlight = isAnswered
                             ? answer.correct ? 'correct' : (isSelected ? 'incorrect' : '') : '';

@@ -54,6 +54,7 @@
 
 .content .questions-wrapper {
     gap: 12px;
+    flex-grow: 1;
 }
 
 .questions-form-wrapper .btn {

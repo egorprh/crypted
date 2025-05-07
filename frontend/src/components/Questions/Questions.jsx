@@ -4,6 +4,7 @@ import ArrowIcon from "../../assets/images/ArrowIcon.jsx";
 import { useAppData } from "../../contexts/AppDataContext.jsx";
 import getConfigValue from "../helpers/getConfigValue.js";
 import handleImageError from "../helpers/handleImageError.js";
+import ContentNotFound from "../ContentNotFound/ContentNotFound.jsx";
 
 export default function Questions() {
     const {data, loading, error} = useAppData();
@@ -61,7 +62,7 @@ export default function Questions() {
                                 {item.answer}
                             </p>
                         </div>
-                    )) : <div>Вопросы не найдены</div>
+                    )) : <ContentNotFound message="Нет вопросов" />
                 )}
             </div>
         </div>

@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import "./calendar.css";
 import { useAppData } from "../../contexts/AppDataContext.jsx";
 import handleImageError from "../helpers/handleImageError.js";
+import ContentNotFound from "../ContentNotFound/ContentNotFound.jsx";
 
 export default function Calendar() {
     const { data, loading, error } = useAppData();
@@ -13,7 +14,7 @@ export default function Calendar() {
         <div className="content main-content">
             <h2 className="title">Ближайшие ивенты</h2>
 
-            <div className="wrapper">
+            <div className="wrapper events-wrapper">
                 {loading ? (
                     <div className="loading">Загрузка событий...</div>
                 ) : data?.events?.length ? (
@@ -35,7 +36,7 @@ export default function Calendar() {
                         </Link>
                     ))
                 ) : (
-                    <div>События не найдены</div>
+                    <ContentNotFound message="Нет ближайших ивентов" />
                 )}
             </div>
         </div>
