@@ -90,9 +90,19 @@
 }
 
 .survey-banner {
+  padding: 15px;
   margin-bottom: 20px;
+  border: 2px solid var(--gray-200);
+  border-radius: var(--brs-md);
+  text-align: center;
+}
+
+.survey-banner .btn {
+  width: 100%;
+  margin-top: 10px;
 }
 
 .survey-banner p {
   margin-bottom: 10px;
+  font-size: var(--fs-s);
 }
