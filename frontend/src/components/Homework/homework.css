@@ -1,3 +1,7 @@
+.hw-wrapper {
+    flex-grow: 1;
+}
+
 .hw-card {
     padding: 15px 20px;
     background-color: var(--secondary);

@@ -6,6 +6,7 @@ import BackIcon from "../../assets/images/BackIcon.jsx";
 import '../LessonQuizTest/lesson-quiz-test.css';
 import '../QuizResults/quiz-results.css';
 import { useAppData } from "../../contexts/AppDataContext.jsx";
+import ContentNotFound from "../ContentNotFound/ContentNotFound.jsx";
 
 export default function QuizResults({ user }) {
     const { quizId } = useParams();
@@ -97,7 +98,7 @@ export default function QuizResults({ user }) {
                         </div>
                     ))
                     :
-                    <p>Нет ответов</p>
+                    <ContentNotFound message="Не удалось загрузить результаты теста" />
                 }
                 <button className="btn" onClick={repeatQuiz}>Пройти заново</button>
             </div>

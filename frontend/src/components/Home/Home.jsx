@@ -5,6 +5,7 @@ import Alert from '../ui/Alert/Alert.jsx';
 import './home.css';
 import { useAppData } from '../../contexts/AppDataContext.jsx';
 import { useSurvey } from '../../contexts/SurveyContext.jsx';
+import ContentNotFound from "../ContentNotFound/ContentNotFound.jsx";
 
 export default function Home({ user }) {
     const navigate = useNavigate();
@@ -77,7 +78,7 @@ export default function Home({ user }) {
                         </div>
                     ))
                 ) : (
-                    <div>Курсы не найдены</div>
+                    <ContentNotFound message="Курсы не найдены" />
                 )}
             </section>
 

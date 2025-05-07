@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import NextIcon from "../../assets/images/NextIcon.jsx";
 import './homework.css';
 import { useAppData } from "../../contexts/AppDataContext.jsx";
+import ContentNotFound from "../ContentNotFound/ContentNotFound.jsx";
 
 export default function Homework() {
     const navigate = useNavigate();
@@ -29,7 +30,7 @@ export default function Homework() {
         <div className="content main-content">
             <h2>Мои задания</h2>
 
-            <div className="wrapper">
+            <div className="wrapper hw-wrapper">
                 {loading ? (
                     <div className="loading">Загрузка заданий...</div>
                 ) : (
@@ -50,7 +51,7 @@ export default function Homework() {
                             </div>
                         ))
                     ) : (
-                        <div>У вас пока нет заданий</div>
+                       <ContentNotFound message="У вас пока нет заданий" />
                     )
                 )}
             </div>

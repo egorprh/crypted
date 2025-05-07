@@ -6,6 +6,13 @@
     gap: 8px;
 }
 
+.quiz-container main {
+    height: 100%;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border: 8px solid transparent;
+}
+
 .quiz-footer {
     display: flex;
     flex-direction: column;

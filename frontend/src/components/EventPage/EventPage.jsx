@@ -4,6 +4,7 @@ import './eventpage.css';
 import BackIcon from '../../assets/images/BackIcon.jsx';
 import { useAppData } from '../../contexts/AppDataContext.jsx';
 import getConfigValue from "../helpers/getConfigValue.js";
+import ContentNotFound from "../ContentNotFound/ContentNotFound.jsx";
 
 export default function EventPage() {
     const { id } = useParams();
@@ -27,7 +28,7 @@ export default function EventPage() {
     }
 
     if (!event) {
-        return <div className="content">Событие не найдено</div>;
+        return <div className="content"><ContentNotFound message="Событие не найдено" /></div>;
     }
 
     return (

@@ -3,6 +3,7 @@ import { useNavigate, useOutletContext } from 'react-router-dom';
 import DownloadIcon from "../../assets/images/DownloadIcon.jsx";
 import '../Lesson/lesson.css';
 import './lesson-materials.css';
+import ContentNotFound from "../ContentNotFound/ContentNotFound.jsx";
 
 export default function LessonMaterials() {
     const {lesson, lessonId, courseId} = useOutletContext();
@@ -14,7 +15,7 @@ export default function LessonMaterials() {
 
     return (
         <div className="lesson-container">
-            <div>
+            <div className="materials-wrapper">
                 <h2>{lesson.title}</h2>
 
                 {lesson?.materials?.length > 0 ? (
@@ -35,7 +36,7 @@ export default function LessonMaterials() {
                         </div>
                     ))
                 ) : (
-                    <p>Материалы не найдены.</p>
+                    <ContentNotFound message="Материалы не найдены" />
                 )}
             </div>
             <button className="btn" onClick={clickNextBtn}>Далее</button>
