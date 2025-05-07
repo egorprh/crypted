@@ -118,7 +118,7 @@ h1, h2, h3 {
 .badge {
   width: min-content;
   background-color: var(--white);
-  color: black;
+  color: var(--secondary);
   font-size: var(--fs-xxs);
   padding: 4px 10px;
   border-radius: var(--brs-md);
