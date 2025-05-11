@@ -264,7 +264,7 @@ async def get_app_data(user_id: int):
 
     courses = await db.get_records("courses", {"visible": True})
     for course in courses:
-        lessons = await db.get_records("lessons", {"course_id": course["id"]})
+        lessons = await db.get_records_sql("SELECT * FROM lessons WHERE course_id = $1 AND visible = $2 ORDER BY id", course["id"], True)
         for lesson in lessons:
             lesson["materials"] = await db.get_records_sql("SELECT * FROM materials WHERE lesson_id = $1 AND visible = $2 ORDER BY id", lesson["id"], True)
             lesson["quizzes"] = await db.get_records_sql("SELECT * FROM quizzes WHERE lesson_id = $1 AND visible = $2 ORDER BY id", lesson["id"], True)
