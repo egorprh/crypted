@@ -46,8 +46,7 @@
   }
   
   .lesson-card img {
-    width: 80px;
-    height: 56px;
+    height: 60px;
     border-radius: var(--brs-sm);
     object-fit: cover;
   }
