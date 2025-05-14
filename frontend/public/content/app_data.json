@@ -15,15 +15,16 @@
                     "title": "Урок 1: Что такое криптовалюта и чем она лучше других активов?",
                     "description": null,
                     "video_url": "https://rutube.ru/play/embed/cce5cd139a6cba94c06ff38dd00d4e23/",
+                    "source_url": "source_url",
                     "course_id": 1,
-                    "image": null,
+                    "image": "/images/course1/lesson1.png",
                     "visible": true,
                     "materials": [
                         {
                             "id": 1,
                             "title": "Материал к уроку 1",
                             "description": "",
-                            "url": "/materials/Что_такое_криптовалюта_и_почему_она_лучше.pdf",
+                            "url": "https://disk.yandex.ru/i/wCwZaP1QKiviUQ",
                             "visible": true,
                             "lesson_id": 1
                         }
@@ -366,14 +367,14 @@
                     "description": null,
                     "video_url": "https://rutube.ru/play/embed/3620513b2c2ca332018cdb61d421efce/",
                     "course_id": 1,
-                    "image": null,
+                    "image": "/images/course1/lesson2.png",
                     "visible": true,
                     "materials": [
                         {
                             "id": 2,
                             "title": "Материал к уроку 2",
                             "description": "",
-                            "url": "/materials/Как_выбрать_биржу_и_пополнить_счёт.pdf",
+                            "url": "https://disk.yandex.ru/i/C3pGGzCro5D62w",
                             "visible": true,
                             "lesson_id": 2
                         }
@@ -556,7 +557,7 @@
                     "description": null,
                     "video_url": "https://rutube.ru/play/embed/8c47de13d727a9a46c3e47acbfcd1325/",
                     "course_id": 1,
-                    "image": null,
+                    "image": "/images/course1/lesson3.png",
                     "visible": true,
                     "materials": [],
                     "quizzes": [
@@ -737,14 +738,14 @@
                     "description": null,
                     "video_url": "https://rutube.ru/play/embed/04aacf9cd57081978721bb222e1d3ed1/",
                     "course_id": 1,
-                    "image": null,
+                    "image": "/images/course1/lesson4.png",
                     "visible": true,
                     "materials": [
                         {
                             "id": 3,
                             "title": "Материал к уроку 4",
                             "description": "",
-                            "url": "/materials/Виды стратегий, и как её выбрать.pdf",
+                            "url": "https://disk.yandex.ru/i/Mr8WyyUJeVJl2w",
                             "visible": true,
                             "lesson_id": 4
                         }
@@ -1087,14 +1088,14 @@
                     "description": null,
                     "video_url": "https://rutube.ru/play/embed/0e8287ba60bc585a090fd8c769936454/",
                     "course_id": 1,
-                    "image": null,
+                    "image": "/images/course1/lesson5.png",
                     "visible": true,
                     "materials": [
                         {
                             "id": 4,
                             "title": "Материал к уроку 5",
                             "description": "",
-                            "url": "/materials/Винрэйт и RR.pdf",
+                            "url": "https://disk.yandex.ru/i/L7vCn2AoBsqB6w",
                             "visible": true,
                             "lesson_id": 5
                         }
@@ -1437,14 +1438,14 @@
                     "description": null,
                     "video_url": "https://rutube.ru/play/embed/8ec9a6e1365ec4bad7490d92de8fe3f6/",
                     "course_id": 1,
-                    "image": null,
+                    "image": "/images/course1/lesson6.png",
                     "visible": true,
                     "materials": [
                         {
                             "id": 5,
                             "title": "Материал к уроку 6",
                             "description": "",
-                            "url": "/materials/РМ.pdf",
+                            "url": "https://disk.yandex.ru/i/ypFuArErYUfWXw",
                             "visible": true,
                             "lesson_id": 6
                         }
@@ -1627,14 +1628,14 @@
                     "description": null,
                     "video_url": "https://rutube.ru/play/embed/1e8d737544b1285ddc5aad53112f0161/",
                     "course_id": 1,
-                    "image": null,
+                    "image": "/images/course1/lesson7.png",
                     "visible": true,
                     "materials": [
                         {
                             "id": 6,
                             "title": "Материал к уроку 7",
                             "description": "",
-                            "url": "/materials/Как работает рынок.pdf",
+                            "url": "https://disk.yandex.ru/i/TDZpkYAyQGuoyA",
                             "visible": true,
                             "lesson_id": 7
                         }
@@ -1977,14 +1978,14 @@
                     "description": null,
                     "video_url": "https://rutube.ru/play/embed/a128566ba9b9a4a8234c5105df738b21/",
                     "course_id": 1,
-                    "image": null,
+                    "image": "/images/course1/lesson8.png",
                     "visible": true,
                     "materials": [
                         {
                             "id": 7,
                             "title": "Материал к уроку 8",
                             "description": "",
-                            "url": "/materials/Свобода.pdf",
+                            "url": "https://disk.yandex.ru/i/Vc9EUOBx8l32Rw",
                             "visible": true,
                             "lesson_id": 8
                         }
@@ -2167,14 +2168,14 @@
                     "description": null,
                     "video_url": "https://rutube.ru/play/embed/626342577faa6a1f65a0bc1add5bb8a0/",
                     "course_id": 1,
-                    "image": null,
+                    "image": "/images/course1/lesson9.png",
                     "visible": true,
                     "materials": [
                         {
                             "id": 8,
                             "title": "Материал к уроку 9",
                             "description": "",
-                            "url": "/materials/dept - это экосистема.pdf",
+                            "url": "https://disk.yandex.ru/i/8gOImnUBDV5T9g",
                             "visible": true,
                             "lesson_id": 9
                         }
@@ -2365,19 +2366,37 @@
         },
         {
             "id": 2,
-            "question": "Как начать обучение на платформе?",
+            "question": "Как начать обучаться?",
             "answer": "Для начала обучения зарегистрируйтесь на сайте, выберите подходящий курс и следуйте инструкциям в личном кабинете.",
             "visible": true
         },
         {
             "id": 3,
-            "question": "Есть ли бесплатные материалы?",
+            "question": "Какие есть тарифы для обучения?",
             "answer": "Да, на платформе доступны бесплатные материалы, включая открытый канал с обучающими постами и новостями.",
             "visible": true
         },
         {
             "id": 4,
-            "question": "Как связаться с поддержкой?",
+            "question": "Есть ли сертификаты после прохождения курсов?",
+            "answer": "Да, на платформе доступны бесплатные материалы, включая открытый канал с обучающими постами и новостями.",
+            "visible": true
+        },
+        {
+            "id": 5,
+            "question": "Можно ли учиться с телефона?",
+            "answer": "Да, на платформе доступны бесплатные материалы, включая открытый канал с обучающими постами и новостями.",
+            "visible": true
+        },
+        {
+            "id": 6,
+            "question": "Сколько времени в среднем нужно на курс?",
+            "answer": "Да, на платформе доступны бесплатные материалы, включая открытый канал с обучающими постами и новостями.",
+            "visible": true
+        },
+        {
+            "id": 7,
+            "question": "Что такое D-Closed?",
             "answer": "Вы можете связаться с поддержкой через форму обратной связи на сайте или написав в чат комьюнити.",
             "visible": true
         }
@@ -2408,31 +2427,5 @@
             "name": "bot_link",
             "value": "https://t.me/dspace_bot"
         }
-    ],
-    "enter_survey": {
-        "id": 1,
-        "title": "Входное тестирование",
-        "description": "Пройди входное тестирование для доступа к курсам",
-        "visible": true,
-        "questions": [
-            {
-                "id": 1,
-                "text": "Ваш номер телефона",
-                "type": "phone",
-                "answers": []
-            },
-            {
-                "id": 2,
-                "text": "Ваше ФИО",
-                "type": "text",
-                "answers": []
-            },
-            {
-                "id": 3,
-                "text": "Сколько вам лет?",
-                "type": "age",
-                "answers": []
-            }
-        ]
-    }
+    ]
 }
