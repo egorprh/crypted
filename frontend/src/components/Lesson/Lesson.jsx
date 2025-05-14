@@ -24,7 +24,7 @@ export default function Lesson() {
                     </div>
                 )}
 
-                {lesson.source_url && <div className="source_url_link">Если видео не запускается перейдите по <a target="_blank" href={lesson.source_url}>ссылке</a></div>}
+                {lesson.source_url && lesson.source_url.trim() && <div className="source_url_link">Если видео не запускается перейдите по <a target="_blank" href={lesson.source_url}>ссылке</a></div>}
 
                 <h2>{lesson.title}</h2>
 
