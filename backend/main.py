@@ -146,6 +146,7 @@ async def trigger_event(event_name: str, user_id: int, instance_id: int, data: A
 {formatted_answers}
         """
     elif event_name == 'course_completed':
+        course = await db.get_record("courses", {"id": instance_id})
         text = f"""
         Переход в курс DSpace!
 
@@ -158,6 +159,30 @@ async def trigger_event(event_name: str, user_id: int, instance_id: int, data: A
     logger.info(f"Triggered event: {params}")
 
     return event_id
+
+
+async def get_user_homeworks_by_course(user_id: int, course_id: int):
+    homeworks_sql = f"""
+        SELECT 
+            up.id, 
+            up.quiz_id, 
+            up.user_id, 
+            up.progress, 
+            c.title AS course_title, 
+            l.title AS lesson_title
+        FROM quiz_attempts up
+        LEFT JOIN quizzes q ON up.quiz_id = q.id
+        LEFT JOIN lessons l ON q.lesson_id = l.id
+        LEFT JOIN courses c ON l.course_id = c.id
+        WHERE up.id IN (
+            SELECT MAX(up_inner.id)
+            FROM quiz_attempts up_inner
+            WHERE up_inner.user_id = {user_id}
+            GROUP BY up_inner.quiz_id
+        )
+        AND up.user_id = {user_id} AND c.id = {course_id} ORDER BY up.id DESC;
+    """
+    return await db.get_records_sql(homeworks_sql)
 
 
 @app.get("/api/ping")
@@ -250,9 +275,15 @@ async def save_attempt(request: Request):
             # Вызов метода insert_record
             await db.insert_record('user_answers', params)
 
-        if False:
-            asyncio.create_task(trigger_event('course_completed', user["id"], request["courseId"]))
+        # Получаем количество ДЗ в курсе
+        count_homeworks = await db.get_records_sql(
+            f"SELECT q.id FROM quizzes q LEFT JOIN lessons l ON q.lesson_id = l.id WHERE l.course_id = {request['courseId']} AND q.visible = True")
+        user_homeworks = await get_user_homeworks_by_course(user["id"], request["courseId"])
+        
+        if len(count_homeworks) == len(user_homeworks):
+            asyncio.create_task(trigger_event('course_completed', int(user["id"]), int(request["courseId"])))
 
+        logger.info(f"User {user['id']} completed the quiz {request['quizId']}.")
 
         # Возвращаем успешный ответ
         return {
@@ -314,7 +345,7 @@ async def get_app_data(user_id: int):
             WHERE up_inner.user_id = {user["id"]}
             GROUP BY up_inner.quiz_id
         )
-        AND up.user_id = {user["id"]} ORDER BY up.id DESC;
+        AND up.user_id = {user["id"]} ORDER BY q.id ASC;
     """
     homeworks = await db.get_records_sql(homeworks_sql)
     for homework in homeworks:

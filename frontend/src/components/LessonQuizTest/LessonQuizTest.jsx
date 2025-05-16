@@ -76,6 +76,7 @@ export default function LessonQuizTest({ user }) {
             body: JSON.stringify({
                 userId,
                 quizId: quiz.id,
+                courseId: courseId,
                 progress,
                 answers: userAnswers
             })
