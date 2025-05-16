@@ -1,12 +1,8 @@
 import json
-
-from click import Command
 from logger import logger
 import asyncio
-import re
 import os
 import random
-import csv
 from aiogram import Bot, Dispatcher, types, F
 from aiogram.enums import ParseMode, ChatAction
 from aiogram.types import Message, CallbackQuery, ChatJoinRequest, FSInputFile, KeyboardButton, ReplyKeyboardMarkup
@@ -81,7 +77,7 @@ async def main():
     dp.message.middleware(AntiSpamMiddleware(bot))
     dp.callback_query.middleware(AntiSpamMiddleware(bot))
 
-    await dp.start_polling(bot)
+    await dp.start_polling(bot, drop_pending_updates=True)
     await bot.send_message(ADMINS, text="Бот остановлен")
 
 

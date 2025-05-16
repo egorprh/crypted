@@ -1,4 +1,5 @@
 .env
+.env-dev
 pgadmin-data
 postgres-data
 crypted
@@ -6,3 +7,4 @@ backend/__pycache__
 backend/db/__pycache__
 backend/db_dumps
 crypted.zip
+telegram_bot/__pycache__

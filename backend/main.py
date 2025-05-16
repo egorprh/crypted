@@ -10,7 +10,7 @@ from fastapi.responses import FileResponse
 from contextlib import asynccontextmanager
 from typing import Any, AsyncGenerator, Dict
 from db.pgapi import PGApi
-from telegram_bot.bot import send_service_message,bot
+from telegram_bot import send_service_message, bot
 import json
 from logger import logger  # Импортируем логгер
 
