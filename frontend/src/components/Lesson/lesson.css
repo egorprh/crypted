@@ -58,3 +58,7 @@
     line-height: 1.4;
     color: var(--white);
 }
+
+.source_url_link {
+    margin-bottom: 10px;
+}
