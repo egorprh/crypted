@@ -10,7 +10,7 @@ from fastapi.responses import FileResponse
 from contextlib import asynccontextmanager
 from typing import Any, AsyncGenerator, Dict
 from db.pgapi import PGApi
-from telegram_bot import send_service_message, bot
+from telegram_bot.bot import send_service_message,bot
 import json
 from logger import logger  # Импортируем логгер
 
@@ -136,14 +136,20 @@ async def trigger_event(event_name: str, user_id: int, instance_id: int, data: A
         text = f"""
         Переход в курс DSpace!
 
-Пользователь @{user["username"]} зашел в курс "{course['title']}"
+Пользователь @{user["username"]} {user["first_name"]} {user["last_name"]} зашел в курс "{course['title']}"
         """
     elif event_name == 'enter_survey':
         formatted_answers = "\n".join([f"<b>{question['question']}</b>: {question['answer']}" for question in data])
         text = f"""
-        Пользователь @{user["username"]} прошел входное тестирование в DSpace!
+        Пользователь @{user["username"]} {user["first_name"]} {user["last_name"]} прошел входное тестирование в DSpace!
 
 {formatted_answers}
+        """
+    elif event_name == 'course_completed':
+        text = f"""
+        Переход в курс DSpace!
+
+Пользователь @{user["username"]} {user["first_name"]} {user["last_name"]} прошел все тесты в курсе "{course['title']}"
         """
     
     if text:
@@ -163,14 +169,16 @@ async def ping():
 @app.post("/api/save_user")
 async def save_user(request: Request):
     request = await request.json()
+    logger.info(f"Запрос /api/save_user: {request}")
     params = {
-        "telegram_id": request["telegram_id"],
-        "username": request["username"],
-        "first_name": request["first_name"],
-        "last_name": request["last_name"],
+        "telegram_id": request["telegram_id"],  # обязательное поле
+        "username": request.get("username", ""),  # если нет - пустая строка
+        "first_name": request.get("first_name", ""),  # если нет - пустая строка
+        "last_name": request.get("last_name", ""),  # если нет - пустая строка
     }
-    # Вызов метода insert_record
-    if await db.get_record('users', {'telegram_id':request["telegram_id"]}) is None:
+    # Проверяем существование пользователя
+    if await db.get_record('users', {'telegram_id': request["telegram_id"]}) is None:
+        logger.info(f"Создаем пользователя: {params}")
         await db.insert_record('users', params)
 
 
@@ -241,6 +249,10 @@ async def save_attempt(request: Request):
             }
             # Вызов метода insert_record
             await db.insert_record('user_answers', params)
+
+        if False:
+            asyncio.create_task(trigger_event('course_completed', user["id"], request["courseId"]))
+
 
         # Возвращаем успешный ответ
         return {

@@ -48,7 +48,6 @@ export const AppDataProvider = ({ children }) => {
 
         const userId = u?.id ? u.id : 0;
 
-        // TODO Кнопка рефреша данных
         fetch(`/api/get_app_data?user_id=${userId}`)
             .then(res => {
                 if (!res.ok) throw new Error("Ошибка загрузки данных");
@@ -63,6 +62,22 @@ export const AppDataProvider = ({ children }) => {
                 setLoading(false);
             })
             .finally(() => setAppReady(true));
+
+        // Оставляем для отладки
+        // fetch("/content/app_data.json")
+        //     .then(res => {
+        //         if (!res.ok) throw new Error("Ошибка загрузки данных");
+        //         return res.json();
+        //     })
+        //     .then(data => {
+        //         setData(data);
+        //         setLoading(false);
+        //     })
+        //     .catch(error => {
+        //         setError(error.message);
+        //         setLoading(false);
+        //     })
+        //     .finally(() => setAppReady(true));
     }, []);
 
     return (

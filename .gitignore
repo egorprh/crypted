@@ -4,4 +4,5 @@ postgres-data
 crypted
 backend/__pycache__
 backend/db/__pycache__
+backend/db_dumps
 crypted.zip

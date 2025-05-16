@@ -2,7 +2,7 @@
 CREATE TABLE IF NOT EXISTS users (
     id BIGSERIAL PRIMARY KEY,
     telegram_id BIGINT UNIQUE NOT NULL,
-    username VARCHAR(255) UNIQUE NOT NULL,
+    username VARCHAR(255) DEFAULT NULL,
     first_name VARCHAR(255),
     last_name VARCHAR(255),
     time_modified TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
@@ -39,6 +39,7 @@ CREATE TABLE IF NOT EXISTS lessons (
     title VARCHAR(255),
     description TEXT,
     video_url VARCHAR(255),
+    source_url VARCHAR(255),
     course_id BIGINT REFERENCES courses(id) ON DELETE CASCADE,
     image VARCHAR(255),
     visible BOOLEAN DEFAULT TRUE,
