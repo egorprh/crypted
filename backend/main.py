@@ -305,6 +305,11 @@ async def save_attempt(request: Request):
 async def get_app_data(user_id: int):
     user = await db.get_record("users", {"telegram_id": user_id})
 
+    # Если пользователь не найден, берем служебного гостя
+    if user is None:
+        logger.info(f"--> Пользователь не найден, берем служебного гостя")
+        user = await db.get_record("users", {"telegram_id": 0})
+
     courses = await db.get_records("courses", {"visible": True})
     for course in courses:
         lessons = await db.get_records_sql("SELECT * FROM lessons WHERE course_id = $1 AND visible = $2 ORDER BY id", course["id"], True)
