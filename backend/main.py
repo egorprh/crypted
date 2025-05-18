@@ -308,7 +308,11 @@ async def get_app_data(user_id: int):
     # Если пользователь не найден, берем служебного гостя
     if user is None:
         logger.info(f"--> Пользователь не найден, берем служебного гостя")
+<<<<<<< HEAD
         user = await db.get_record("users", {"telegram_id": 0})
+=======
+        user = await db.insert_record("users", {"telegram_id": 0})
+>>>>>>> a3ec48e3cf98a8859baeb94eeea762922f5c6d45
 
     courses = await db.get_records("courses", {"visible": True})
     for course in courses:
