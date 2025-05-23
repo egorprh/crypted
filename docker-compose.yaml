@@ -70,27 +70,28 @@ services:
     expose:
       - "8000"
 
-  telegram-bot:
-    build:
-      context: .
-      dockerfile: telegram_bot/Dockerfile.bot
-    volumes:
-      - ./telegram_bot:/app
-    env_file:
-      - ".env"
-    environment:
-      BOT_TOKEN: $BOT_TOKEN
-      ADMINS: $ADMINS
-      PRIVATE_CHANNEL_ID: $PRIVATE_CHANNEL_ID
-    depends_on:
-      - backend
+  # telegram-bot:
+  #   build:
+  #     context: .
+  #     dockerfile: telegram_bot/Dockerfile.bot
+  #   volumes:
+  #     - ./telegram_bot:/app
+  #   env_file:
+  #     - ".env"
+  #   environment:
+  #     BOT_TOKEN: $BOT_TOKEN
+  #     ADMINS: $ADMINS
+  #     PRIVATE_CHANNEL_ID: $PRIVATE_CHANNEL_ID
+  #   depends_on:
+  #     - backend
 
   nginx:
     image: nginx:alpine
     container_name: nginx_proxy
+    restart: always
     ports:
-      - "80:80"
-      - "443:443"
+      - "8080:80"    # 8080 (хост) → 80 (контейнер)
+      - "8443:443"   # 8443 (хост) → 443 (контейнер)
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./frontend/dist:/var/www/deptspace.prhdevs.ru/html:ro
