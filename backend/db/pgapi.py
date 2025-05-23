@@ -1,3 +1,4 @@
+import asyncio
 from datetime import datetime
 import os
 from typing import Any, Dict, Optional, Type, Union
@@ -193,36 +194,44 @@ class PGApi:
                 await self.execute(sql, execute=True)
 
 
-    async def create_db_dump(self, dump_dir: str = "./db_dumps"):
-        """
-        Создает дамп базы данных и сохраняет его в указанной директории.
-        :param dump_dir: Директория для сохранения дампа.
-        """
-        # Убедитесь, что директория для дампов существует
-        os.makedirs(dump_dir, exist_ok=True)
-
-        # Формируем имя файла дампа с текущей датой
-        timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-        dump_file = os.path.join(dump_dir, f"db_dump.sql")
-
-        # Загружаем конфигурацию
-        config = load_config("../.env")
-
-        # Устанавливаем переменную окружения PGPASSWORD
-        os.environ["PGPASSWORD"] = config.db.password
-
-        # Команда для создания дампа
-        command = [
-            "pg_dump",
-            f"--host={config.db.host}",
-            f"--username={config.db.user}",
-            f"--dbname={config.db.database}",
-            f"--file={dump_file}"
-        ]
-
+    async def create_db_dump(self, dump_dir: str = "./db_dumps") -> bool:
+        """Создаёт дамп БД с безопасной обработкой пароля и ошибок."""
         try:
-            # Выполняем команду через subprocess
-            subprocess.run(command, check=True)
-            logger.info(f"Дамп базы данных успешно создан: {dump_file}")
-        except subprocess.CalledProcessError as e:
-            logger.error(f"Ошибка при создании дампа базы данных: {e}")
+            os.makedirs(dump_dir, exist_ok=True)
+            timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+            dump_file = os.path.join(dump_dir, f"db_dump_{timestamp}.sql")
+            
+            config = load_config(os.path.abspath("../.env"))
+            if not all([config.db.host, config.db.user, config.db.password, config.db.database]):
+                raise ValueError("Неполная конфигурация БД")
+
+            # Используем stdin для передачи пароля (если pg_dump поддерживает)
+            command = [
+                "pg_dump",
+                f"--host={config.db.host}",
+                f"--username={config.db.user}",
+                f"--dbname={config.db.database}",
+                f"--file={dump_file}"
+            ]
+
+            env = os.environ.copy()
+            env["PGPASSWORD"] = config.db.password
+            
+            process = await asyncio.create_subprocess_exec(
+                *command,
+                env=env,
+                stderr=asyncio.subprocess.PIPE
+            )
+            await process.wait()
+            
+            if process.returncode != 0:
+                stderr = await process.stderr.read()
+                logger.error(f"Ошибка pg_dump: {stderr.decode()}")
+                return False
+                
+            logger.info(f"Дамп создан: {dump_file}")
+            return True
+
+        except Exception as e:
+            logger.error(f"Ошибка: {e}", exc_info=True)
+            return False

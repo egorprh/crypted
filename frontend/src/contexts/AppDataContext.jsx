@@ -20,13 +20,13 @@ export const AppDataProvider = ({ children }) => {
         if (!u) {
             userData = {
                 telegram_id: 0,
-                username: 'luckyman',
-                first_name: 'luckyman',
-                last_name: 'luckyman',
+                username: 'spaceuser',
+                first_name: 'spaceuser',
+                last_name: 'spaceuser',
             };
             setUser({
                 id: 0,
-                username: 'luckyman',
+                username: 'spaceuser',
                 photo_url: '/images/user.png',
             });
         } else {
