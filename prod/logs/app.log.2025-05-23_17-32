@@ -1,0 +1,3 @@
+2025-05-23 17:32:32,924 [INFO] Запрос /api/save_user: {'telegram_id': 879050196, 'username': 'fsl13', 'first_name': 'Serega', 'last_name': 'FSL'}
+2025-05-23 17:32:51,393 [INFO] Triggered event: {'user_id': 658, 'instance_id': 1, 'action': 'course_viewed'}
+2025-05-23 17:33:15,983 [INFO] Запрос /api/save_user: {'telegram_id': 879050196, 'username': 'fsl13', 'first_name': 'Serega', 'last_name': 'FSL'}

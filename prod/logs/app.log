@@ -1,0 +1,1 @@
+2025-05-23 17:33:38,541 [INFO] Запрос /api/save_user: {'telegram_id': 7434037151, 'username': 'FirsoffU', 'first_name': 'Юрий', 'last_name': ''}
