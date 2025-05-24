@@ -1,3 +1,4 @@
+import datetime
 import os
 import psycopg2
 import gspread
@@ -38,7 +39,8 @@ class PostgresToSheetsSync:
             # Получаем или создаем нужные вкладки
             self.survey_sheet = self._get_or_create_worksheet("Survey")
             self.users_sheet = self._get_or_create_worksheet("Users")
-            self.courses_sheet = self._get_or_create_worksheet("Courses")
+            self.course_start = self._get_or_create_worksheet("Course Start")
+            self.course_zones = self._get_or_create_worksheet("Course Zones")
             
             print("Успешное подключение к Google Sheets")
             
@@ -174,6 +176,64 @@ class PostgresToSheetsSync:
         except Exception as e:
             print(f"Ошибка при получении данных пользователей: {str(e)}")
             raise
+
+
+    def fetch_course_data(self, courseid):
+        """Получает данные пользователей для вкладки Курса"""
+        try:
+            with self.pg_conn.cursor() as cursor:
+                cursor.execute(f"""
+                    SELECT 
+                        u.id AS user_id,
+                        u.telegram_id,
+                        u.username,
+                        u.first_name,
+                        u.last_name,
+                        MIN(CASE WHEN ual.action = 'course_viewed' AND ual.instance_id = {courseid} THEN ual.time_created END) AS first_course_view,
+                        MIN(CASE WHEN ual.action = 'course_completed' AND ual.instance_id = {courseid} THEN ual.time_created END) AS course_completion_date
+                    FROM 
+                        users u
+                    LEFT JOIN 
+                        user_actions_log ual ON u.id = ual.user_id 
+                        AND ual.instance_id = {courseid}
+                        AND ual.action IN ('course_viewed', 'course_completed')
+                    GROUP BY 
+                        u.id, u.telegram_id, u.username, u.first_name, u.last_name ORDER BY "course_completion_date", "first_course_view"
+                """)
+                raw_data = cursor.fetchall()
+
+            if not raw_data:
+                print("Нет данных пользователей в PostgreSQL")
+                return None, None
+
+            # Формируем заголовки и строки
+            headers = [
+                'ID',
+                'Telegram ID',
+                'username',
+                'first_name',
+                'last_name',
+                'first_course_view',
+                'course_completion_date'
+            ]
+
+            rows = []
+            for row in raw_data:
+                rows.append([
+                    row[0],  # id
+                    row[1],  # telegram_id
+                    row[2] or '',  # username
+                    row[3] or '',  # first_name
+                    row[4] or '',  # last_name
+                    row[5].strftime('%Y-%m-%d %H:%M:%S') if row[5] and isinstance(row[5], datetime.datetime) else '',  # first_course_view
+                    row[6].strftime('%Y-%m-%d %H:%M:%S') if row[6] and isinstance(row[6], datetime.datetime) else ''  # course_completion_date
+                ])
+
+            return headers, rows
+
+        except Exception as e:
+            print(f"Ошибка при получении данных по курсу: {str(e)}")
+            raise
     
 
     def normalize_question(self, question_text):
@@ -237,6 +297,16 @@ class PostgresToSheetsSync:
                     users_headers, users_rows = self.fetch_users_data()
                     if users_headers and users_rows:
                         self.update_worksheet(self.users_sheet, users_headers, users_rows)
+
+                    # Обновляем данные по курсу 1
+                    course_headers, course_rows = self.fetch_course_data(1)
+                    if course_headers and course_rows:
+                        self.update_worksheet(self.course_start, course_headers, course_rows)
+                    
+                    # Обновляем данные по курсу 2
+                    course_headers, course_rows = self.fetch_course_data(2)
+                    if course_headers and course_rows:
+                        self.update_worksheet(self.course_zones, course_headers, course_rows)
                     
                     # Интервал проверки
                     time.sleep(int(os.getenv('CHECK_INTERVAL', 60)))
