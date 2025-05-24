@@ -413,7 +413,6 @@ async def custom_404_handler(request: Request, exc: StarletteHTTPException):
     return await http_exception_handler(request, exc)
 
 
-
 # Static frontend
 app.mount("/", StaticFiles(directory="../frontend/dist", html=True), name="static")
 

@@ -8,3 +8,4 @@ backend/db/__pycache__
 backend/db_dumps
 crypted.zip
 telegram_bot/__pycache__
+creds.json
