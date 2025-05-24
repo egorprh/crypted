@@ -1,10 +1,17 @@
 import os
 import psycopg2
-from psycopg2 import sql
 import gspread
 import time
 from dotenv import load_dotenv
 from collections import defaultdict
+
+# добавлять новые методы для других вкладок по тому же принципу:
+
+# Создайте метод для получения данных (fetch_*_data())
+
+# Добавьте новую вкладку в setup_google_sheets()
+
+# Вызовите update_worksheet() с нужными параметрами
 
 class PostgresToSheetsSync:
     def __init__(self):
@@ -26,31 +33,33 @@ class PostgresToSheetsSync:
         """Настраивает подключение к Google Sheets"""
         try:
             self.gc = gspread.service_account(filename="creds.json")
-            sheet_name = os.getenv('SHEET_NAME')
-            worksheet_name = os.getenv('WORKSHEET_NAME')
+            self.spreadsheet = self.gc.open(os.getenv('SHEET_NAME'))
             
-            print(f"Подключаемся к таблице: '{sheet_name}', лист: '{worksheet_name}'")
+            # Получаем или создаем нужные вкладки
+            self.survey_sheet = self._get_or_create_worksheet("Survey")
+            self.users_sheet = self._get_or_create_worksheet("Users")
+            self.courses_sheet = self._get_or_create_worksheet("Courses")
             
-            # Проверка доступных таблиц
-            available_sheets = [sh.title for sh in self.gc.openall()]
-            print(f"Доступные таблицы: {available_sheets}")
-            
-            if sheet_name not in available_sheets:
-                raise ValueError(f"Таблица '{sheet_name}' не найдена")
-            
-            self.sheet = self.gc.open(sheet_name).worksheet(worksheet_name)
-            print(f"Успешное подключение к листу: {self.sheet.title}")
+            print("Успешное подключение к Google Sheets")
             
         except Exception as e:
             print(f"Ошибка подключения к Google Sheets: {str(e)}")
-            print("Проверьте:")
-            print("1. Правильность названий таблицы и листа")
-            print("2. Доступ сервисного аккаунта к таблице")
-            print("3. Точное совпадение названий (регистр символов)")
             raise
         
-    def fetch_transformed_data(self):
-        """Получает и преобразует данные из PostgreSQL"""
+
+    def _get_or_create_worksheet(self, worksheet_name):
+        """Получает или создает вкладку с указанным именем"""
+        try:
+            worksheet = self.spreadsheet.worksheet(worksheet_name)
+            print(f"Найдена существующая вкладка: {worksheet_name}")
+            return worksheet
+        except gspread.WorksheetNotFound:
+            print(f"Создаем новую вкладку: {worksheet_name}")
+            return self.spreadsheet.add_worksheet(title=worksheet_name, rows=1000, cols=20)
+        
+
+    def fetch_survey_data(self):
+        """Получает и преобразует данные опроса из PostgreSQL"""
         try:
             with self.pg_conn.cursor() as cursor:
                 cursor.execute(f"""
@@ -69,18 +78,16 @@ class PostgresToSheetsSync:
                 raw_data = cursor.fetchall()
 
             if not raw_data:
-                print("Нет данных в PostgreSQL")
+                print("Нет данных опроса в PostgreSQL")
                 return None, None
 
             # Преобразование данных
             users = defaultdict(dict)
             questions = set()
 
-            print(len(raw_data))
-
             for row in raw_data:
                 user_id = row[0]
-                print(row)
+                
                 # Основная информация о пользователе
                 if not users[user_id]:
                     users[user_id] = {
@@ -117,9 +124,58 @@ class PostgresToSheetsSync:
             return headers, rows
 
         except Exception as e:
-            print(f"Ошибка при получении данных: {str(e)}")
+            print(f"Ошибка при получении данных опроса: {str(e)}")
             raise
     
+    def fetch_users_data(self):
+        """Получает данные пользователей для вкладки Users"""
+        try:
+            with self.pg_conn.cursor() as cursor:
+                cursor.execute("""
+                    SELECT
+                        id,
+                        telegram_id,
+                        username,
+                        first_name,
+                        last_name,
+                        time_created
+                    FROM users
+                    ORDER BY id
+                """)
+                raw_data = cursor.fetchall()
+
+            if not raw_data:
+                print("Нет данных пользователей в PostgreSQL")
+                return None, None
+
+            # Формируем заголовки и строки
+            headers = [
+                'ID',
+                'Telegram ID',
+                'username',
+                'first_name',
+                'last_name',
+                'registration_date'
+            ]
+
+            rows = []
+            for row in raw_data:
+                rows.append([
+                    row[0],  # id
+                    row[1],  # telegram_id
+                    row[2] or '',  # username
+                    row[3] or '',  # first_name
+                    row[4] or '',  # last_name
+                    row[5].strftime('%Y-%m-%d %H:%M:%S') if row[5] else ''  # registration_date
+                ])
+
+            return headers, rows
+
+        except Exception as e:
+            print(f"Ошибка при получении данных пользователей: {str(e)}")
+            raise
+    
+
     def normalize_question(self, question_text):
         """Нормализует текст вопроса для использования как ключа"""
         return (question_text.lower()
@@ -130,22 +186,23 @@ class PostgresToSheetsSync:
                 .replace('"', '')
                 .replace("'", ''))
     
-    def update_sheet_completely(self, headers, rows):
-        """Полностью обновляет данные в Google Sheets с учетом нового API gspread"""
+
+    def update_worksheet(self, worksheet, headers, rows):
+        """Обновляет указанную вкладку данными"""
         try:
-            # Очищаем лист (используем новый метод clear())
-            self.sheet.clear()
+            # Очищаем вкладку
+            worksheet.clear()
             
-            # 1. Подготовка данных для batch_update
+            # Подготовка данных для batch_update
             requests = []
             
-            # 1.1. Добавляем заголовки
+            # Добавляем заголовки
             requests.append({
                 'range': 'A1',
                 'values': [headers]
             })
             
-            # 1.2. Добавляем данные (разбиваем на пакеты)
+            # Добавляем данные (разбиваем на пакеты)
             batch_size = 100
             for i in range(0, len(rows), batch_size):
                 batch = rows[i:i + batch_size]
@@ -156,25 +213,32 @@ class PostgresToSheetsSync:
                     'values': batch
                 })
             
-            # 2. Массовое обновление (один запрос к API)
-            self.sheet.batch_update(requests)
+            # Массовое обновление
+            worksheet.batch_update(requests)
             
-            print(f"Таблица успешно обновлена. Всего строк: {len(rows)}")
+            print(f"Вкладка {worksheet.title} успешно обновлена. Всего строк: {len(rows)}")
             
         except Exception as e:
-            print(f"Ошибка при обновлении таблицы: {str(e)}")
+            print(f"Ошибка при обновлении вкладки {worksheet.title}: {str(e)}")
             raise
     
+
     def run(self):
         """Основной цикл синхронизации"""
         try:
             while True:
                 try:
-                    headers, rows = self.fetch_transformed_data()
-                    if headers and rows:
-                        self.update_sheet_completely(headers, rows)
+                    # Обновляем данные опроса
+                    survey_headers, survey_rows = self.fetch_survey_data()
+                    if survey_headers and survey_rows:
+                        self.update_worksheet(self.survey_sheet, survey_headers, survey_rows)
                     
-                    # Интервал проверки (по умолчанию 60 секунд)
+                    # Обновляем данные пользователей
+                    users_headers, users_rows = self.fetch_users_data()
+                    if users_headers and users_rows:
+                        self.update_worksheet(self.users_sheet, users_headers, users_rows)
+                    
+                    # Интервал проверки
                     time.sleep(int(os.getenv('CHECK_INTERVAL', 60)))
                     
                 except Exception as e:
@@ -184,6 +248,7 @@ class PostgresToSheetsSync:
         finally:
             self.pg_conn.close()
             print("Соединение с PostgreSQL закрыто")
+
 
 if __name__ == "__main__":
     try:
