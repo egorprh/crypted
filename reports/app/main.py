@@ -252,6 +252,7 @@ class PostgresToSheetsSync:
 
 if __name__ == "__main__":
     try:
+        print("=== СКРИПТ ЗАПУЩЕН ===", flush=True)
         sync_service = PostgresToSheetsSync()
         sync_service.run()
     except KeyboardInterrupt:
