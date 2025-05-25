@@ -1,1 +1,0 @@
-import{j as t,O as i}from"./index-uwXKPuh2.js";/* empty css               */function a(){return t.jsx("div",{className:"container quiz-container",children:t.jsx("main",{children:t.jsx(i,{})})})}export{a as default};

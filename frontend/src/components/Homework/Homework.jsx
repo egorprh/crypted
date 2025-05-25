@@ -51,7 +51,7 @@ export default function Homework() {
                             </div>
                         ))
                     ) : (
-                       <ContentNotFound message="Отображение выполненных заданий временно недоступно" />
+                       <ContentNotFound message="Нет выполненных заданий" />
                     )
                 )}
             </div>
