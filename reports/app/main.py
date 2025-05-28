@@ -248,34 +248,45 @@ class PostgresToSheetsSync:
     
 
     def update_worksheet(self, worksheet, headers, rows):
-        """Обновляет указанную вкладку данными"""
+        """Обновляет указанную вкладку данными с автоматическим расширением"""
         try:
-            # Очищаем вкладку
+            # 1. Проверяем и расширяем лист при необходимости
+            required_rows = len(rows) + 1  # +1 для заголовка
+            required_cols = len(headers)
+            
+            current_rows = worksheet.row_count
+            current_cols = worksheet.col_count
+            
+            if required_rows > current_rows or required_cols > current_cols:
+                new_rows = max(required_rows, current_rows)
+                new_cols = max(required_cols, current_cols)
+                worksheet.resize(rows=new_rows, cols=new_cols)
+                print(f"Расширен лист {worksheet.title} до {new_rows} строк и {new_cols} столбцов")
+            
+            # 2. Очищаем лист
             worksheet.clear()
             
-            # Подготовка данных для batch_update
+            # 3. Подготовка данных для batch_update
             requests = []
-            
-            # Добавляем заголовки
             requests.append({
                 'range': 'A1',
                 'values': [headers]
             })
             
-            # Добавляем данные (разбиваем на пакеты)
+            # 4. Добавляем данные (разбиваем на пакеты)
             batch_size = 100
             for i in range(0, len(rows), batch_size):
                 batch = rows[i:i + batch_size]
                 start_row = i + 2  # +2 потому что 1 строка - заголовки
                 end_row = start_row + len(batch) - 1
+                col_letter = chr(ord('A') + len(headers) - 1)
                 requests.append({
-                    'range': f'A{start_row}:{chr(ord("A") + len(headers) - 1)}{end_row}',
+                    'range': f'A{start_row}:{col_letter}{end_row}',
                     'values': batch
                 })
             
-            # Массовое обновление
+            # 5. Массовое обновление
             worksheet.batch_update(requests)
-            
             print(f"Вкладка {worksheet.title} успешно обновлена. Всего строк: {len(rows)}")
             
         except Exception as e:
