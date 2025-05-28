@@ -3,7 +3,7 @@ import "./page-link.css"
 import React from "react";
 import ArrowIcon from "../../../assets/images/ArrowIcon.jsx";
 
-export default function PageLink({ title, subtitle, to }) {
+export default function PageLink({ title, subtitle, to, events_count }) {
     return (
         <Link to={to} className="link">
             <div>
@@ -13,6 +13,9 @@ export default function PageLink({ title, subtitle, to }) {
             <div className="arrow">
                 <ArrowIcon />
             </div>
+            {events_count > 0 && (
+                <span className="badge-events-count">{events_count}</span>
+            )}
         </Link>
     );
 }

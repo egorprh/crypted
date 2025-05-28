@@ -6,9 +6,17 @@
     color: var(--white);
     position: fixed;
     bottom: 0;
+}
 
-    svg {
-        filter: invert(0.4);
-    }
+.icon-with-badge {
+    position: relative;
+    display: inline-block;
+}
+
+.nav-item .icon-with-badge .badge-events-count {
+    top: -6px;
+    right: -8px;
+    color: var(--white);
+    font-size: 10px;
 }
 
