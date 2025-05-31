@@ -9,16 +9,24 @@
             "image": "",
             "type": "main",
             "visible": true,
+            "color": null,
+            "has_popup": true,
+            "popup_title": null,
+            "popup_desc": null,
+            "popup_img": null,
+            "direct_link": null,
+            "sort_order": 2,
             "lessons": [
                 {
                     "id": 1,
                     "title": "Урок 1: Что такое криптовалюта и чем она лучше других активов?",
-                    "description": "Если видео не открывается перейдите по <a href=\"https://rutube.ru/video/cce5cd139a6cba94c06ff38dd00d4e23\" target=\"_blank\">ссылке</a>",
+                    "description": "",
                     "video_url": "https://rutube.ru/play/embed/cce5cd139a6cba94c06ff38dd00d4e23/",
                     "course_id": 1,
                     "image": "/images/course1/lesson1.png",
                     "visible": true,
-                    "source_url": null,
+                    "source_url": "https://rutube.ru/video/cce5cd139a6cba94c06ff38dd00d4e23",
+                    "sort_order": 0,
                     "materials": [
                         {
                             "id": 1,
@@ -364,12 +372,13 @@
                 {
                     "id": 2,
                     "title": "Урок 2: Как выбрать биржу и пополнить счёт?",
-                    "description": "Если видео не открывается перейдите по <a href=\"https://rutube.ru/video/3620513b2c2ca332018cdb61d421efce\" target=\"_blank\">ссылке</a>",
+                    "description": "",
                     "video_url": "https://rutube.ru/play/embed/3620513b2c2ca332018cdb61d421efce/",
                     "course_id": 1,
                     "image": "/images/course1/lesson2.png",
                     "visible": true,
-                    "source_url": null,
+                    "source_url": "https://rutube.ru/video/3620513b2c2ca332018cdb61d421efce",
+                    "sort_order": 0,
                     "materials": [
                         {
                             "id": 2,
@@ -555,12 +564,13 @@
                 {
                     "id": 3,
                     "title": "Урок 3: TradingView: как пользоваться и зачем он нужен?",
-                    "description": "Если видео не открывается перейдите по <a href=\"https://rutube.ru/video/8c47de13d727a9a46c3e47acbfcd1325\" target=\"_blank\">ссылке</a>",
+                    "description": "",
                     "video_url": "https://rutube.ru/play/embed/8c47de13d727a9a46c3e47acbfcd1325/",
                     "course_id": 1,
                     "image": "/images/course1/lesson3.png",
                     "visible": true,
-                    "source_url": null,
+                    "source_url": "https://rutube.ru/video/8c47de13d727a9a46c3e47acbfcd1325",
+                    "sort_order": 0,
                     "materials": [],
                     "quizzes": [
                         {
@@ -737,12 +747,13 @@
                 {
                     "id": 4,
                     "title": "Урок 4: Виды стратегий и как её выбрать",
-                    "description": "Если видео не открывается перейдите по <a href=\"https://rutube.ru/video/04aacf9cd57081978721bb222e1d3ed1\" target=\"_blank\">ссылке</a>",
+                    "description": "",
                     "video_url": "https://rutube.ru/play/embed/04aacf9cd57081978721bb222e1d3ed1/",
                     "course_id": 1,
                     "image": "/images/course1/lesson4.png",
                     "visible": true,
-                    "source_url": null,
+                    "source_url": "https://rutube.ru/video/04aacf9cd57081978721bb222e1d3ed1",
+                    "sort_order": 0,
                     "materials": [
                         {
                             "id": 3,
@@ -1088,12 +1099,13 @@
                 {
                     "id": 5,
                     "title": "Урок 5: WinRate и RR: просто о важном",
-                    "description": "Если видео не открывается перейдите по <a href=\"https://rutube.ru/video/0e8287ba60bc585a090fd8c769936454\" target=\"_blank\">ссылке</a>",
+                    "description": "",
                     "video_url": "https://rutube.ru/play/embed/0e8287ba60bc585a090fd8c769936454/",
                     "course_id": 1,
                     "image": "/images/course1/lesson5.png",
                     "visible": true,
-                    "source_url": null,
+                    "source_url": "https://rutube.ru/video/0e8287ba60bc585a090fd8c769936454",
+                    "sort_order": 0,
                     "materials": [
                         {
                             "id": 4,
@@ -1439,12 +1451,13 @@
                 {
                     "id": 6,
                     "title": "Урок 6: Риск-менеджмент: как не потерять деньги?",
-                    "description": "Если видео не открывается перейдите по <a href=\"https://rutube.ru/video/8ec9a6e1365ec4bad7490d92de8fe3f6\" target=\"_blank\">ссылке</a>",
+                    "description": "",
                     "video_url": "https://rutube.ru/play/embed/8ec9a6e1365ec4bad7490d92de8fe3f6/",
                     "course_id": 1,
                     "image": "/images/course1/lesson6.png",
                     "visible": true,
-                    "source_url": null,
+                    "source_url": "https://rutube.ru/video/8ec9a6e1365ec4bad7490d92de8fe3f6",
+                    "sort_order": 0,
                     "materials": [
                         {
                             "id": 5,
@@ -1630,12 +1643,13 @@
                 {
                     "id": 7,
                     "title": "Урок 7: Как работает рынок? Ордера и ликвидность",
-                    "description": "Если видео не открывается перейдите по <a href=\"https://rutube.ru/video/1e8d737544b1285ddc5aad53112f0161\" target=\"_blank\">ссылке</a>",
+                    "description": "",
                     "video_url": "https://rutube.ru/play/embed/1e8d737544b1285ddc5aad53112f0161/",
                     "course_id": 1,
                     "image": "/images/course1/lesson7.png",
                     "visible": true,
-                    "source_url": null,
+                    "source_url": "https://rutube.ru/video/1e8d737544b1285ddc5aad53112f0161",
+                    "sort_order": 0,
                     "materials": [
                         {
                             "id": 6,
@@ -1981,12 +1995,13 @@
                 {
                     "id": 8,
                     "title": "Урок 8: Трейдинг — это свобода. Почему?",
-                    "description": "Если видео не открывается перейдите по <a href=\"https://rutube.ru/video/a128566ba9b9a4a8234c5105df738b21\" target=\"_blank\">ссылке</a>",
+                    "description": "",
                     "video_url": "https://rutube.ru/play/embed/a128566ba9b9a4a8234c5105df738b21/",
                     "course_id": 1,
                     "image": "/images/course1/lesson8.png",
                     "visible": true,
-                    "source_url": null,
+                    "source_url": "https://rutube.ru/video/a128566ba9b9a4a8234c5105df738b21",
+                    "sort_order": 0,
                     "materials": [
                         {
                             "id": 7,
@@ -2172,12 +2187,13 @@
                 {
                     "id": 9,
                     "title": "Урок 9: D-Product — лучшее в инфополе трейдинга",
-                    "description": "Если видео не открывается перейдите по <a href=\"https://rutube.ru/video/626342577faa6a1f65a0bc1add5bb8a0\" target=\"_blank\">ссылке</a>",
+                    "description": "",
                     "video_url": "https://rutube.ru/play/embed/626342577faa6a1f65a0bc1add5bb8a0/",
                     "course_id": 1,
                     "image": "/images/course1/lesson9.png",
                     "visible": true,
-                    "source_url": null,
+                    "source_url": "https://rutube.ru/video/626342577faa6a1f65a0bc1add5bb8a0",
+                    "sort_order": 0,
                     "materials": [
                         {
                             "id": 8,
@@ -2371,6 +2387,13 @@
             "image": "/images/course2/course2.png",
             "type": "main",
             "visible": true,
+            "color": "#15A935",
+            "has_popup": null,
+            "popup_title": null,
+            "popup_desc": null,
+            "popup_img": null,
+            "direct_link": null,
+            "sort_order": 3,
             "lessons": [
                 {
                     "id": 10,
@@ -2381,6 +2404,7 @@
                     "image": "/images/course2/course2.png",
                     "visible": true,
                     "source_url": null,
+                    "sort_order": 0,
                     "materials": [
                         {
                             "id": 9,
@@ -2389,6 +2413,47 @@
                             "url": "https://disk.yandex.ru/i/VQl2VM-5WuIpHw",
                             "visible": true,
                             "lesson_id": 10
+                        }
+                    ],
+                    "quizzes": []
+                }
+            ]
+        },
+        {
+            "id": 3,
+            "title": "Cтратегия заработка с dept",
+            "description": null,
+            "oldprice": null,
+            "newprice": "Бесплатно",
+            "image": "/images/course3/course3.png",
+            "type": "main",
+            "visible": true,
+            "color": null,
+            "has_popup": null,
+            "popup_title": null,
+            "popup_desc": null,
+            "popup_img": null,
+            "direct_link": "",
+            "sort_order": 1,
+            "lessons": [
+                {
+                    "id": 11,
+                    "title": "Стратегия заработка с Dept",
+                    "description": "<p>Привет, в этом видео я рассказал, как можно абсолютно бесплатно начать зарабатывать с публичным телеграмм-каналом dept.</p> \n<p>Затронул наш подход и рассказал о себе.</p> ",
+                    "video_url": "https://rutube.ru/play/embed/c4fe1748b631fad3eed38c82abf1d376/",
+                    "course_id": 3,
+                    "image": "/images/course3/course3.png",
+                    "visible": true,
+                    "source_url": "https://rutube.ru/video/c4fe1748b631fad3eed38c82abf1d376/",
+                    "sort_order": 0,
+                    "materials": [
+                        {
+                            "id": 10,
+                            "title": "Материалы",
+                            "description": "За методичкой по рискам и информацией по торговой группе к Ростиславу. Жми на кнопку.",
+                            "url": "https://t.me/rostislavdept",
+                            "visible": true,
+                            "lesson_id": 11
                         }
                     ],
                     "quizzes": []
