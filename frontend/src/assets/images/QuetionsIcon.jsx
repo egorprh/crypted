@@ -3,8 +3,8 @@ export default function QuestionsIcon() {
     return (
         <svg
             xmlns="http://www.w3.org/2000/svg"
-            width={35}
-            height={35}
+            width={38}
+            height={38}
             viewBox="0 0 512 512"
             style={{
                 shapeRendering: "geometricPrecision",

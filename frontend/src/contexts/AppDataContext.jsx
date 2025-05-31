@@ -15,79 +15,80 @@ export const AppDataProvider = ({ children }) => {
         tg?.expand();
 
         const u = tg?.initDataUnsafe?.user;
-        var userData = {}
 
-        if (!u) {
-            userData = {
-                telegram_id: 0,
-                username: 'spaceuser',
-                first_name: 'spaceuser',
-                last_name: 'spaceuser',
-            };
-            setUser({
-                id: 0,
-                username: 'spaceuser',
-                photo_url: '/images/user.png',
-            });
-        } else {
-            setUser(u);
+        const userId = u?.id || 0;
 
-            userData = {
+        const userData = u
+            ? {
                 telegram_id: u.id,
                 username: u.username,
                 first_name: u.first_name,
                 last_name: u.last_name,
+            }
+            : {
+                telegram_id: 0,
+                username: "spaceuser",
+                first_name: "spaceuser",
+                last_name: "spaceuser",
             };
 
-            fetch('/api/save_user', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+        setUser(
+            u
+                ? u
+                : {
+                    id: 0,
+                    username: "spaceuser",
+                    photo_url: "/images/user.png",
+                }
+        );
+
+        const fetchData = async () => {
+            try {
+                const res = await fetch(`/api/get_app_data?user_id=${userId}`);
+                if (!res.ok) throw new Error("Основной API недоступен");
+
+                const apiData = await res.json();
+                if (!apiData || Object.keys(apiData).length === 0) {
+                    throw new Error("API вернул пустой объект");
+                }
+
+                setData(apiData);
+            } catch (err) {
+                console.warn("Ошибка при получении из API, пробуем fallback JSON:", err.message);
+
+                try {
+                    const fallbackRes = await fetch("/content/app_data.json");
+                    if (!fallbackRes.ok) throw new Error("Ошибка загрузки fallback JSON");
+
+                    const fallbackData = await fallbackRes.json();
+                    setData(fallbackData);
+                } catch (jsonErr) {
+                    console.error("Ошибка загрузки fallback JSON:", jsonErr.message);
+                    setError("Ошибка загрузки данных");
+                }
+            } finally {
+                setLoading(false);
+                setAppReady(true);
+            }
+        };
+
+        if (u) {
+            fetch("/api/save_user", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(userData),
-            }).catch(err => console.error("Ошибка записи пользователя:", err));
+            })
+                .catch((err) => console.error("Ошибка записи пользователя:", err))
+                .finally(() => fetchData());
+        } else {
+            fetchData();
         }
-
-        const userId = u?.id ? u.id : 0;
-
-        // Надо подождать пару секунд, потому что save_user может еще не успеть выполниться
-        // и в базе данных еще нет данных о пользователе
-        setTimeout(() => {
-            console.log("Start fetch app data");
-            fetch(`/api/get_app_data?user_id=${userId}`)
-                .then(res => {
-                    if (!res.ok) throw new Error("Ошибка загрузки данных");
-                    return res.json();
-                })
-                .then(data => {
-                    setData(data);
-                    setLoading(false);
-                })
-                .catch(error => {
-                    setError(error.message);
-                    setLoading(false);
-                })
-                .finally(() => setAppReady(true));
-        }
-        , 2000);
-
-        // Оставляем для отладки
-        // fetch("/content/app_data.json")
-        //     .then(res => {
-        //         if (!res.ok) throw new Error("Ошибка загрузки данных");
-        //         return res.json();
-        //     })
-        //     .then(data => {
-        //         setData(data);
-        //         setLoading(false);
-        //     })
-        //     .catch(error => {
-        //         setError(error.message);
-        //         setLoading(false);
-        //     })
-        //     .finally(() => setAppReady(true));
     }, []);
 
     return (
-        <AppDataContext.Provider value={{ data, setData, loading, setLoading, error, setError, appReady, user }}>
+        <AppDataContext.Provider
+            value={{ data, setData, loading, setLoading, error, setError, appReady, user }}
+        >
             {children}
         </AppDataContext.Provider>
     );

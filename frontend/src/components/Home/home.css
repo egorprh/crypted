@@ -53,7 +53,7 @@
 }
 
 .start-btn {
-  padding: 10px 8px;
+  padding: 6px;
   border-radius: var(--brs-md);
   font-size: var(--fs-s);
   color: var(--white);
@@ -105,4 +105,19 @@
 .survey-banner p {
   margin-bottom: 10px;
   font-size: var(--fs-s);
+}
+
+.card-title-wrapper {
+  align-items: flex-start;
+  justify-content: space-between;
+
+  .icon {
+    display: flex;
+    align-items: flex-start;
+    background-color: var(--logo-bg);
+    padding: 4px 10px 5px 11px;
+    border-radius: var(--brs-sm);
+    position: relative;
+    z-index: 200;
+  }
 }

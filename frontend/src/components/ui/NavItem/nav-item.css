@@ -6,22 +6,29 @@
 .nav-item {
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
     align-items: center;
     gap: 8px;
     padding: 5px 10px;
     border-radius: var(--brs-sm);
     text-decoration: none;
 
+    svg {
+        fill: var(--gray-200);
+    }
+
     span {
-        color: var(--secondary);
+        color: var(--gray-200);
         font-size: var(--fs-xxs);
-        filter: invert(0.5);
     }
 }
 
 .nav-item.active {
-    svg,
+    svg {
+        fill: var(--white);
+    }
+
     span {
-        filter: invert(1);
+        color: var(--white);
     }
 }

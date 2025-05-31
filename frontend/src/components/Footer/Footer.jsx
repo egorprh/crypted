@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import NavItem from "../ui/NavItem/NavItem.jsx";
 import "./footer.css";
 import HomeIcon from "../../assets/images/HomeIcon.jsx";
@@ -6,9 +6,11 @@ import CalendarIcon from "../../assets/images/CalendarIcon.jsx";
 import HomeworkIcon from "../../assets/images/HomeworkIcon.jsx";
 import QuestionsIcon from "../../assets/images/QuetionsIcon.jsx";
 import { useLocation } from "react-router-dom";
+import { useAppData } from "../../contexts/AppDataContext.jsx";
 
 export default function Footer() {
     const location = useLocation();
+    const { data } = useAppData()
 
     const navItems = [
         {
@@ -24,9 +26,15 @@ export default function Footer() {
         {
             path: "/calendar",
             title: "Календарь",
-            icon: <CalendarIcon />,
+            icon: (
+                <div className="icon-with-badge">
+                    <CalendarIcon />
+                    {data?.events_count > 0 && (
+                        <span className="badge-events-count">{data.events_count}</span>
+                    )}
+                </div>
+            ),
         },
-
         {
             path: "/faq",
             title: "Вопросы",
@@ -40,7 +48,6 @@ export default function Footer() {
         }
         return location.pathname.startsWith(path);
     };
-
 
     return (
         <footer>
