@@ -136,12 +136,12 @@ async def trigger_event(event_name: str, user_id: int, instance_id: int, data: A
         text = f"""
         Переход в курс DSpace!
 
-Пользователь @{user["username"]} {user["first_name"]} {user["last_name"]} зашел в курс "{course['title']}"
+Пользователь @{user["username"]} ({user["telegram_id"]}) {user["first_name"]} {user["last_name"]} зашел в курс "{course['title']}"
         """
     elif event_name == 'enter_survey':
         formatted_answers = "\n".join([f"<b>{question['question']}</b>: {question['answer']}" for question in data])
         text = f"""
-        Пользователь @{user["username"]} {user["first_name"]} {user["last_name"]} прошел входное тестирование в DSpace!
+        Пользователь @{user["username"]} ({user["telegram_id"]}) {user["first_name"]} {user["last_name"]} прошел входное тестирование в DSpace!
 
 {formatted_answers}
         """
@@ -150,7 +150,7 @@ async def trigger_event(event_name: str, user_id: int, instance_id: int, data: A
         text = f"""
         Переход в курс DSpace!
 
-Пользователь @{user["username"]} {user["first_name"]} {user["last_name"]} прошел все тесты в курсе "{course['title']}"
+Пользователь @{user["username"]} ({user["telegram_id"]}) {user["first_name"]} {user["last_name"]} прошел все тесты в курсе "{course['title']}"
         """
     
     if text:

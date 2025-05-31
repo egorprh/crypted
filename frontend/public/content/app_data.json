@@ -1,6 +1,47 @@
 {
     "courses": [
         {
+            "id": 3,
+            "title": "Cтратегия заработка с dept",
+            "description": null,
+            "oldprice": null,
+            "newprice": "Бесплатно",
+            "image": "/images/course3/course3.png",
+            "type": "main",
+            "visible": true,
+            "color": "#15A935",
+            "has_popup": null,
+            "popup_title": null,
+            "popup_desc": null,
+            "popup_img": null,
+            "direct_link": "",
+            "sort_order": 1,
+            "lessons": [
+                {
+                    "id": 11,
+                    "title": "Стратегия заработка с Dept",
+                    "description": "<p>Привет, в этом видео я рассказал, как можно абсолютно бесплатно начать зарабатывать с публичным телеграмм-каналом dept.</p> \n<p>Затронул наш подход и рассказал о себе.</p> ",
+                    "video_url": "https://rutube.ru/play/embed/c4fe1748b631fad3eed38c82abf1d376/",
+                    "course_id": 3,
+                    "image": "/images/course3/course3.png",
+                    "visible": true,
+                    "source_url": "https://rutube.ru/video/c4fe1748b631fad3eed38c82abf1d376/",
+                    "sort_order": 0,
+                    "materials": [
+                        {
+                            "id": 10,
+                            "title": "Материалы",
+                            "description": "За методичкой по рискам и информацией по торговой группе к Ростиславу. Жми на кнопку.",
+                            "url": "https://t.me/rostislavdept",
+                            "visible": true,
+                            "lesson_id": 11
+                        }
+                    ],
+                    "quizzes": []
+                }
+            ]
+        },
+        {
             "id": 1,
             "title": "Старт в торговле криптовалютой",
             "description": "Курс для новичков, желающих освоить основы торговли криптовалютами.",
@@ -2387,7 +2428,7 @@
             "image": "/images/course2/course2.png",
             "type": "main",
             "visible": true,
-            "color": "#15A935",
+            "color": "#6d14b8",
             "has_popup": null,
             "popup_title": null,
             "popup_desc": null,
@@ -2413,47 +2454,6 @@
                             "url": "https://disk.yandex.ru/i/VQl2VM-5WuIpHw",
                             "visible": true,
                             "lesson_id": 10
-                        }
-                    ],
-                    "quizzes": []
-                }
-            ]
-        },
-        {
-            "id": 3,
-            "title": "Cтратегия заработка с dept",
-            "description": null,
-            "oldprice": null,
-            "newprice": "Бесплатно",
-            "image": "/images/course3/course3.png",
-            "type": "main",
-            "visible": true,
-            "color": null,
-            "has_popup": null,
-            "popup_title": null,
-            "popup_desc": null,
-            "popup_img": null,
-            "direct_link": "",
-            "sort_order": 1,
-            "lessons": [
-                {
-                    "id": 11,
-                    "title": "Стратегия заработка с Dept",
-                    "description": "<p>Привет, в этом видео я рассказал, как можно абсолютно бесплатно начать зарабатывать с публичным телеграмм-каналом dept.</p> \n<p>Затронул наш подход и рассказал о себе.</p> ",
-                    "video_url": "https://rutube.ru/play/embed/c4fe1748b631fad3eed38c82abf1d376/",
-                    "course_id": 3,
-                    "image": "/images/course3/course3.png",
-                    "visible": true,
-                    "source_url": "https://rutube.ru/video/c4fe1748b631fad3eed38c82abf1d376/",
-                    "sort_order": 0,
-                    "materials": [
-                        {
-                            "id": 10,
-                            "title": "Материалы",
-                            "description": "За методичкой по рискам и информацией по торговой группе к Ростиславу. Жми на кнопку.",
-                            "url": "https://t.me/rostislavdept",
-                            "visible": true,
-                            "lesson_id": 11
                         }
                     ],
                     "quizzes": []
@@ -2527,5 +2527,6 @@
             "name": "bot_link",
             "value": "https://t.me/dept_mainbot"
         }
-    ]
+    ],
+    "events_count": 0
 }

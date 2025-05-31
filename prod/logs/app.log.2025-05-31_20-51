@@ -1,0 +1,2 @@
+2025-05-31 20:51:50,294 [INFO] Запрос /api/save_user: {'telegram_id': 932093958, 'username': 'SP0819Blg', 'first_name': 'S.P.', 'last_name': ''}
+2025-05-31 20:51:50,300 [INFO] Создаем пользователя: {'telegram_id': 932093958, 'username': 'SP0819Blg', 'first_name': 'S.P.', 'last_name': ''}

@@ -1,0 +1,2 @@
+2025-05-31 20:53:16,198 [INFO] Triggered event: {'user_id': 1381, 'instance_id': 1, 'action': 'enter_survey'}
+2025-05-31 20:53:23,434 [INFO] Triggered event: {'user_id': 1381, 'instance_id': 3, 'action': 'course_viewed'}

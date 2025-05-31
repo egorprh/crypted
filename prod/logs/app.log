@@ -1,5 +1,2 @@
-2025-05-31 14:55:31,090 [INFO] Запрос /api/save_user: {'telegram_id': 415211362, 'username': 'NNKKKYO', 'first_name': 'Huckster', 'last_name': 'Clover'}
-2025-05-31 14:55:40,368 [INFO] Triggered event: {'user_id': 339, 'instance_id': 2, 'action': 'course_viewed'}
-2025-05-31 14:55:44,075 [INFO] Triggered event: {'user_id': 339, 'instance_id': 3, 'action': 'course_viewed'}
-2025-05-31 14:56:01,997 [INFO] Запрос /api/save_user: {'telegram_id': 335644315, 'username': 'Molotlom', 'first_name': 'Ал', 'last_name': ''}
-2025-05-31 14:56:01,998 [INFO] Создаем пользователя: {'telegram_id': 335644315, 'username': 'Molotlom', 'first_name': 'Ал', 'last_name': ''}
+2025-05-31 22:10:33,003 [INFO] User 2 completed the quiz 1.
+2025-05-31 22:10:33,005 [INFO] Triggered event: {'user_id': 2, 'instance_id': 1, 'action': 'course_completed'}
