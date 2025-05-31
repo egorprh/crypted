@@ -22,6 +22,7 @@ class PostgresToSheetsSync:
         
     def setup_postgres(self):
         """Устанавливает соединение с PostgreSQL"""
+        print(f"Подключаемся к БД: {os.getenv('PG_USER')}")
         self.pg_conn = psycopg2.connect(
             host=os.getenv('PG_HOST'),
             database=os.getenv('PG_DB'),
@@ -320,6 +321,7 @@ class PostgresToSheetsSync:
                         self.update_worksheet(self.course_zones, course_headers, course_rows)
                     
                     # Интервал проверки
+                    print(f"Next run after: {os.getenv('CHECK_INTERVAL')}")
                     time.sleep(int(os.getenv('CHECK_INTERVAL', 60)))
                     
                 except Exception as e:
