@@ -310,7 +310,7 @@ async def get_app_data(user_id: int):
         logger.info(f"--> Пользователь не найден, берем служебного гостя")
         user = await db.get_record("users", {"telegram_id": 0})
 
-    courses = await db.get_records("courses", {"visible": True})
+    courses = await db.get_records_sql("SELECT * FROM courses WHERE visible = $1 ORDER BY sort_order", True)
     for course in courses:
         lessons = await db.get_records_sql("SELECT * FROM lessons WHERE course_id = $1 AND visible = $2 ORDER BY id", course["id"], True)
         for lesson in lessons:

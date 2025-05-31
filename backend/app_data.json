@@ -15,6 +15,7 @@
             "popup_desc": null,
             "popup_img": null,
             "direct_link": null,
+            "sort_order": 2,
             "lessons": [
                 {
                     "id": 1,
@@ -25,6 +26,7 @@
                     "image": "/images/course1/lesson1.png",
                     "visible": true,
                     "source_url": "https://rutube.ru/video/cce5cd139a6cba94c06ff38dd00d4e23",
+                    "sort_order": 0,
                     "materials": [
                         {
                             "id": 1,
@@ -376,6 +378,7 @@
                     "image": "/images/course1/lesson2.png",
                     "visible": true,
                     "source_url": "https://rutube.ru/video/3620513b2c2ca332018cdb61d421efce",
+                    "sort_order": 0,
                     "materials": [
                         {
                             "id": 2,
@@ -567,6 +570,7 @@
                     "image": "/images/course1/lesson3.png",
                     "visible": true,
                     "source_url": "https://rutube.ru/video/8c47de13d727a9a46c3e47acbfcd1325",
+                    "sort_order": 0,
                     "materials": [],
                     "quizzes": [
                         {
@@ -749,6 +753,7 @@
                     "image": "/images/course1/lesson4.png",
                     "visible": true,
                     "source_url": "https://rutube.ru/video/04aacf9cd57081978721bb222e1d3ed1",
+                    "sort_order": 0,
                     "materials": [
                         {
                             "id": 3,
@@ -1100,6 +1105,7 @@
                     "image": "/images/course1/lesson5.png",
                     "visible": true,
                     "source_url": "https://rutube.ru/video/0e8287ba60bc585a090fd8c769936454",
+                    "sort_order": 0,
                     "materials": [
                         {
                             "id": 4,
@@ -1451,6 +1457,7 @@
                     "image": "/images/course1/lesson6.png",
                     "visible": true,
                     "source_url": "https://rutube.ru/video/8ec9a6e1365ec4bad7490d92de8fe3f6",
+                    "sort_order": 0,
                     "materials": [
                         {
                             "id": 5,
@@ -1642,6 +1649,7 @@
                     "image": "/images/course1/lesson7.png",
                     "visible": true,
                     "source_url": "https://rutube.ru/video/1e8d737544b1285ddc5aad53112f0161",
+                    "sort_order": 0,
                     "materials": [
                         {
                             "id": 6,
@@ -1993,6 +2001,7 @@
                     "image": "/images/course1/lesson8.png",
                     "visible": true,
                     "source_url": "https://rutube.ru/video/a128566ba9b9a4a8234c5105df738b21",
+                    "sort_order": 0,
                     "materials": [
                         {
                             "id": 7,
@@ -2184,6 +2193,7 @@
                     "image": "/images/course1/lesson9.png",
                     "visible": true,
                     "source_url": "https://rutube.ru/video/626342577faa6a1f65a0bc1add5bb8a0",
+                    "sort_order": 0,
                     "materials": [
                         {
                             "id": 8,
@@ -2383,6 +2393,7 @@
             "popup_desc": null,
             "popup_img": null,
             "direct_link": null,
+            "sort_order": 3,
             "lessons": [
                 {
                     "id": 10,
@@ -2393,6 +2404,7 @@
                     "image": "/images/course2/course2.png",
                     "visible": true,
                     "source_url": null,
+                    "sort_order": 0,
                     "materials": [
                         {
                             "id": 9,
@@ -2406,14 +2418,55 @@
                     "quizzes": []
                 }
             ]
+        },
+        {
+            "id": 3,
+            "title": "Cтратегия заработка с dept",
+            "description": null,
+            "oldprice": null,
+            "newprice": "Бесплатно",
+            "image": "/images/course3/course3.png",
+            "type": "main",
+            "visible": true,
+            "color": null,
+            "has_popup": null,
+            "popup_title": null,
+            "popup_desc": null,
+            "popup_img": null,
+            "direct_link": "",
+            "sort_order": 1,
+            "lessons": [
+                {
+                    "id": 11,
+                    "title": "Стратегия заработка с Dept",
+                    "description": "<p>Привет, в этом видео я рассказал, как можно абсолютно бесплатно начать зарабатывать с публичным телеграмм-каналом dept.</p> \n<p>Затронул наш подход и рассказал о себе.</p> ",
+                    "video_url": "https://rutube.ru/play/embed/c4fe1748b631fad3eed38c82abf1d376/",
+                    "course_id": 3,
+                    "image": "/images/course3/course3.png",
+                    "visible": true,
+                    "source_url": "https://rutube.ru/video/c4fe1748b631fad3eed38c82abf1d376/",
+                    "sort_order": 0,
+                    "materials": [
+                        {
+                            "id": 10,
+                            "title": "Материалы",
+                            "description": "За методичкой по рискам и информацией по торговой группе к Ростиславу. Жми на кнопку.",
+                            "url": "https://t.me/rostislavdept",
+                            "visible": true,
+                            "lesson_id": 11
+                        }
+                    ],
+                    "quizzes": []
+                }
+            ]
         }
     ],
     "events": [],
     "homework": [
         {
-            "id": 243,
+            "id": 47,
             "quiz_id": 1,
-            "user_id": 73,
+            "user_id": 91,
             "progress": 100.0,
             "course_title": "Старт в торговле криптовалютой",
             "lesson_title": "Урок 1: Что такое криптовалюта и чем она лучше других активов?",
@@ -2781,9 +2834,9 @@
             ]
         },
         {
-            "id": 84,
+            "id": 49,
             "quiz_id": 2,
-            "user_id": 73,
+            "user_id": 91,
             "progress": 100.0,
             "course_title": "Старт в торговле криптовалютой",
             "lesson_title": "Урок 2: Как выбрать биржу и пополнить счёт?",
@@ -2971,9 +3024,9 @@
             ]
         },
         {
-            "id": 85,
+            "id": 51,
             "quiz_id": 3,
-            "user_id": 73,
+            "user_id": 91,
             "progress": 100.0,
             "course_title": "Старт в торговле криптовалютой",
             "lesson_title": "Урок 3: TradingView: как пользоваться и зачем он нужен?",
@@ -3161,10 +3214,10 @@
             ]
         },
         {
-            "id": 244,
+            "id": 52,
             "quiz_id": 4,
-            "user_id": 73,
-            "progress": 80.0,
+            "user_id": 91,
+            "progress": 90.0,
             "course_title": "Старт в торговле криптовалютой",
             "lesson_title": "Урок 4: Виды стратегий и как её выбрать",
             "questions": [
@@ -3301,14 +3354,14 @@
                             "text": "Свинг",
                             "correct": false,
                             "question_id": 27,
-                            "user_answer": true
+                            "user_answer": false
                         },
                         {
                             "id": 96,
                             "text": "Позиционная",
                             "correct": true,
                             "question_id": 27,
-                            "user_answer": false
+                            "user_answer": true
                         }
                     ]
                 },
@@ -3337,14 +3390,14 @@
                             "text": "Наблюдательный, быстрый в принятии решений, гибкий",
                             "correct": true,
                             "question_id": 28,
-                            "user_answer": true
+                            "user_answer": false
                         },
                         {
                             "id": 100,
                             "text": "Аналитичный и методичный",
                             "correct": false,
                             "question_id": 28,
-                            "user_answer": false
+                            "user_answer": true
                         }
                     ]
                 },
@@ -3359,14 +3412,14 @@
                             "text": "Желание начать долгосрочные инвестиции",
                             "correct": false,
                             "question_id": 29,
-                            "user_answer": true
+                            "user_answer": false
                         },
                         {
                             "id": 102,
                             "text": "Повышенная вероятность входа в сделку от скуки",
                             "correct": true,
                             "question_id": 29,
-                            "user_answer": false
+                            "user_answer": true
                         },
                         {
                             "id": 103,
@@ -3531,10 +3584,10 @@
             ]
         },
         {
-            "id": 33,
+            "id": 53,
             "quiz_id": 5,
-            "user_id": 73,
-            "progress": 90.0,
+            "user_id": 91,
+            "progress": 100.0,
             "course_title": "Старт в торговле криптовалютой",
             "lesson_title": "Урок 5: WinRate и RR: просто о важном",
             "questions": [
@@ -3693,14 +3746,14 @@
                             "text": "3:1",
                             "correct": false,
                             "question_id": 38,
-                            "user_answer": true
+                            "user_answer": false
                         },
                         {
                             "id": 138,
                             "text": "1:3",
                             "correct": true,
                             "question_id": 38,
-                            "user_answer": false
+                            "user_answer": true
                         },
                         {
                             "id": 139,
@@ -3901,10 +3954,10 @@
             ]
         },
         {
-            "id": 83,
+            "id": 54,
             "quiz_id": 6,
-            "user_id": 73,
-            "progress": 100.0,
+            "user_id": 91,
+            "progress": 80.0,
             "course_title": "Старт в торговле криптовалютой",
             "lesson_title": "Урок 6: Риск-менеджмент: как не потерять деньги?",
             "questions": [
@@ -3919,7 +3972,7 @@
                             "text": "Как торговать без убытков",
                             "correct": false,
                             "question_id": 44,
-                            "user_answer": false
+                            "user_answer": true
                         },
                         {
                             "id": 162,
@@ -3933,7 +3986,7 @@
                             "text": "Что ни одна идея не стоит риска всего капитала",
                             "correct": true,
                             "question_id": 44,
-                            "user_answer": true
+                            "user_answer": false
                         },
                         {
                             "id": 164,
@@ -4089,6 +4142,756 @@
                     ]
                 }
             ]
+        },
+        {
+            "id": 55,
+            "quiz_id": 7,
+            "user_id": 91,
+            "progress": 100.0,
+            "course_title": "Старт в торговле криптовалютой",
+            "lesson_title": "Урок 7: Как работает рынок? Ордера и ликвидность",
+            "questions": [
+                {
+                    "id": 46,
+                    "qid": 49,
+                    "text": "Что такое биржевой стакан (Order Book)?",
+                    "type": "quiz",
+                    "answers": [
+                        {
+                            "id": 181,
+                            "text": "График изменения цены за день",
+                            "correct": false,
+                            "question_id": 49,
+                            "user_answer": false
+                        },
+                        {
+                            "id": 182,
+                            "text": "История сделок трейдера",
+                            "correct": false,
+                            "question_id": 49,
+                            "user_answer": false
+                        },
+                        {
+                            "id": 183,
+                            "text": "Список лимитных заявок на покупку и продажу",
+                            "correct": true,
+                            "question_id": 49,
+                            "user_answer": true
+                        },
+                        {
+                            "id": 184,
+                            "text": "Финансовый отчёт компании",
+                            "correct": false,
+                            "question_id": 49,
+                            "user_answer": false
+                        }
+                    ]
+                },
+                {
+                    "id": 47,
+                    "qid": 50,
+                    "text": "Что происходит, когда маркет-ордер на покупку исполняется?",
+                    "type": "quiz",
+                    "answers": [
+                        {
+                            "id": 185,
+                            "text": "Добавляется новая лимитная заявка",
+                            "correct": false,
+                            "question_id": 50,
+                            "user_answer": false
+                        },
+                        {
+                            "id": 186,
+                            "text": "Поглощаются лимитные ордера на продажу",
+                            "correct": true,
+                            "question_id": 50,
+                            "user_answer": true
+                        },
+                        {
+                            "id": 187,
+                            "text": "Формируется спотовая позиция",
+                            "correct": false,
+                            "question_id": 50,
+                            "user_answer": false
+                        },
+                        {
+                            "id": 188,
+                            "text": "Цена всегда падает",
+                            "correct": false,
+                            "question_id": 50,
+                            "user_answer": false
+                        }
+                    ]
+                },
+                {
+                    "id": 48,
+                    "qid": 51,
+                    "text": "Что делает лимитный ордер?",
+                    "type": "quiz",
+                    "answers": [
+                        {
+                            "id": 189,
+                            "text": "Мгновенно исполняется по рынку",
+                            "correct": false,
+                            "question_id": 51,
+                            "user_answer": false
+                        },
+                        {
+                            "id": 190,
+                            "text": "Увеличивает спред",
+                            "correct": false,
+                            "question_id": 51,
+                            "user_answer": false
+                        },
+                        {
+                            "id": 191,
+                            "text": "Добавляет ликвидность в стакан",
+                            "correct": true,
+                            "question_id": 51,
+                            "user_answer": true
+                        },
+                        {
+                            "id": 192,
+                            "text": "Уменьшает комиссию за сделку",
+                            "correct": false,
+                            "question_id": 51,
+                            "user_answer": false
+                        }
+                    ]
+                },
+                {
+                    "id": 49,
+                    "qid": 52,
+                    "text": "Что такое проскальзывание?",
+                    "type": "quiz",
+                    "answers": [
+                        {
+                            "id": 193,
+                            "text": "Переключение между таймфреймами",
+                            "correct": false,
+                            "question_id": 52,
+                            "user_answer": false
+                        },
+                        {
+                            "id": 194,
+                            "text": "Выполнение сделки по менее выгодной цене из-за недостаточной ликвидности",
+                            "correct": true,
+                            "question_id": 52,
+                            "user_answer": true
+                        },
+                        {
+                            "id": 195,
+                            "text": "Задержка между выставлением ордера и его исполнением",
+                            "correct": false,
+                            "question_id": 52,
+                            "user_answer": false
+                        },
+                        {
+                            "id": 196,
+                            "text": "Уменьшение комиссии при торговле объёмом",
+                            "correct": false,
+                            "question_id": 52,
+                            "user_answer": false
+                        }
+                    ]
+                },
+                {
+                    "id": 50,
+                    "qid": 53,
+                    "text": "Как влияет ликвидация лонгов на рынок?",
+                    "type": "quiz",
+                    "answers": [
+                        {
+                            "id": 197,
+                            "text": "Создаёт давление на покупку",
+                            "correct": false,
+                            "question_id": 53,
+                            "user_answer": false
+                        },
+                        {
+                            "id": 198,
+                            "text": "Увеличивает ликвидность",
+                            "correct": false,
+                            "question_id": 53,
+                            "user_answer": false
+                        },
+                        {
+                            "id": 199,
+                            "text": "Усиливает давление на продажу и может ускорить падение цены",
+                            "correct": true,
+                            "question_id": 53,
+                            "user_answer": true
+                        },
+                        {
+                            "id": 200,
+                            "text": "Ведёт к закрытию шортов",
+                            "correct": false,
+                            "question_id": 53,
+                            "user_answer": false
+                        }
+                    ]
+                },
+                {
+                    "id": 51,
+                    "qid": 54,
+                    "text": "Что означает \"агрессивный спрос\" на рынке?",
+                    "type": "quiz",
+                    "answers": [
+                        {
+                            "id": 201,
+                            "text": "Лимитные заявки на покупку перемещаются вверх",
+                            "correct": false,
+                            "question_id": 54,
+                            "user_answer": false
+                        },
+                        {
+                            "id": 202,
+                            "text": "Маркет-ордера на покупку активно съедают лимитные ордера на продажу",
+                            "correct": true,
+                            "question_id": 54,
+                            "user_answer": true
+                        },
+                        {
+                            "id": 203,
+                            "text": "Покупатели удаляют свои заявки",
+                            "correct": false,
+                            "question_id": 54,
+                            "user_answer": false
+                        },
+                        {
+                            "id": 204,
+                            "text": "Продавцы снижают цену",
+                            "correct": false,
+                            "question_id": 54,
+                            "user_answer": false
+                        }
+                    ]
+                },
+                {
+                    "id": 52,
+                    "qid": 55,
+                    "text": "Что делает iceberg-ордер особенным?",
+                    "type": "quiz",
+                    "answers": [
+                        {
+                            "id": 205,
+                            "text": "Он всегда выше рыночной цены",
+                            "correct": false,
+                            "question_id": 55,
+                            "user_answer": false
+                        },
+                        {
+                            "id": 206,
+                            "text": "Он разделён между несколькими биржами",
+                            "correct": false,
+                            "question_id": 55,
+                            "user_answer": false
+                        },
+                        {
+                            "id": 207,
+                            "text": "Он показывает только часть своего объёма в стакане",
+                            "correct": true,
+                            "question_id": 55,
+                            "user_answer": true
+                        },
+                        {
+                            "id": 208,
+                            "text": "Он работает только в фьючерсах",
+                            "correct": false,
+                            "question_id": 55,
+                            "user_answer": false
+                        }
+                    ]
+                },
+                {
+                    "id": 53,
+                    "qid": 56,
+                    "text": "Что такое spoofing?",
+                    "type": "quiz",
+                    "answers": [
+                        {
+                            "id": 209,
+                            "text": "Автоматическая фиксация прибыли",
+                            "correct": false,
+                            "question_id": 56,
+                            "user_answer": false
+                        },
+                        {
+                            "id": 210,
+                            "text": "Выставление фейковых заявок для создания иллюзии спроса или предложения",
+                            "correct": true,
+                            "question_id": 56,
+                            "user_answer": true
+                        },
+                        {
+                            "id": 211,
+                            "text": "Ведение журнала сделок",
+                            "correct": false,
+                            "question_id": 56,
+                            "user_answer": false
+                        },
+                        {
+                            "id": 212,
+                            "text": "Плавающий спред при низкой ликвидности",
+                            "correct": false,
+                            "question_id": 56,
+                            "user_answer": false
+                        }
+                    ]
+                },
+                {
+                    "id": 54,
+                    "qid": 57,
+                    "text": "Зачем маркет-мейкеры размещают встречные ордера в стакане?",
+                    "type": "quiz",
+                    "answers": [
+                        {
+                            "id": 213,
+                            "text": "Чтобы двигать цену",
+                            "correct": false,
+                            "question_id": 57,
+                            "user_answer": false
+                        },
+                        {
+                            "id": 214,
+                            "text": "Для обмана других участников",
+                            "correct": false,
+                            "question_id": 57,
+                            "user_answer": false
+                        },
+                        {
+                            "id": 215,
+                            "text": "Для обеспечения ликвидности и стабильности цен",
+                            "correct": true,
+                            "question_id": 57,
+                            "user_answer": true
+                        },
+                        {
+                            "id": 216,
+                            "text": "Для манипулирования графиком",
+                            "correct": false,
+                            "question_id": 57,
+                            "user_answer": false
+                        }
+                    ]
+                },
+                {
+                    "id": 55,
+                    "qid": 58,
+                    "text": "Почему трейдерам важно следить за ликвидациями и глубиной стакана?",
+                    "type": "quiz",
+                    "answers": [
+                        {
+                            "id": 217,
+                            "text": "Чтобы определить, когда рынок закрывается",
+                            "correct": false,
+                            "question_id": 58,
+                            "user_answer": false
+                        },
+                        {
+                            "id": 218,
+                            "text": "Для оценки качества биржи",
+                            "correct": false,
+                            "question_id": 58,
+                            "user_answer": false
+                        },
+                        {
+                            "id": 219,
+                            "text": "Чтобы находить потенциальные уровни разворота и избегать резких движений",
+                            "correct": true,
+                            "question_id": 58,
+                            "user_answer": true
+                        },
+                        {
+                            "id": 220,
+                            "text": "Для настройки графика",
+                            "correct": false,
+                            "question_id": 58,
+                            "user_answer": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": 56,
+            "quiz_id": 8,
+            "user_id": 91,
+            "progress": 100.0,
+            "course_title": "Старт в торговле криптовалютой",
+            "lesson_title": "Урок 8: Трейдинг — это свобода. Почему?",
+            "questions": [
+                {
+                    "id": 56,
+                    "qid": 59,
+                    "text": "Почему трейдинг считается не просто работой, а особым путем?",
+                    "type": "quiz",
+                    "answers": [
+                        {
+                            "id": 221,
+                            "text": "Потому что это путь личного роста и понимания себя через рынки",
+                            "correct": true,
+                            "question_id": 59,
+                            "user_answer": true
+                        },
+                        {
+                            "id": 222,
+                            "text": "Потому что он требует диплома и связей",
+                            "correct": false,
+                            "question_id": 59,
+                            "user_answer": false
+                        },
+                        {
+                            "id": 223,
+                            "text": "Потому что можно торговать только по выходным",
+                            "correct": false,
+                            "question_id": 59,
+                            "user_answer": false
+                        },
+                        {
+                            "id": 224,
+                            "text": "Потому что это способ разбогатеть без усилий",
+                            "correct": false,
+                            "question_id": 59,
+                            "user_answer": false
+                        }
+                    ]
+                },
+                {
+                    "id": 57,
+                    "qid": 60,
+                    "text": "Что символизирует каждая сделка на рынке?",
+                    "type": "quiz",
+                    "answers": [
+                        {
+                            "id": 225,
+                            "text": "Финансовую обязанность перед брокером",
+                            "correct": false,
+                            "question_id": 60,
+                            "user_answer": false
+                        },
+                        {
+                            "id": 226,
+                            "text": "Чисто техническую операцию",
+                            "correct": false,
+                            "question_id": 60,
+                            "user_answer": false
+                        },
+                        {
+                            "id": 227,
+                            "text": "Маленькое исследование и возможность понять рынок глубже",
+                            "correct": true,
+                            "question_id": 60,
+                            "user_answer": true
+                        },
+                        {
+                            "id": 228,
+                            "text": "Удачную попытку угадать движение цены",
+                            "correct": false,
+                            "question_id": 60,
+                            "user_answer": false
+                        }
+                    ]
+                },
+                {
+                    "id": 58,
+                    "qid": 61,
+                    "text": "Как трейдинг помогает в развитии личности?",
+                    "type": "quiz",
+                    "answers": [
+                        {
+                            "id": 229,
+                            "text": "Делает тебя менее терпеливым",
+                            "correct": false,
+                            "question_id": 61,
+                            "user_answer": false
+                        },
+                        {
+                            "id": 230,
+                            "text": "Формирует привычку следовать толпе",
+                            "correct": false,
+                            "question_id": 61,
+                            "user_answer": false
+                        },
+                        {
+                            "id": 231,
+                            "text": "Развивает внимательность, дисциплину и смелость",
+                            "correct": true,
+                            "question_id": 61,
+                            "user_answer": true
+                        },
+                        {
+                            "id": 232,
+                            "text": "Учит полагаться только на удачу",
+                            "correct": false,
+                            "question_id": 61,
+                            "user_answer": false
+                        }
+                    ]
+                },
+                {
+                    "id": 59,
+                    "qid": 62,
+                    "text": "Что даёт трейдеру ощущение независимости?",
+                    "type": "quiz",
+                    "answers": [
+                        {
+                            "id": 233,
+                            "text": "Возможность самому принимать решения и управлять своей судьбой",
+                            "correct": true,
+                            "question_id": 62,
+                            "user_answer": true
+                        },
+                        {
+                            "id": 234,
+                            "text": "Использование чужих сигналов",
+                            "correct": false,
+                            "question_id": 62,
+                            "user_answer": false
+                        },
+                        {
+                            "id": 235,
+                            "text": "Постоянный контроль со стороны наставника",
+                            "correct": false,
+                            "question_id": 62,
+                            "user_answer": false
+                        },
+                        {
+                            "id": 236,
+                            "text": "Торговля исключительно в автоматическом режиме",
+                            "correct": false,
+                            "question_id": 62,
+                            "user_answer": false
+                        }
+                    ]
+                },
+                {
+                    "id": 60,
+                    "qid": 63,
+                    "text": "Что объединяет всех успешных трейдеров?",
+                    "type": "quiz",
+                    "answers": [
+                        {
+                            "id": 237,
+                            "text": "Секретные индикаторы",
+                            "correct": false,
+                            "question_id": 63,
+                            "user_answer": false
+                        },
+                        {
+                            "id": 238,
+                            "text": "Постоянное стремление к развитию и вера в себя",
+                            "correct": true,
+                            "question_id": 63,
+                            "user_answer": true
+                        },
+                        {
+                            "id": 239,
+                            "text": "Отказ от анализа",
+                            "correct": false,
+                            "question_id": 63,
+                            "user_answer": false
+                        },
+                        {
+                            "id": 240,
+                            "text": "Старт с миллионного депозита",
+                            "correct": false,
+                            "question_id": 63,
+                            "user_answer": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": 57,
+            "quiz_id": 9,
+            "user_id": 91,
+            "progress": 100.0,
+            "course_title": "Старт в торговле криптовалютой",
+            "lesson_title": "Урок 9: D-Product — лучшее в инфополе трейдинга",
+            "questions": [
+                {
+                    "id": 61,
+                    "qid": 64,
+                    "text": "Что входит в состав D-Space и делает его особенно полезным для новичков и тех, кто хочет глубоко разобраться в трейдинге?",
+                    "type": "quiz",
+                    "answers": [
+                        {
+                            "id": 241,
+                            "text": "Конкурсы и розыгрыши",
+                            "correct": false,
+                            "question_id": 64,
+                            "user_answer": false
+                        },
+                        {
+                            "id": 242,
+                            "text": "Только сигналы на вход",
+                            "correct": false,
+                            "question_id": 64,
+                            "user_answer": false
+                        },
+                        {
+                            "id": 243,
+                            "text": "Ручная аналитика новостей и фундамент",
+                            "correct": false,
+                            "question_id": 64,
+                            "user_answer": false
+                        },
+                        {
+                            "id": 244,
+                            "text": "Личный подход, домашки, разборы, бектесты и сайт с уроками",
+                            "correct": true,
+                            "question_id": 64,
+                            "user_answer": true
+                        }
+                    ]
+                },
+                {
+                    "id": 62,
+                    "qid": 65,
+                    "text": "Что делает D-Closed особенно сильным для практикующих трейдеров?",
+                    "type": "quiz",
+                    "answers": [
+                        {
+                            "id": 245,
+                            "text": "Архив скальповых сетапов",
+                            "correct": false,
+                            "question_id": 65,
+                            "user_answer": false
+                        },
+                        {
+                            "id": 246,
+                            "text": "Прямая трансляция сделок, софт, командная работа, ветка по риск-менеджменту",
+                            "correct": true,
+                            "question_id": 65,
+                            "user_answer": true
+                        },
+                        {
+                            "id": 247,
+                            "text": "Чат с мемами и стикерами",
+                            "correct": false,
+                            "question_id": 65,
+                            "user_answer": false
+                        },
+                        {
+                            "id": 248,
+                            "text": "Ежедневный отчёт о погоде на рынке",
+                            "correct": false,
+                            "question_id": 65,
+                            "user_answer": false
+                        }
+                    ]
+                },
+                {
+                    "id": 63,
+                    "qid": 66,
+                    "text": "Какой элемент присутствует и в D-Space, и в D-Closed, создавая сильное комьюнити?",
+                    "type": "quiz",
+                    "answers": [
+                        {
+                            "id": 249,
+                            "text": "Активный чат с постоянным обменом опытом",
+                            "correct": true,
+                            "question_id": 66,
+                            "user_answer": true
+                        },
+                        {
+                            "id": 250,
+                            "text": "Офлайн-встречи",
+                            "correct": false,
+                            "question_id": 66,
+                            "user_answer": false
+                        },
+                        {
+                            "id": 251,
+                            "text": "NFT коллекция участников",
+                            "correct": false,
+                            "question_id": 66,
+                            "user_answer": false
+                        },
+                        {
+                            "id": 252,
+                            "text": "Доступ к закрытым API",
+                            "correct": false,
+                            "question_id": 66,
+                            "user_answer": false
+                        }
+                    ]
+                },
+                {
+                    "id": 64,
+                    "qid": 67,
+                    "text": "Чем полезен открытый канал department для широкой аудитории?",
+                    "type": "quiz",
+                    "answers": [
+                        {
+                            "id": 253,
+                            "text": "Там публикуются все личные переписки команды",
+                            "correct": false,
+                            "question_id": 67,
+                            "user_answer": false
+                        },
+                        {
+                            "id": 254,
+                            "text": "Обучающие посты, сделки, новости, конкурсы и интерактив",
+                            "correct": true,
+                            "question_id": 67,
+                            "user_answer": true
+                        },
+                        {
+                            "id": 255,
+                            "text": "Только реклама",
+                            "correct": false,
+                            "question_id": 67,
+                            "user_answer": false
+                        },
+                        {
+                            "id": 256,
+                            "text": "Это просто витрина",
+                            "correct": false,
+                            "question_id": 67,
+                            "user_answer": false
+                        }
+                    ]
+                },
+                {
+                    "id": 65,
+                    "qid": 68,
+                    "text": "В чём главное отличие всей экосистемы D-Product от большинства конкурентов?",
+                    "type": "quiz",
+                    "answers": [
+                        {
+                            "id": 257,
+                            "text": "У нас больше графиков",
+                            "correct": false,
+                            "question_id": 68,
+                            "user_answer": false
+                        },
+                        {
+                            "id": 258,
+                            "text": "Всё построено на реальных сделках, обучении и поддержке, а не на теории и хайпе",
+                            "correct": true,
+                            "question_id": 68,
+                            "user_answer": true
+                        },
+                        {
+                            "id": 259,
+                            "text": "Никто не знает, но оно работает",
+                            "correct": false,
+                            "question_id": 68,
+                            "user_answer": false
+                        },
+                        {
+                            "id": 260,
+                            "text": "Больше платных уровней доступа",
+                            "correct": false,
+                            "question_id": 68,
+                            "user_answer": false
+                        }
+                    ]
+                }
+            ]
         }
     ],
     "faq": [
@@ -4155,6 +4958,5 @@
             "name": "bot_link",
             "value": "https://t.me/dept_mainbot"
         }
-    ],
-    "events_count": 0
+    ]
 }
