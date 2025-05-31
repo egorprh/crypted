@@ -1,1 +1,0 @@
-import{j as n}from"./index-DmYaDEbI.js";function t({message:o}){return n.jsxs("div",{className:"content-not-found",children:[n.jsx("img",{src:"/images/not-found.png",alt:"Not Found",className:"not-found-image"}),n.jsx("p",{className:"not-found-message",children:o})]})}export{t as C};

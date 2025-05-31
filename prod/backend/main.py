@@ -310,7 +310,7 @@ async def get_app_data(user_id: int):
         logger.info(f"--> Пользователь не найден, берем служебного гостя")
         user = await db.get_record("users", {"telegram_id": 0})
 
-    courses = await db.get_records("courses", {"visible": True})
+    courses = await db.get_records_sql("SELECT * FROM courses WHERE visible = $1 ORDER BY sort_order", True)
     for course in courses:
         lessons = await db.get_records_sql("SELECT * FROM lessons WHERE course_id = $1 AND visible = $2 ORDER BY id", course["id"], True)
         for lesson in lessons:
@@ -376,7 +376,8 @@ async def get_app_data(user_id: int):
         "events": events,
         "homework": homeworks,
         "faq": faq,
-        "config": config
+        "config": config,
+        "events_count": len(events) # Это ключ нужен для плашки с количеством ивентов
     }
 
     # Если пользователь не прошел входное тестирование, добавляем его
@@ -397,11 +398,12 @@ async def get_app_data(user_id: int):
     # Удаляем ключи time_created и time_modified
     data = remove_timestamps(data)
 
-    # Сохраняем данные в JSON-файл
+    # Сохраняем данные в JSON-файл для отладки
     with open("app_data.json", "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=4)
 
     return data
+
 
 # Обработчик для несуществующих маршрутов
 @app.exception_handler(StarletteHTTPException)
@@ -413,9 +415,9 @@ async def custom_404_handler(request: Request, exc: StarletteHTTPException):
     return await http_exception_handler(request, exc)
 
 
-
 # Static frontend
 app.mount("/", StaticFiles(directory="../frontend/dist", html=True), name="static")
+
 
 @app.get("/")
 async def serve_frontend():

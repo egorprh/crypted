@@ -9,16 +9,24 @@
             "image": "",
             "type": "main",
             "visible": true,
+            "color": null,
+            "has_popup": true,
+            "popup_title": null,
+            "popup_desc": null,
+            "popup_img": null,
+            "direct_link": null,
+            "sort_order": 2,
             "lessons": [
                 {
                     "id": 1,
                     "title": "Урок 1: Что такое криптовалюта и чем она лучше других активов?",
-                    "description": null,
+                    "description": "",
                     "video_url": "https://rutube.ru/play/embed/cce5cd139a6cba94c06ff38dd00d4e23/",
-                    "source_url": " ",
                     "course_id": 1,
                     "image": "/images/course1/lesson1.png",
                     "visible": true,
+                    "source_url": "https://rutube.ru/video/cce5cd139a6cba94c06ff38dd00d4e23",
+                    "sort_order": 0,
                     "materials": [
                         {
                             "id": 1,
@@ -364,12 +372,13 @@
                 {
                     "id": 2,
                     "title": "Урок 2: Как выбрать биржу и пополнить счёт?",
-                    "description": null,
+                    "description": "",
                     "video_url": "https://rutube.ru/play/embed/3620513b2c2ca332018cdb61d421efce/",
-                    "source_url": "#",
                     "course_id": 1,
                     "image": "/images/course1/lesson2.png",
                     "visible": true,
+                    "source_url": "https://rutube.ru/video/3620513b2c2ca332018cdb61d421efce",
+                    "sort_order": 0,
                     "materials": [
                         {
                             "id": 2,
@@ -555,11 +564,13 @@
                 {
                     "id": 3,
                     "title": "Урок 3: TradingView: как пользоваться и зачем он нужен?",
-                    "description": null,
+                    "description": "",
                     "video_url": "https://rutube.ru/play/embed/8c47de13d727a9a46c3e47acbfcd1325/",
                     "course_id": 1,
                     "image": "/images/course1/lesson3.png",
                     "visible": true,
+                    "source_url": "https://rutube.ru/video/8c47de13d727a9a46c3e47acbfcd1325",
+                    "sort_order": 0,
                     "materials": [],
                     "quizzes": [
                         {
@@ -736,11 +747,13 @@
                 {
                     "id": 4,
                     "title": "Урок 4: Виды стратегий и как её выбрать",
-                    "description": null,
+                    "description": "",
                     "video_url": "https://rutube.ru/play/embed/04aacf9cd57081978721bb222e1d3ed1/",
                     "course_id": 1,
                     "image": "/images/course1/lesson4.png",
                     "visible": true,
+                    "source_url": "https://rutube.ru/video/04aacf9cd57081978721bb222e1d3ed1",
+                    "sort_order": 0,
                     "materials": [
                         {
                             "id": 3,
@@ -1086,11 +1099,13 @@
                 {
                     "id": 5,
                     "title": "Урок 5: WinRate и RR: просто о важном",
-                    "description": null,
+                    "description": "",
                     "video_url": "https://rutube.ru/play/embed/0e8287ba60bc585a090fd8c769936454/",
                     "course_id": 1,
                     "image": "/images/course1/lesson5.png",
                     "visible": true,
+                    "source_url": "https://rutube.ru/video/0e8287ba60bc585a090fd8c769936454",
+                    "sort_order": 0,
                     "materials": [
                         {
                             "id": 4,
@@ -1436,11 +1451,13 @@
                 {
                     "id": 6,
                     "title": "Урок 6: Риск-менеджмент: как не потерять деньги?",
-                    "description": null,
+                    "description": "",
                     "video_url": "https://rutube.ru/play/embed/8ec9a6e1365ec4bad7490d92de8fe3f6/",
                     "course_id": 1,
                     "image": "/images/course1/lesson6.png",
                     "visible": true,
+                    "source_url": "https://rutube.ru/video/8ec9a6e1365ec4bad7490d92de8fe3f6",
+                    "sort_order": 0,
                     "materials": [
                         {
                             "id": 5,
@@ -1626,11 +1643,13 @@
                 {
                     "id": 7,
                     "title": "Урок 7: Как работает рынок? Ордера и ликвидность",
-                    "description": null,
+                    "description": "",
                     "video_url": "https://rutube.ru/play/embed/1e8d737544b1285ddc5aad53112f0161/",
                     "course_id": 1,
                     "image": "/images/course1/lesson7.png",
                     "visible": true,
+                    "source_url": "https://rutube.ru/video/1e8d737544b1285ddc5aad53112f0161",
+                    "sort_order": 0,
                     "materials": [
                         {
                             "id": 6,
@@ -1976,11 +1995,13 @@
                 {
                     "id": 8,
                     "title": "Урок 8: Трейдинг — это свобода. Почему?",
-                    "description": null,
+                    "description": "",
                     "video_url": "https://rutube.ru/play/embed/a128566ba9b9a4a8234c5105df738b21/",
                     "course_id": 1,
                     "image": "/images/course1/lesson8.png",
                     "visible": true,
+                    "source_url": "https://rutube.ru/video/a128566ba9b9a4a8234c5105df738b21",
+                    "sort_order": 0,
                     "materials": [
                         {
                             "id": 7,
@@ -2166,11 +2187,13 @@
                 {
                     "id": 9,
                     "title": "Урок 9: D-Product — лучшее в инфополе трейдинга",
-                    "description": null,
+                    "description": "",
                     "video_url": "https://rutube.ru/play/embed/626342577faa6a1f65a0bc1add5bb8a0/",
                     "course_id": 1,
                     "image": "/images/course1/lesson9.png",
                     "visible": true,
+                    "source_url": "https://rutube.ru/video/626342577faa6a1f65a0bc1add5bb8a0",
+                    "sort_order": 0,
                     "materials": [
                         {
                             "id": 8,
@@ -2354,6 +2377,88 @@
                     ]
                 }
             ]
+        },
+        {
+            "id": 2,
+            "title": "Как работать по зонам от #soft в открытом канале",
+            "description": null,
+            "oldprice": null,
+            "newprice": "Бесплатно",
+            "image": "/images/course2/course2.png",
+            "type": "main",
+            "visible": true,
+            "color": "#15A935",
+            "has_popup": null,
+            "popup_title": null,
+            "popup_desc": null,
+            "popup_img": null,
+            "direct_link": null,
+            "sort_order": 3,
+            "lessons": [
+                {
+                    "id": 10,
+                    "title": "Методичка: Как работать по зонам от #soft в открытом канале",
+                    "description": "<p>В методичке разобрали, как торговать по торговым зонам от нашего программного обеспечения.  Удачных торгов!</p>",
+                    "video_url": null,
+                    "course_id": 2,
+                    "image": "/images/course2/course2.png",
+                    "visible": true,
+                    "source_url": null,
+                    "sort_order": 0,
+                    "materials": [
+                        {
+                            "id": 9,
+                            "title": "Методичка",
+                            "description": null,
+                            "url": "https://disk.yandex.ru/i/VQl2VM-5WuIpHw",
+                            "visible": true,
+                            "lesson_id": 10
+                        }
+                    ],
+                    "quizzes": []
+                }
+            ]
+        },
+        {
+            "id": 3,
+            "title": "Cтратегия заработка с dept",
+            "description": null,
+            "oldprice": null,
+            "newprice": "Бесплатно",
+            "image": "/images/course3/course3.png",
+            "type": "main",
+            "visible": true,
+            "color": null,
+            "has_popup": null,
+            "popup_title": null,
+            "popup_desc": null,
+            "popup_img": null,
+            "direct_link": "",
+            "sort_order": 1,
+            "lessons": [
+                {
+                    "id": 11,
+                    "title": "Стратегия заработка с Dept",
+                    "description": "<p>Привет, в этом видео я рассказал, как можно абсолютно бесплатно начать зарабатывать с публичным телеграмм-каналом dept.</p> \n<p>Затронул наш подход и рассказал о себе.</p> ",
+                    "video_url": "https://rutube.ru/play/embed/c4fe1748b631fad3eed38c82abf1d376/",
+                    "course_id": 3,
+                    "image": "/images/course3/course3.png",
+                    "visible": true,
+                    "source_url": "https://rutube.ru/video/c4fe1748b631fad3eed38c82abf1d376/",
+                    "sort_order": 0,
+                    "materials": [
+                        {
+                            "id": 10,
+                            "title": "Материалы",
+                            "description": "За методичкой по рискам и информацией по торговой группе к Ростиславу. Жми на кнопку.",
+                            "url": "https://t.me/rostislavdept",
+                            "visible": true,
+                            "lesson_id": 11
+                        }
+                    ],
+                    "quizzes": []
+                }
+            ]
         }
     ],
     "events": [],
@@ -2361,44 +2466,38 @@
     "faq": [
         {
             "id": 1,
-            "question": "Что такое D-Space?",
-            "answer": "D-Space — это образовательная платформа, которая помогает новичкам и опытным трейдерам разобраться в трейдинге через уроки, домашние задания и разборы.",
+            "question": "Что такое D-Space Junior?",
+            "answer": "D-Space Junior — это образовательная платформа по криптовалюте и блокчейн-технологиям. Здесь ты можешь изучать основы крипты: Что такое блокчейн? Как работают рынки? Почему движется цена?   На все эти вопросы есть ответы в курсе, который я записал и придумал лично. В нём собрал базовую информацию и рассказал простым языком для того, чтобы у тебя сформировались основные понимания о финансовых рынках и ты мог развиваться дальше.  Заходи и проверяй, как у меня это получилось, ведь я даю тебе это абсолютно бесплатно! (С тебя отзыв про курс мне в лс и пару лайков в наш открытый канал. Увидимся :))",
             "visible": true
         },
         {
             "id": 2,
-            "question": "Как начать обучаться?",
-            "answer": "Для начала обучения зарегистрируйтесь на сайте, выберите подходящий курс и следуйте инструкциям в личном кабинете.",
+            "question": "Что такое D-Space Middle?",
+            "answer": "D-Space Middle — вторая ступень обучения, созданная для практикующих трейдеров, которые хотят улучшить свои результаты и хвастаться зелёными PNL. Здесь ты можешь углубить свои знания в финансовых рынках. Обучение состоит из 5 разных блоков, но всё крутится вокруг главного – Smart Money Concept и более 20 практических уроков с плавным стартом и жёстким концом. Я отобрал только то, чем пользуюсь сам и то, что действительно работает в современных реалиях.   На разработку курса я потратил более полугода, а участие в разработке принимали более 5 практикующих трейдеров, которые, кстати, общаются внутри нашего закрытого коммюнити только для учеников D-Space Middle. Но самое главное, что обучение сделано с любовью и уважением к своему делу и я говорю это с гордостью!   p.s трепещите инфоцыгане, скоро все адекватные люди будут учиться у нас",
             "visible": true
         },
         {
             "id": 3,
-            "question": "Какие есть тарифы для обучения?",
-            "answer": "Да, на платформе доступны бесплатные материалы, включая открытый канал с обучающими постами и новостями.",
+            "question": "Есть ли сертификаты после прохождения курсов?",
+            "answer": "Да, после прохождения курсов Junior и Middle мы выдаём индивидуальные именные сертефикаты. Можно повесить на видное место и гордиться собой!",
             "visible": true
         },
         {
             "id": 4,
-            "question": "Есть ли сертификаты после прохождения курсов?",
-            "answer": "Да, на платформе доступны бесплатные материалы, включая открытый канал с обучающими постами и новостями.",
+            "question": "Можно ли учиться с телефона?",
+            "answer": "Нужно",
             "visible": true
         },
         {
             "id": 5,
-            "question": "Можно ли учиться с телефона?",
-            "answer": "Да, на платформе доступны бесплатные материалы, включая открытый канал с обучающими постами и новостями.",
+            "question": "Сколько времени в среднем нужно на курс?",
+            "answer": "Junior можно пройти в своём темпе, а вот на Middle потребуется 2-3 месяца усердной работы и постоянной практики, ведь только так куётся боевой дух трейдера.",
             "visible": true
         },
         {
             "id": 6,
-            "question": "Сколько времени в среднем нужно на курс?",
-            "answer": "Да, на платформе доступны бесплатные материалы, включая открытый канал с обучающими постами и новостями.",
-            "visible": true
-        },
-        {
-            "id": 7,
             "question": "Что такое D-Closed?",
-            "answer": "Вы можете связаться с поддержкой через форму обратной связи на сайте или написав в чат комьюнити.",
+            "answer": "Dept Closed - наша закрытая группа: простое и понятное место для практикующих трейдеров. Внутри сообщества Ростислав и другие трейдеры команды делятся своими сделками. А в основе всего лежит наше авторское программное обеспечение, с помощью которого Ростислав выдает от 30 прибыльных сделок в месяц.",
             "visible": true
         }
     ],
@@ -2426,7 +2525,33 @@
         {
             "id": 5,
             "name": "bot_link",
-            "value": "https://t.me/dspace_bot"
+            "value": "https://t.me/dept_mainbot"
         }
-    ]
+    ],
+    "enter_survey": {
+        "id": 1,
+        "title": "Входное тестирование",
+        "description": "Пройди входное тестирование для доступа к курсам",
+        "visible": true,
+        "questions": [
+            {
+                "id": 1,
+                "text": "Ваш номер телефона",
+                "type": "phone",
+                "answers": []
+            },
+            {
+                "id": 2,
+                "text": "Ваше ФИО",
+                "type": "text",
+                "answers": []
+            },
+            {
+                "id": 3,
+                "text": "Сколько вам лет?",
+                "type": "age",
+                "answers": []
+            }
+        ]
+    }
 }

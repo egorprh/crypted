@@ -24,7 +24,6 @@ services:
     volumes:
       - ./postgres-data:/var/lib/postgresql/data
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
-      # - ./backend/db/pg_hba.conf:/var/lib/postgresql/data/pg_hba.conf Эта строка нужна, если нужно изменить настройки доступа к БД
 
   # pgadmin:
   #   container_name: pgadmin
@@ -79,8 +78,7 @@ services:
   #   volumes:
   #     - ./telegram_bot:/app
   #   env_file:
-  #    - ".env-dev"
-  #    # - ".env"
+  #     - ".env"
   #   environment:
   #     BOT_TOKEN: $BOT_TOKEN
   #     ADMINS: $ADMINS
