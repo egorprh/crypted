@@ -1,27 +1,31 @@
 import logging
-from logging.handlers import TimedRotatingFileHandler
+import os
+from pathlib import Path
 
 # Настройки
 LOG_FILENAME = "logs/app.log"
-LOG_LEVEL = logging.INFO
-LOG_INTERVAL_MONTHS = 1
-BACKUP_COUNT = 3  # Сколько архивов хранить
+LOG_LEVEL = logging.DEBUG
+
+# Создаем папку logs если её нет
+log_dir = Path("logs")
+log_dir.mkdir(exist_ok=True)
 
 # Создание логгера
 logger = logging.getLogger("dept_bot_logger")
 logger.setLevel(LOG_LEVEL)
 
+# Очищаем существующие хендлеры чтобы избежать дублирования
+for handler in logger.handlers[:]:
+    logger.removeHandler(handler)
+
 # Формат вывода
 formatter = logging.Formatter("%(asctime)s [%(levelname)s] %(message)s")
 
-# === Хендлер для ротации по времени ===
-file_handler = TimedRotatingFileHandler(
+# === Хендлер для файла ===
+file_handler = logging.FileHandler(
     filename=LOG_FILENAME,
-    when="M",              # Ротация раз в месяц
-    interval=LOG_INTERVAL_MONTHS,
-    backupCount=BACKUP_COUNT,
-    encoding="utf-8",
-    utc=True
+    mode="a",  # append mode
+    encoding="utf-8"
 )
 file_handler.setFormatter(formatter)
 logger.addHandler(file_handler)

@@ -1,4 +1,5 @@
 import asyncio
+import os
 import time
 import traceback
 from fastapi import FastAPI, HTTPException, Request
@@ -19,6 +20,13 @@ db = PGApi()
 
 # Хранилище для отслеживания запросов
 request_timestamps: Dict[str, float] = {}
+
+# Флаг состояния подключения к БД
+db_connected = False
+
+def check_db_connection():
+    """Проверяет, подключена ли БД"""
+    return db_connected
 
 
 async def daily_db_backup():
@@ -43,61 +51,44 @@ async def lifespan(app: FastAPI):
     max_retries = 3  # Максимальное количество попыток подключения
     retry_delay = 2  # Задержка между попытками (в секундах)
     
+    global db_connected
+    db_connected = False
     attempt = 0
     while attempt < max_retries:
         try:
             await db.create()  # Попытка подключения к базе данных
-            # Запуск фоновой задачи
+            db_connected = True
+            # Запуск фоновой задачи только если БД подключена
             asyncio.create_task(daily_db_backup())
-            logger.info("Приложение запущено")
-            await send_service_message(bot, "DeptSpace запущен!")
+            logger.info("Приложение запущено с подключением к БД")
             break  # Если подключение успешно, выходим из цикла
         except Exception as e:
             attempt += 1
             if attempt == max_retries:
-                logger.info(f"Не удалось подключиться к базе данных после {max_retries} попыток. Ошибка: {e}")
-                raise  # Выбрасываем исключение, чтобы завершить работу приложения
+                logger.warning(f"Не удалось подключиться к базе данных после {max_retries} попыток. Ошибка: {e}")
+                logger.info("Приложение запускается без подключения к БД")
+                break  # Не выбрасываем исключение, продолжаем работу
             logger.info(f"Попытка {attempt} не удалась. Повторная попытка через {retry_delay} секунд...")
             await asyncio.sleep(retry_delay)  # Ждем перед следующей попыткой
+
+    await send_service_message(bot, "DeptSpace запущен! Состояние БД: " + ("Подключена" if db_connected else "Не подключена"))
 
     yield  # Основной код приложения выполняется здесь
     logger.info("Приложение остановлено")
     await send_service_message(bot, "DeptSpace остановлен! Проверьте, если это не запланировано")
     
     # app teardown
-    try:
-        await db.close()  # Закрытие соединения с базой данных
-    except Exception as e:
-        logger.info(f"Ошибка при закрытии соединения с базой данных: {e}")
+    if db_connected:
+        try:
+            await db.close()  # Закрытие соединения с базой данных
+        except Exception as e:
+            logger.info(f"Ошибка при закрытии соединения с базой данных: {e}")
 
 
 
 #https://habr.com/ru/articles/799337/
 app = FastAPI(lifespan=lifespan)
 
-
-# Миддлвар для ограничения запросов
-# @app.middleware("http")
-# async def rate_limit_middleware(request: Request, call_next):
-#     client_ip = request.client.host  # Получаем IP-адрес клиента
-#     current_time = time.time()
-
-#     # Проверяем, был ли запрос с этого IP недавно
-#     if client_ip in request_timestamps:
-#         last_request_time = request_timestamps[client_ip]
-#         if current_time - last_request_time < 1:  # Ограничение: 1 запрос каждые 5 секунд
-#             logger.warning(f"Слишком частые запросы с IP: {client_ip}")
-#             return JSONResponse(
-#                 status_code=429,
-#                 content={"detail": "Слишком много запросов. Попробуйте снова через 5 секунд."},
-#             )
-
-#     # Обновляем время последнего запроса
-#     request_timestamps[client_ip] = current_time
-
-#     # Продолжаем обработку запроса
-#     response = await call_next(request)
-#     return response
 
 def remove_timestamps(data):
     """
@@ -122,6 +113,10 @@ async def trigger_event(event_name: str, user_id: int, instance_id: int, data: A
     """
     Триггерит событие с указанным именем и данными.
     """
+    if not check_db_connection():
+        logger.warning(f"Database not connected, skipping event: {event_name}")
+        return None
+    
     params = {
         "user_id": user_id,
         "instance_id": instance_id,
@@ -187,12 +182,19 @@ async def get_user_homeworks_by_course(user_id: int, course_id: int):
 
 @app.get("/api/ping")
 async def ping():
-    return {"status": "ok", "message": "Pong"}
+    return {
+        "status": "ok", 
+        "message": "Pong",
+        "database_connected": check_db_connection()
+    }
 
 
 # Cобытие просмотра курса 
 @app.post("/api/save_user")
 async def save_user(request: Request):
+    if not check_db_connection():
+        return {"status": "error", "message": "Database not connected"}
+    
     request = await request.json()
     logger.info(f"Запрос /api/save_user: {request}")
     params = {
@@ -210,6 +212,9 @@ async def save_user(request: Request):
 # Cобытие просмотра курса 
 @app.post("/api/course_viewed")
 async def course_viewed(request: Request):
+    if not check_db_connection():
+        return {"status": "error", "message": "Database not connected"}
+    
     request = await request.json()
     user_id = request["userId"]
     user = await db.get_record("users", {"telegram_id": user_id})
@@ -230,6 +235,9 @@ async def save_level(request: Request):
 # Cобытие просмотра курса 
 @app.post("/api/submit_enter_survey")
 async def submit_enter_survey(request: Request):
+    if not check_db_connection():
+        return {"status": "error", "message": "Database not connected"}
+    
     request = await request.json()
     user_id = request["userId"]
     user = await db.get_record("users", {"telegram_id": user_id})
@@ -257,6 +265,8 @@ async def save_attempt(request: Request):
     """
     Сохраняет прогресс пользователя в таблицу UserProgress.
     """
+    if not check_db_connection():
+        return {"status": "error", "message": "Database not connected"}
 
     request = await request.json()
 
@@ -313,6 +323,20 @@ async def save_attempt(request: Request):
 
 @app.get("/api/get_app_data")
 async def get_app_data(user_id: int):
+    if not check_db_connection():
+        # Если БД не подключена, возвращаем данные из файла
+        try:
+            with open("app_data.json", "r", encoding="utf-8") as f:
+                data = json.load(f)
+            logger.info("Возвращены данные из app_data.json (БД не подключена)")
+            return data
+        except FileNotFoundError:
+            logger.error("Файл app_data.json не найден")
+            return {"status": "error", "message": "Data file not found and database not connected"}
+        except Exception as e:
+            logger.error(f"Ошибка чтения app_data.json: {e}")
+            return {"status": "error", "message": "Failed to load data"}
+    
     user = await db.get_record("users", {"telegram_id": user_id})
 
     # Если пользователь не найден, берем служебного гостя
@@ -429,10 +453,5 @@ async def custom_404_handler(request: Request, exc: StarletteHTTPException):
     return await http_exception_handler(request, exc)
 
 
-# Static frontend
-app.mount("/", StaticFiles(directory="../frontend/dist", html=True), name="static")
-
-
-@app.get("/")
-async def serve_frontend():
-    return FileResponse("../frontend/dist/index.html")
+# Static frontend - монтируем на корневой путь, но после роутов
+app.mount("/", StaticFiles(directory=os.path.join(os.path.dirname(__file__), "..", "frontend", "dist"), html=True), name="static")

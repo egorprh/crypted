@@ -2,9 +2,8 @@
 pgadmin-data
 postgres-data
 crypted
-backend/__pycache__
-backend/db/__pycache__
+__pycache__
 backend/db_dumps
 crypted.zip
-telegram_bot/__pycache__
 creds.json
+logs
