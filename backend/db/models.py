@@ -7,6 +7,7 @@ class User(BaseModel):
     username: str
     first_name: str
     last_name: Optional[str] = None
+    level: Optional[int] = 0
 
 class Course(BaseModel):
     id: int
@@ -67,9 +68,15 @@ class Events(BaseModel):
     author: str | None = None
     image: str | None = None
     date: str
+    link: str
+    price: str | None = None
 
 class Faq(BaseModel):
     id: int
     question: str
     answer: str
 
+class Levels(BaseModel):
+    id: int
+    name: str
+    desc: str

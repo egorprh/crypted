@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS users (
     username VARCHAR(255) DEFAULT NULL,
     first_name VARCHAR(255),
     last_name VARCHAR(255),
+    level INT DEFAULT 0,
     time_modified TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     time_created TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
@@ -158,7 +159,18 @@ CREATE TABLE IF NOT EXISTS events (
     author VARCHAR(255),
     image VARCHAR(255),
     date VARCHAR(255),
+    price VARCHAR(255),
+    link VARCHAR(255),
     visible BOOLEAN DEFAULT FALSE,
+    time_modified TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    time_created TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Создание таблицы levels
+CREATE TABLE IF NOT EXISTS levels (
+    id BIGSERIAL PRIMARY KEY,
+    name TEXT,
+    desc TEXT,
     time_modified TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     time_created TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
@@ -193,6 +205,12 @@ INSERT INTO faq (question, answer) VALUES
 ('Можно ли учиться с телефона?', 'Да, на платформе доступны бесплатные материалы, включая открытый канал с обучающими постами и новостями.'),
 ('Сколько времени в среднем нужно на курс?', 'Да, на платформе доступны бесплатные материалы, включая открытый канал с обучающими постами и новостями.'),
 ('Что такое D-Closed?', 'Вы можете связаться с поддержкой через форму обратной связи на сайте или написав в чат комьюнити.');
+
+-- Добавляем уровни
+INSERT INTO levels (name, desc) VALUES 
+('Начальный уровень', 'Знаешь базовые вещи, типы ордеров и трендов, но еще не понимаешь в рисках и стратегиях.'),
+('Средний уровень', 'Разбираешься в графиках, индикаторах, адекватно анализируешь рынок и используешь стопы. Понимаешь, как управлять рисками, но иногда можешь ошибиться в прогнозах.'),
+('Продвинутый уровень', 'Прогнозируешь рынок и умеешь управляет рисками. Используешь технический, и фундаментальный анализы, автоматизируешь сделки.');
 
 -- 1. Добавляем курс
 INSERT INTO courses (title, description, oldprice, newprice, image, visible, type) VALUES
@@ -236,7 +254,8 @@ INSERT INTO config (name, value) VALUES
 ('curator_btn_link', 'https://t.me/rostislavdept'),
 ('curator_btn_avatar', '/images/curator.png'),
 ('admins', '446905865,342799025'),
-('bot_link', 'https://t.me/dspace_bot');
+('show_load_screen', '0'),
+('bot_link', '');
 
 -- 4. Добавляем вопросы и ответы для опросов
 INSERT INTO questions (text, type) VALUES ('Ваш номер телефона', 'phone') RETURNING id;

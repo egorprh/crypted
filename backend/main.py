@@ -217,6 +217,16 @@ async def course_viewed(request: Request):
     return {"status": "success", "message": "Course viewed event triggered."}
 
 
+# Сохранение уровня пользовтеля 
+@app.post("/api/save_level")
+async def save_level(request: Request):
+    request = await request.json()
+    user_id = request["userId"]
+    level = request["level"]
+    #TODO update users
+    return {"status": "success", "message": "User level was updated"}
+
+
 # Cобытие просмотра курса 
 @app.post("/api/submit_enter_survey")
 async def submit_enter_survey(request: Request):
@@ -331,6 +341,9 @@ async def get_app_data(user_id: int):
     faq = await db.get_records_sql("SELECT * FROM faq WHERE visible = $1 ORDER BY id", True)
 
     config = await db.get_records("config")
+    config.append('user_level', user.level)
+
+    levels = await db.get_records("levels")
 
     homeworks_sql = f"""
         SELECT 
@@ -376,6 +389,7 @@ async def get_app_data(user_id: int):
         "events": events,
         "homework": homeworks,
         "faq": faq,
+        "levels": levels,
         "config": config,
         "events_count": len(events) # Это ключ нужен для плашки с количеством ивентов
     }
