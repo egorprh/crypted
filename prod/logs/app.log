@@ -1,2 +1,0 @@
-2025-05-31 22:10:33,003 [INFO] User 2 completed the quiz 1.
-2025-05-31 22:10:33,005 [INFO] Triggered event: {'user_id': 2, 'instance_id': 1, 'action': 'course_completed'}

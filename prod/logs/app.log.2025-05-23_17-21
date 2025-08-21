@@ -1,4 +1,0 @@
-2025-05-23 17:21:52,448 [INFO] Запрос /api/save_user: {'telegram_id': 5117354127, 'username': 'Gamlet_off', 'first_name': 'Артём', 'last_name': 'Домбровский'}
-2025-05-23 17:21:52,449 [INFO] Создаем пользователя: {'telegram_id': 5117354127, 'username': 'Gamlet_off', 'first_name': 'Артём', 'last_name': 'Домбровский'}
-2025-05-23 17:22:09,176 [INFO] Запрос /api/save_user: {'telegram_id': 5117354127, 'username': 'Gamlet_off', 'first_name': 'Артём', 'last_name': 'Домбровский'}
-2025-05-23 17:22:50,141 [INFO] Triggered event: {'user_id': 996, 'instance_id': 1, 'action': 'enter_survey'}
