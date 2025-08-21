@@ -5,10 +5,18 @@ FROM python:3.11-slim
 RUN apt-get update && apt-get install -y postgresql-client && apt-get clean
 
 WORKDIR /app
-COPY /logs/app.log /app/logs/app.log
-COPY backend/ /app/
-COPY requirements.txt /app/
 
+# Копируем файлы проекта
+COPY requirements.txt /app/
+COPY backend/ /app/backend/
+COPY frontend/dist/ /app/frontend/dist/
+COPY logs/ /app/logs/
+
+# Устанавливаем зависимости
 RUN pip install --no-cache-dir -r requirements.txt
 
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Делаем run.py исполняемым
+RUN chmod +x /app/backend/run.py
+
+# Запускаем приложение через run.py
+CMD ["python3", "/app/backend/run.py"]

@@ -93,12 +93,17 @@ def start_server():
     # Параметры запуска
     host = os.getenv('HOST', '0.0.0.0')
     port = int(os.getenv('PORT', '8000'))
-    reload = os.getenv('RELOAD', 'true').lower() == 'true'
+    reload = os.getenv('RELOAD', 'false').lower() == 'true'  # В Docker отключаем reload
     
     logger.info(f"Сервер будет доступен по адресу: http://{host}:{port}")
     logger.info(f"Режим перезагрузки: {'включен' if reload else 'выключен'}")
     
     try:
+        # Добавляем backend в sys.path для импорта модулей
+        backend_path = Path(__file__).parent
+        if str(backend_path) not in sys.path:
+            sys.path.insert(0, str(backend_path))
+        
         uvicorn.run(
             "main:app",
             host=host,
