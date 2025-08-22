@@ -14,7 +14,7 @@ services:
       start_period: 10s
     restart: always
     ports:
-      - 5432:5432
+      - 5433:5432
     env_file:
       - "backend/.env"
     networks:

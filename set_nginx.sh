@@ -208,12 +208,6 @@ check_domain_accessibility() {
         log_warning "Проблемы с SSL сертификатом"
     fi
     
-    log "Проверка API endpoint..."
-    if curl -s -o /dev/null -w "%{http_code}" "https://$DOMAIN/api/" | grep -q "200\|404\|405"; then
-        log_success "API endpoint отвечает"
-    else
-        log_warning "API endpoint недоступен"
-    fi
 }
 
 # Основная функция
