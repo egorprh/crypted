@@ -7,6 +7,8 @@ from asyncpg import Pool, Connection
 import db.models as models
 from logger import logger  # Импортируем логгер
 import subprocess
+import gzip
+import shutil
 
 from config import load_config
 
@@ -195,15 +197,17 @@ class PGApi:
 
     async def create_db_dump(self, dump_dir: str = "./db_dumps"):
         """
-        Создает дамп базы данных и сохраняет его в указанной директории.
+        Создает дамп базы данных, сжимает его в архив и возвращает путь к архиву.
         :param dump_dir: Директория для сохранения дампа.
+        :return: Путь к созданному архиву с дампом.
         """
         # Убедитесь, что директория для дампов существует
         os.makedirs(dump_dir, exist_ok=True)
 
         # Формируем имя файла дампа с текущей датой
         timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-        dump_file = os.path.join(dump_dir, f"db_dump.sql")
+        dump_file = os.path.join(dump_dir, f"db_dump_{timestamp}.sql")
+        archive_file = os.path.join(dump_dir, f"db_dump_{timestamp}.sql.gz")
 
         # Загружаем конфигурацию
         config = load_config("../.env")
@@ -224,5 +228,63 @@ class PGApi:
             # Выполняем команду через subprocess
             subprocess.run(command, check=True)
             logger.info(f"Дамп базы данных успешно создан: {dump_file}")
+            
+            # Сжимаем дамп в архив
+            with open(dump_file, 'rb') as f_in:
+                with gzip.open(archive_file, 'wb') as f_out:
+                    shutil.copyfileobj(f_in, f_out)
+            
+            # Удаляем несжатый файл
+            os.remove(dump_file)
+            
+            # Получаем размер архива
+            archive_size = os.path.getsize(archive_file)
+            archive_size_mb = archive_size / (1024 * 1024)
+            
+            logger.info(f"Дамп сжат в архив: {archive_file} (размер: {archive_size_mb:.2f} MB)")
+            
+            return archive_file
+            
         except subprocess.CalledProcessError as e:
             logger.error(f"Ошибка при создании дампа базы данных: {e}")
+            raise
+        except Exception as e:
+            logger.error(f"Ошибка при сжатии дампа: {e}")
+            # Удаляем несжатый файл в случае ошибки
+            if os.path.exists(dump_file):
+                os.remove(dump_file)
+            raise
+
+    async def cleanup_old_dumps(self, dump_dir: str = "./db_dumps", keep_days: int = 7):
+        """
+        Удаляет старые дампы базы данных, оставляя только последние N дней.
+        :param dump_dir: Директория с дампами.
+        :param keep_days: Количество дней для хранения дампов.
+        """
+        try:
+            if not os.path.exists(dump_dir):
+                return
+            
+            current_time = datetime.now()
+            cutoff_time = current_time.replace(hour=0, minute=0, second=0, microsecond=0)
+            
+            # Вычисляем время, старше которого файлы нужно удалить
+            for _ in range(keep_days):
+                cutoff_time = cutoff_time.replace(day=cutoff_time.day - 1)
+            
+            deleted_count = 0
+            for filename in os.listdir(dump_dir):
+                if filename.endswith('.sql.gz'):
+                    file_path = os.path.join(dump_dir, filename)
+                    file_time = datetime.fromtimestamp(os.path.getctime(file_path))
+                    
+                    if file_time < cutoff_time:
+                        os.remove(file_path)
+                        deleted_count += 1
+                        logger.info(f"Удален старый дамп: {filename}")
+            
+            if deleted_count > 0:
+                logger.info(f"Очистка завершена. Удалено {deleted_count} старых дампов.")
+                
+        except Exception as e:
+            logger.error(f"Ошибка при очистке старых дампов: {e}")

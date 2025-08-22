@@ -2,6 +2,7 @@ import asyncio
 import os
 import time
 import traceback
+from datetime import datetime
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.exception_handlers import http_exception_handler
 from fastapi.responses import JSONResponse, RedirectResponse
@@ -12,6 +13,8 @@ from contextlib import asynccontextmanager
 from typing import Any, AsyncGenerator, Dict
 from db.pgapi import PGApi
 from telegram_bot import send_service_message, bot
+from aiogram import types
+from config import load_config
 import json
 from logger import logger  # Импортируем логгер
 
@@ -32,14 +35,71 @@ def check_db_connection():
 async def daily_db_backup():
     """
     Фоновая задача для создания дампа базы данных раз в день.
+    Создает сжатый архив и отправляет его в Telegram канал.
     """
+    # Загружаем конфигурацию
+    config = load_config("../.env")
+    
     while True:
         try:
             logger.info("Запуск фоновой задачи для создания дампа базы данных.")
-            await db.create_db_dump()
-            logger.info("Дамп базы данных успешно создан.")
+            
+            # Создаем дамп и получаем путь к архиву
+            archive_path = await db.create_db_dump()
+            
+            # Отправляем архив в Telegram канал
+            if archive_path and os.path.exists(archive_path):
+                try:
+                    # Получаем размер архива
+                    archive_size = os.path.getsize(archive_path)
+                    archive_size_mb = archive_size / (1024 * 1024)
+                    
+                    # Формируем сообщение
+                    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                    message = f"📦 <b>Ежедневный дамп базы данных</b>\n\n"
+                    message += f"📅 Дата: {timestamp}\n"
+                    message += f"📊 Размер: {archive_size_mb:.2f} MB\n"
+                    message += f"✅ Статус: Успешно создан"
+                    
+                    # Отправляем сообщение
+                    await send_service_message(bot, message)
+                    
+                    # Отправляем файл архива
+                    with open(archive_path, 'rb') as archive_file:
+                        await bot.send_document(
+                            chat_id=config.tg_bot.private_channel_id,
+                            document=types.BufferedInputFile(
+                                archive_file.read(),
+                                filename=os.path.basename(archive_path)
+                            ),
+                            caption=f"🗄️ Дамп БД от {timestamp}"
+                        )
+                    
+                    logger.info(f"Архив дампа отправлен в канал: {archive_path}")
+                    
+                except Exception as e:
+                    logger.error(f"Ошибка при отправке архива в Telegram: {e}")
+                    # Отправляем сообщение об ошибке
+                    error_message = f"❌ <b>Ошибка отправки дампа</b>\n\nДамп создан, но не отправлен в канал.\nОшибка: {str(e)}"
+                    await send_service_message(bot, error_message)
+            
+            logger.info("Дамп базы данных успешно создан и отправлен.")
+            
+            # Очищаем старые дампы (оставляем только последние 3 дня)
+            try:
+                await db.cleanup_old_dumps(keep_days=3)
+            except Exception as cleanup_error:
+                logger.error(f"Ошибка при очистке старых дампов: {cleanup_error}")
+            
         except Exception as e:
             logger.error(f"Ошибка при создании дампа базы данных: {e}")
+            # Отправляем сообщение об ошибке
+            try:
+                error_message = f"❌ <b>Ошибка создания дампа БД</b>\n\nОшибка: {str(e)}"
+                await send_service_message(bot, error_message)
+            except Exception as send_error:
+                logger.error(f"Не удалось отправить сообщение об ошибке: {send_error}")
+        
         # Ожидаем 24 часа перед следующим выполнением
         await asyncio.sleep(24*60*60)
 
