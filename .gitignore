@@ -8,6 +8,7 @@ crypted.zip
 creds.json
 logs
 .venv/
+venv/
 node_modules/
 .git/
 .gitignore
