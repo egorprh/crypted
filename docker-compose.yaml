@@ -1,6 +1,6 @@
 services:
   postgressql:
-    container_name: postgressql
+    container_name: free-dept-space-db
     image: postgres:12
     environment:
       POSTGRES_PASSWORD: postgres_password
@@ -24,7 +24,7 @@ services:
       - ./backend/db/init.sql:/docker-entrypoint-initdb.d/init.sql
 
   backend:
-    container_name: fastapi_app
+    container_name: free-dept-backend
     build:
       context: .
       dockerfile: backend/Dockerfile
@@ -32,11 +32,11 @@ services:
     networks:
       - web
     ports:
-      - "8010:8010"
+      - "8015:8015"
     env_file:
       - "backend/.env"
     environment:
-      - PORT=8010
+      - PORT=8015
     volumes:
       - ./backend:/app/backend
       - ./frontend/dist:/app/frontend/dist
@@ -46,7 +46,7 @@ services:
       postgressql:
         condition: service_healthy
     expose:
-      - "8010"
+      - "8015"
 
 
 

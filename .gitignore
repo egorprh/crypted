@@ -7,3 +7,17 @@ backend/db_dumps
 crypted.zip
 creds.json
 logs
+.venv/
+node_modules/
+.git/
+.gitignore
+.DS_Store
+*.log
+*.tmp
+*.swp
+*.swo
+*~
+.env.local
+.env.development
+.env.production
+deploy/

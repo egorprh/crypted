@@ -60,7 +60,9 @@ log_info "Копируем файлы проекта в папку deploy..."
 cat > /tmp/deploy_exclude.txt << EOF
 deploy/
 .venv/
+__pycache__/
 node_modules/
+postgres-data/
 .git/
 .gitignore
 .DS_Store
@@ -72,7 +74,8 @@ node_modules/
 .env.local
 .env.development
 .env.production
-backend/dept_space.db
+logs/
+venv/
 EOF
 
 # Копируем файлы с исключениями
@@ -88,7 +91,6 @@ rsync -av --exclude-from=/tmp/deploy_exclude.txt \
     --exclude='.vscode' \
     --exclude='.idea' \
     --exclude='*.egg-info' \
-    --exclude='dist' \
     --exclude='*.tar.gz' \
     --exclude='*.zip' \
     "$PROJECT_ROOT/" "$DEPLOY_DIR/"

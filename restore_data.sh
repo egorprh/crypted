@@ -5,7 +5,7 @@
 
 # Конфигурация
 DUMP_FILE="backend/db_dumps/init copy.sql"
-CONTAINER_NAME="postgressql"
+CONTAINER_NAME="free-dept-space-db"
 DB_NAME="crypted"
 DB_USER="postgres"
 DB_PASSWORD="postgres_password"
