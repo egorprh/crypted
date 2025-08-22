@@ -7,10 +7,9 @@ RUN apt-get update && apt-get install -y postgresql-client && apt-get clean
 WORKDIR /app
 
 # Копируем файлы проекта
-COPY requirements.txt /app/
+COPY backend/requirements.txt /app/requirements.txt
 COPY backend/ /app/backend/
 COPY frontend/dist/ /app/frontend/dist/
-COPY logs/ /app/logs/
 
 # Устанавливаем зависимости
 RUN pip install --no-cache-dir -r requirements.txt

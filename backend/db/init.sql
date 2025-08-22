@@ -1,3 +1,19 @@
+-- Создание пользователя для приложения
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT FROM pg_catalog.pg_roles WHERE rolname = 'deptmaster') THEN
+        CREATE USER deptmaster WITH PASSWORD 'VgPZGd1B2rkDW!';
+    END IF;
+END
+$$;
+
+-- Предоставление прав пользователю deptmaster на текущую базу данных
+GRANT ALL PRIVILEGES ON SCHEMA public TO deptmaster;
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO deptmaster;
+GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO deptmaster;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO deptmaster;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO deptmaster;
+
 -- Создание таблицы users
 CREATE TABLE IF NOT EXISTS users (
     id BIGSERIAL PRIMARY KEY,
@@ -170,7 +186,7 @@ CREATE TABLE IF NOT EXISTS events (
 CREATE TABLE IF NOT EXISTS levels (
     id BIGSERIAL PRIMARY KEY,
     name TEXT,
-    desc TEXT,
+    description TEXT,
     time_modified TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     time_created TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
@@ -207,7 +223,7 @@ INSERT INTO faq (question, answer) VALUES
 ('Что такое D-Closed?', 'Вы можете связаться с поддержкой через форму обратной связи на сайте или написав в чат комьюнити.');
 
 -- Добавляем уровни
-INSERT INTO levels (name, desc) VALUES 
+INSERT INTO levels (name, description) VALUES 
 ('Начальный уровень', 'Знаешь базовые вещи, типы ордеров и трендов, но еще не понимаешь в рисках и стратегиях.'),
 ('Средний уровень', 'Разбираешься в графиках, индикаторах, адекватно анализируешь рынок и используешь стопы. Понимаешь, как управлять рисками, но иногда можешь ошибиться в прогнозах.'),
 ('Продвинутый уровень', 'Прогнозируешь рынок и умеешь управляет рисками. Используешь технический, и фундаментальный анализы, автоматизируешь сделки.');

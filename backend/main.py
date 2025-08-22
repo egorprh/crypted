@@ -326,7 +326,7 @@ async def get_app_data(user_id: int):
     if not check_db_connection():
         # Если БД не подключена, возвращаем данные из файла
         try:
-            with open("app_data.json", "r", encoding="utf-8") as f:
+            with open("backend/app_data.json", "r", encoding="utf-8") as f:
                 data = json.load(f)
             logger.info("Возвращены данные из app_data.json (БД не подключена)")
             return data
@@ -365,7 +365,7 @@ async def get_app_data(user_id: int):
     faq = await db.get_records_sql("SELECT * FROM faq WHERE visible = $1 ORDER BY id", True)
 
     config = await db.get_records("config")
-    config.append('user_level', user.level)
+    config.append({'name': 'user_level', 'value': str(user["level"])})
 
     levels = await db.get_records("levels")
 
@@ -437,7 +437,7 @@ async def get_app_data(user_id: int):
     data = remove_timestamps(data)
 
     # Сохраняем данные в JSON-файл для отладки
-    with open("app_data.json", "w", encoding="utf-8") as f:
+    with open("backend/app_data.json", "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=4)
 
     return data
