@@ -1,82 +1,165 @@
 from typing import Any, Dict, Optional
 from pydantic import BaseModel
+from datetime import datetime
 
 class User(BaseModel):
     id: int
     telegram_id: int
-    username: str
-    first_name: str
+    username: Optional[str] = None
+    first_name: Optional[str] = None
     last_name: Optional[str] = None
-    level: Optional[int] = 0
+    level: int = 0
+    time_modified: Optional[datetime] = None
+    time_created: Optional[datetime] = None
 
 class Course(BaseModel):
     id: int
-    title: str
-    description: str
-    price: str | None = None
-    image: str | None = None
-    type: str
+    title: Optional[str] = None
+    description: Optional[str] = None
+    oldprice: Optional[str] = None
+    newprice: Optional[str] = None
+    image: Optional[str] = None
+    color: Optional[str] = None
+    has_popup: Optional[bool] = None
+    popup_title: Optional[str] = None
+    popup_desc: Optional[str] = None
+    popup_img: Optional[str] = None
+    direct_link: Optional[str] = None
+    type: Optional[str] = None
+    level: int = 0
+    visible: bool = True
+    sort_order: int = 0
+    time_modified: Optional[datetime] = None
+    time_created: Optional[datetime] = None
+
+class UserActionsLog(BaseModel):
+    id: int
+    user_id: int
+    action: str
+    instance_id: Optional[int] = None
+    time_modified: Optional[datetime] = None
+    time_created: Optional[datetime] = None
 
 class Lesson(BaseModel):
     id: int
-    title: str
-    description: str
-    video_url: str | None = None
+    title: Optional[str] = None
+    description: Optional[str] = None
+    video_url: Optional[str] = None
+    source_url: Optional[str] = None
     course_id: int
-    image: str | None = None
+    image: Optional[str] = None
+    visible: bool = True
+    sort_order: int = 0
+    time_modified: Optional[datetime] = None
+    time_created: Optional[datetime] = None
 
 class Materials(BaseModel):
     id: int
-    title: str
-    url: str
+    title: Optional[str] = None
+    description: Optional[str] = None
+    url: Optional[str] = None
+    visible: bool = True
     lesson_id: int
+    time_modified: Optional[datetime] = None
+    time_created: Optional[datetime] = None
 
 class Quiz(BaseModel):
     id: int
-    title: str
-    description: str
+    title: Optional[str] = None
+    description: Optional[str] = None
+    visible: bool = True
     lesson_id: int
+    time_modified: Optional[datetime] = None
+    time_created: Optional[datetime] = None
+
+class Survey(BaseModel):
+    id: int
+    title: Optional[str] = None
+    description: Optional[str] = None
+    visible: bool = True
+    time_modified: Optional[datetime] = None
+    time_created: Optional[datetime] = None
 
 class Question(BaseModel):
     id: int
-    text: str
-    type: int # 1 - multiple choice, 2 - text
+    text: Optional[str] = None
+    type: Optional[str] = None  # quiz, text, phone, age
+    visible: bool = True
+    time_modified: Optional[datetime] = None
+    time_created: Optional[datetime] = None
+
+class SurveyQuestion(BaseModel):
+    id: int
+    survey_id: int
+    question_id: int
+    time_modified: Optional[datetime] = None
+    time_created: Optional[datetime] = None
+
+class QuizQuestion(BaseModel):
+    id: int
     quiz_id: int
+    question_id: int
+    time_modified: Optional[datetime] = None
+    time_created: Optional[datetime] = None
 
 class Answer(BaseModel):
     id: int
-    text: str
-    correct: bool # for text always true
+    text: Optional[str] = None
+    correct: bool
     question_id: int
+    time_modified: Optional[datetime] = None
+    time_created: Optional[datetime] = None
 
 class UserAnswer(BaseModel):
     id: int
-    answer_id: str
-    text: bool # for text always true
-    question_id: int
+    user_id: int
+    attempt_id: Optional[int] = None
+    answer_id: int = 0
+    text: Optional[str] = None
+    type: Optional[str] = None  # quiz or survey
+    instance_qid: Optional[int] = None  # id из quiz_questions или survey_questions
+    time_modified: Optional[datetime] = None
+    time_created: Optional[datetime] = None
 
-class UserProgress(BaseModel):
+class QuizAttempt(BaseModel):
     id: int
     user_id: int
     quiz_id: int
-    progress: float # for text always true
+    progress: Optional[float] = None
+    time_modified: Optional[datetime] = None
+    time_created: Optional[datetime] = None
 
-class Events(BaseModel):
+class Event(BaseModel):
     id: int
-    title: str
-    description: str
-    author: str | None = None
-    image: str | None = None
-    date: str
-    link: str
-    price: str | None = None
+    title: Optional[str] = None
+    description: Optional[str] = None
+    author: Optional[str] = None
+    image: Optional[str] = None
+    date: Optional[str] = None
+    price: Optional[str] = None
+    link: Optional[str] = None
+    visible: bool = False
+    time_modified: Optional[datetime] = None
+    time_created: Optional[datetime] = None
+
+class Level(BaseModel):
+    id: int
+    name: Optional[str] = None
+    description: Optional[str] = None
+    time_modified: Optional[datetime] = None
+    time_created: Optional[datetime] = None
 
 class Faq(BaseModel):
     id: int
-    question: str
-    answer: str
+    question: Optional[str] = None
+    answer: Optional[str] = None
+    visible: bool = True
+    time_modified: Optional[datetime] = None
+    time_created: Optional[datetime] = None
 
-class Levels(BaseModel):
+class Config(BaseModel):
     id: int
-    name: str
-    desc: str
+    name: Optional[str] = None
+    value: Optional[str] = None
+    time_modified: Optional[datetime] = None
+    time_created: Optional[datetime] = None

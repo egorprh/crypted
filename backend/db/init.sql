@@ -41,6 +41,7 @@ CREATE TABLE IF NOT EXISTS courses (
     popup_img VARCHAR(255),
     direct_link VARCHAR(255),
     type VARCHAR(255),
+    level INT DEFAULT 0,
     visible BOOLEAN DEFAULT TRUE,
     sort_order BIGINT DEFAULT 0,
     time_modified TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,

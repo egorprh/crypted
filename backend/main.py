@@ -285,11 +285,30 @@ async def course_viewed(request: Request):
 # Сохранение уровня пользовтеля 
 @app.post("/api/save_level")
 async def save_level(request: Request):
-    request = await request.json()
-    user_id = request["userId"]
-    level = request["level"]
-    #TODO update users
-    return {"status": "success", "message": "User level was updated"}
+    if not check_db_connection():
+        return {"status": "error", "message": "Database not connected"}
+    
+    try:
+        request = await request.json()
+        user_id = request["userId"]
+        level = request["level"]
+        
+        # Получаем пользователя по telegram_id
+        user = await db.get_record("users", {"telegram_id": user_id})
+        
+        if not user:
+            return {"status": "error", "message": "User not found"}
+        
+        # Обновляем уровень пользователя
+        await db.update_record("users", user["id"], {"level": level})
+        
+        logger.info(f"User {user['id']} level updated to {level}")
+        
+        return {"status": "success", "message": "User level was updated"}
+        
+    except Exception as e:
+        logger.error(f"Error updating user level: {e}")
+        return {"status": "error", "message": f"Failed to update user level: {str(e)}"}
 
 
 # Cобытие просмотра курса 
@@ -404,7 +423,7 @@ async def get_app_data(user_id: int):
         logger.info(f"--> Пользователь не найден, берем служебного гостя")
         user = await db.get_record("users", {"telegram_id": 0})
 
-    courses = await db.get_records_sql("SELECT * FROM courses WHERE visible = $1 ORDER BY sort_order", True)
+    courses = await db.get_records_sql("SELECT * FROM courses WHERE visible = $1 AND level <= $2 ORDER BY sort_order", True, user["level"])
     for course in courses:
         lessons = await db.get_records_sql("SELECT * FROM lessons WHERE course_id = $1 AND visible = $2 ORDER BY id", course["id"], True)
         for lesson in lessons:
