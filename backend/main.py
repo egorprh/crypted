@@ -2,7 +2,7 @@ import asyncio
 import os
 import time
 import traceback
-from datetime import datetime
+from datetime import datetime, timedelta
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.exception_handlers import http_exception_handler
 from fastapi.responses import JSONResponse, RedirectResponse
@@ -17,6 +17,9 @@ from aiogram import types
 from config import load_config
 import json
 from logger import logger  # Импортируем логгер
+
+# Импортируем функции для работы с записями пользователей на курсы
+from enrollment import create_user_enrollment, get_course_access_info
 
 
 db = PGApi()
@@ -278,6 +281,10 @@ async def course_viewed(request: Request):
     request = await request.json()
     user_id = request["userId"]
     user = await db.get_record("users", {"telegram_id": user_id})
+    
+    # Создаем запись пользователя на курс при первом входе
+    await create_user_enrollment(db, user["id"], request["courseId"])
+    
     asyncio.create_task(trigger_event('course_viewed', user["id"], request["courseId"]))
     return {"status": "success", "message": "Course viewed event triggered."}
 
@@ -425,6 +432,13 @@ async def get_app_data(user_id: int):
 
     courses = await db.get_records_sql("SELECT * FROM courses WHERE visible = $1 AND level <= $2 ORDER BY sort_order", True, user["level"])
     for course in courses:
+        # Получаем информацию о времени доступа и статусе записи пользователя на курс
+        access_info = await get_course_access_info(db, user["id"], course["id"])
+        
+        # Добавляем информацию о времени и статусе записи к курсу
+        course["time_left"] = access_info["time_left"]
+        course["user_enrolment"] = access_info["user_enrolment"]
+        
         lessons = await db.get_records_sql("SELECT * FROM lessons WHERE course_id = $1 AND visible = $2 ORDER BY id", course["id"], True)
         for lesson in lessons:
             lesson["materials"] = await db.get_records_sql("SELECT * FROM materials WHERE lesson_id = $1 AND visible = $2 ORDER BY id", lesson["id"], True)

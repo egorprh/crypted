@@ -27,6 +27,7 @@ class Course(BaseModel):
     direct_link: Optional[str] = None
     type: Optional[str] = None
     level: int = 0
+    access_time: int = 0
     visible: bool = True
     sort_order: int = 0
     time_modified: Optional[datetime] = None
@@ -161,5 +162,15 @@ class Config(BaseModel):
     id: int
     name: Optional[str] = None
     value: Optional[str] = None
+    time_modified: Optional[datetime] = None
+    time_created: Optional[datetime] = None
+
+class UserEnrolment(BaseModel):
+    id: int
+    user_id: int
+    course_id: int
+    time_start: Optional[datetime] = None
+    time_end: Optional[datetime] = None
+    status: int = 0  # 0 - незаписан, 1 - записан
     time_modified: Optional[datetime] = None
     time_created: Optional[datetime] = None
