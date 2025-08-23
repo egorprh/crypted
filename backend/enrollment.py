@@ -47,9 +47,9 @@ async def create_user_enrollment(db, user_id: int, course_id: int):
         # Вычисляем время окончания доступа
         current_time = datetime.now()
         
-        # Если access_time == 0, создаем бесконечную подписку (time_end = 0)
+        # Если access_time == 0, создаем бесконечную подписку (time_end = None)
         if access_time_hours == 0:
-            time_end = 0
+            time_end = None
             logger.info(f"Курс {course_id} не имеет ограничений по времени (access_time = 0), создается бесконечная подписка")
         else:
             time_end = current_time + timedelta(hours=access_time_hours)
@@ -100,9 +100,9 @@ async def update_user_enrollment(db, user_id: int, course_id: int):
         current_time = datetime.now()
         time_end = enrollment.get('time_end')
         
-        # Если time_end == 0, подписка бесконечная
-        if time_end == 0:
-            logger.info(f"Подписка на курс {course_id} для пользователя {user_id} бесконечная (time_end = 0)")
+        # Если time_end == None, подписка бесконечная
+        if time_end is None:
+            logger.info(f"Подписка на курс {course_id} для пользователя {user_id} бесконечная (time_end = None)")
             return True
         
         if time_end and current_time > time_end:
@@ -154,7 +154,7 @@ async def get_course_access_info(db, user_id: int, course_id: int):
         if enrollment and enrollment.get('status') == ENROLLMENT_STATUS_ENROLLED:
             user_enrolment_status = ENROLLMENT_STATUS_ENROLLED
             time_end = enrollment.get('time_end')
-            if time_end == 0:
+            if time_end is None:
                 # Бесконечная подписка
                 time_left = -1  # Специальное значение для бесконечной подписки
             elif time_end:

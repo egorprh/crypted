@@ -1,28 +1,53 @@
 #!/usr/bin/env python3
 """
-Скрипт для запуска всех unit тестов.
+Скрипт для запуска всех тестов.
 """
 
-import unittest
 import sys
 import os
-
-# Добавляем путь к backend для импорта модулей
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'backend'))
+import subprocess
+from pathlib import Path
 
 def run_tests():
-    """Запускает все тесты"""
-    # Находим все тестовые файлы
-    test_loader = unittest.TestLoader()
-    test_suite = test_loader.discover(os.path.dirname(__file__), pattern='test_*.py')
+    """Запускает все тесты."""
+    # Добавляем backend в sys.path для импорта модулей
+    backend_path = Path(__file__).parent.parent / "backend"
+    if str(backend_path) not in sys.path:
+        sys.path.insert(0, str(backend_path))
     
-    # Запускаем тесты
-    test_runner = unittest.TextTestRunner(verbosity=2)
-    result = test_runner.run(test_suite)
+    # Автоматически находим все тестовые файлы
+    tests_dir = Path(__file__).parent
+    test_files = []
     
-    # Возвращаем код выхода
-    return 0 if result.wasSuccessful() else 1
+    for file_path in tests_dir.glob("test_*.py"):
+        if file_path.is_file() and file_path.name != "__init__.py":
+            test_files.append(file_path.name)
+    
+    # Сортируем файлы для предсказуемого порядка запуска
+    test_files.sort()
+    
+    print(f"🔍 Найдено {len(test_files)} тестовых файлов:")
+    for test_file in test_files:
+        print(f"   - {test_file}")
+    print()
+    
+    # Запускаем pytest для всех найденных тестов
+    for test_file in test_files:
+        test_path = tests_dir / test_file
+        print(f"\n=== Запуск тестов из {test_file} ===")
+        result = subprocess.run([
+            sys.executable, "-m", "pytest", str(test_path), "-v"
+        ], cwd=backend_path)
+        
+        if result.returncode != 0:
+            print(f"❌ Тесты в {test_file} завершились с ошибками")
+            return False
+        else:
+            print(f"✅ Тесты в {test_file} прошли успешно")
+    
+    print("\n🎉 Все тесты завершены успешно!")
+    return True
 
-if __name__ == '__main__':
-    exit_code = run_tests()
-    sys.exit(exit_code)
+if __name__ == "__main__":
+    success = run_tests()
+    sys.exit(0 if success else 1)

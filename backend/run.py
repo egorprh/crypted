@@ -32,20 +32,37 @@ def check_environment():
     # Сначала загружаем переменные из .env файла
     load_environment()
     
+    # Обязательные переменные для работы приложения
     required_vars = [
-        'DB_HOST', 'DB_PORT', 'DB_NAME', 'DB_USER', 'DB_PASS',
+        'DB_HOST', 'DB_PORT', 'DB_NAME', 'DB_USER', 'DB_PASS'
+    ]
+    
+    # Опциональные переменные для Telegram уведомлений
+    optional_vars = [
         'BOT_TOKEN', 'ADMINS', 'PRIVATE_CHANNEL_ID'
     ]
     
-    missing_vars = []
+    missing_required_vars = []
     for var in required_vars:
         if not os.getenv(var):
-            missing_vars.append(var)
+            missing_required_vars.append(var)
     
-    if missing_vars:
-        logger.error(f"Отсутствуют обязательные переменные окружения: {', '.join(missing_vars)}")
+    if missing_required_vars:
+        logger.error(f"Отсутствуют обязательные переменные окружения: {', '.join(missing_required_vars)}")
         logger.info("Проверьте файл backend/.env")
         sys.exit(1)
+    
+    # Проверяем опциональные переменные
+    missing_optional_vars = []
+    for var in optional_vars:
+        if not os.getenv(var):
+            missing_optional_vars.append(var)
+    
+    if missing_optional_vars:
+        logger.warning(f"Отсутствуют опциональные переменные для Telegram уведомлений: {', '.join(missing_optional_vars)}")
+        logger.info("Приложение будет работать без Telegram уведомлений")
+    else:
+        logger.info("Telegram уведомления настроены")
     
     logger.info("Переменные окружения настроены корректно")
 

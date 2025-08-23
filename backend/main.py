@@ -12,8 +12,7 @@ from fastapi.responses import FileResponse
 from contextlib import asynccontextmanager
 from typing import Any, AsyncGenerator, Dict
 from db.pgapi import PGApi
-from telegram_bot import send_service_message, bot
-from aiogram import types
+from notification_service import send_service_message, send_service_document
 from config import load_config
 import json
 from logger import logger  # Импортируем логгер
@@ -65,18 +64,13 @@ async def daily_db_backup():
                     message += f"✅ Статус: Успешно создан"
                     
                     # Отправляем сообщение
-                    await send_service_message(bot, message)
+                    await send_service_message(message)
                     
                     # Отправляем файл архива
-                    with open(archive_path, 'rb') as archive_file:
-                        await bot.send_document(
-                            chat_id=config.tg_bot.private_channel_id,
-                            document=types.BufferedInputFile(
-                                archive_file.read(),
-                                filename=os.path.basename(archive_path)
-                            ),
-                            caption=f"🗄️ Дамп БД от {timestamp}"
-                        )
+                    await send_service_document(
+                        archive_path,
+                        f"🗄️ Дамп БД от {timestamp}"
+                    )
                     
                     logger.info(f"Архив дампа отправлен в канал: {archive_path}")
                     
@@ -84,7 +78,7 @@ async def daily_db_backup():
                     logger.error(f"Ошибка при отправке архива в Telegram: {e}")
                     # Отправляем сообщение об ошибке
                     error_message = f"❌ <b>Ошибка отправки дампа</b>\n\nДамп создан, но не отправлен в канал.\nОшибка: {str(e)}"
-                    await send_service_message(bot, error_message)
+                    await send_service_message(error_message)
             
             logger.info("Дамп базы данных успешно создан и отправлен.")
             
@@ -99,7 +93,7 @@ async def daily_db_backup():
             # Отправляем сообщение об ошибке
             try:
                 error_message = f"❌ <b>Ошибка создания дампа БД</b>\n\nОшибка: {str(e)}"
-                await send_service_message(bot, error_message)
+                await send_service_message(error_message)
             except Exception as send_error:
                 logger.error(f"Не удалось отправить сообщение об ошибке: {send_error}")
         
@@ -134,11 +128,11 @@ async def lifespan(app: FastAPI):
             logger.info(f"Попытка {attempt} не удалась. Повторная попытка через {retry_delay} секунд...")
             await asyncio.sleep(retry_delay)  # Ждем перед следующей попыткой
 
-    await send_service_message(bot, "DeptSpace запущен! Состояние БД: " + ("Подключена" if db_connected else "Не подключена"))
+    await send_service_message("DeptSpace запущен! Состояние БД: " + ("Подключена" if db_connected else "Не подключена"))
 
     yield  # Основной код приложения выполняется здесь
     logger.info("Приложение остановлено")
-    await send_service_message(bot, "DeptSpace остановлен! Проверьте, если это не запланировано")
+    await send_service_message("DeptSpace остановлен! Проверьте, если это не запланировано")
     
     # app teardown
     if db_connected:
@@ -212,7 +206,7 @@ async def trigger_event(event_name: str, user_id: int, instance_id: int, data: A
         """
     
     if text:
-        asyncio.create_task(send_service_message(bot, text))
+        asyncio.create_task(send_service_message(text))
 
     logger.info(f"Triggered event: {params}")
 

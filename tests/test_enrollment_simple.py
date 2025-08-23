@@ -170,52 +170,52 @@ class TestUnlimitedAccess(unittest.TestCase):
         
         # Проверяем логику обработки
         if course_data['access_time'] == 0:
-            logger.info("Курс требует создания бесконечной подписки (time_end = 0)")
+            logger.info("Курс требует создания бесконечной подписки (time_end = None)")
             should_create_enrollment = True
-            time_end = 0
+            time_end = None
         else:
             should_create_enrollment = True
             time_end = course_data['access_time']
         
         self.assertTrue(should_create_enrollment)
-        self.assertEqual(time_end, 0)
+        self.assertIsNone(time_end)
         logger.info("Тест курса с access_time = 0 завершен успешно")
     
-    def test_time_end_zero(self):
-        """Тест подписки с time_end = 0 (бесконечная подписка)"""
-        logger.info("Запуск теста подписки с time_end = 0")
+    def test_time_end_none(self):
+        """Тест подписки с time_end = None (бесконечная подписка)"""
+        logger.info("Запуск теста подписки с time_end = None")
         
         # Симулируем бесконечную подписку
         enrollment_data = {
             'id': 1,
             'user_id': 1,
             'course_id': 1,
-            'time_end': 0,
+            'time_end': None,
             'status': ENROLLMENT_STATUS_ENROLLED
         }
         
-        # Проверяем, что time_end = 0 означает бесконечную подписку
-        self.assertEqual(enrollment_data['time_end'], 0)
-        logger.info("Подписка имеет time_end = 0, что означает бесконечную подписку")
+        # Проверяем, что time_end = None означает бесконечную подписку
+        self.assertIsNone(enrollment_data['time_end'])
+        logger.info("Подписка имеет time_end = None, что означает бесконечную подписку")
         
         # Проверяем логику обработки
-        if enrollment_data['time_end'] == 0:
+        if enrollment_data['time_end'] is None:
             logger.info("Подписка бесконечная, не требует проверки времени")
             is_unlimited = True
         else:
             is_unlimited = False
         
         self.assertTrue(is_unlimited)
-        logger.info("Тест подписки с time_end = 0 завершен успешно")
+        logger.info("Тест подписки с time_end = None завершен успешно")
     
     def test_time_left_calculation_unlimited(self):
         """Тест вычисления time_left для бесконечных подписок"""
         logger.info("Запуск теста вычисления time_left для бесконечных подписок")
         
-        # Тест 1: Курс без ограничений (access_time = 0) - теперь создается подписка с time_end = 0
+        # Тест 1: Курс без ограничений (access_time = 0) - теперь создается подписка с time_end = None
         course_access_time = 0
         if course_access_time == 0:
-            # Теперь для курса с access_time = 0 создается подписка с time_end = 0
+            # Теперь для курса с access_time = 0 создается подписка с time_end = None
             # Поэтому time_left будет вычисляться как для бесконечной подписки
             time_left = -1  # Специальное значение для бесконечной подписки
         else:
@@ -224,15 +224,15 @@ class TestUnlimitedAccess(unittest.TestCase):
         self.assertEqual(time_left, -1)
         logger.info(f"Для курса с access_time = 0, time_left = {time_left}")
         
-        # Тест 2: Бесконечная подписка (time_end = 0)
-        enrollment_time_end = 0
-        if enrollment_time_end == 0:
+        # Тест 2: Бесконечная подписка (time_end = None)
+        enrollment_time_end = None
+        if enrollment_time_end is None:
             time_left_enrollment = -1  # Специальное значение для бесконечной подписки
         else:
             time_left_enrollment = 24  # Пример обычного времени
         
         self.assertEqual(time_left_enrollment, -1)
-        logger.info(f"Для подписки с time_end = 0, time_left = {time_left_enrollment}")
+        logger.info(f"Для подписки с time_end = None, time_left = {time_left_enrollment}")
         
         logger.info("Тест вычисления time_left для бесконечных подписок завершен успешно")
 

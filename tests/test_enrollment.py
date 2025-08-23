@@ -3,12 +3,14 @@ Unit тесты для функций работы с записями поль�
 Тесты работают без поднятия базы данных и бэкенда.
 """
 
-import unittest
+import pytest
 from unittest.mock import Mock, AsyncMock, patch
 from datetime import datetime, timedelta
 import sys
 import os
 import logging
+
+# Настройка логирования для тестов
 
 # Настройка логирования для тестов
 logging.basicConfig(level=logging.INFO)
@@ -21,20 +23,19 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'backend'))
 from enrollment import create_user_enrollment, update_user_enrollment, get_course_access_info, ENROLLMENT_STATUS_NOT_ENROLLED, ENROLLMENT_STATUS_ENROLLED
 
 
-class TestEnrollmentFunctions(unittest.TestCase):
+class TestEnrollmentFunctions:
     """Тесты для функций работы с записями пользователей на курсы"""
     
-    def setUp(self):
-        """Настройка перед каждым тестом"""
+    @pytest.fixture(autouse=True)
+    def setup_mock_db(self):
+        """Настройка моков базы данных перед каждым тестом"""
         self.mock_db = Mock()
         self.mock_db.get_record = AsyncMock()
         self.mock_db.insert_record = AsyncMock()
         self.mock_db.update_record = AsyncMock()
     
-    def tearDown(self):
-        """Очистка после каждого теста"""
-        pass
-    
+    @pytest.mark.asyncio
+    @pytest.mark.asyncio
     @patch('enrollment.logger')
     async def test_create_user_enrollment_new_enrollment(self, mock_logger):
         """Тест создания новой записи пользователя на курс"""
@@ -49,20 +50,22 @@ class TestEnrollmentFunctions(unittest.TestCase):
         result = await create_user_enrollment(self.mock_db, 1, 1)
         
         # Проверки
-        self.assertTrue(result)
+        assert result is True
         self.mock_db.get_record.assert_called()
         self.mock_db.insert_record.assert_called_once()
         
         # Проверяем, что запись создана с правильными данными
         call_args = self.mock_db.insert_record.call_args[0]
-        self.assertEqual(call_args[0], 'user_enrollment')
+        assert call_args[0] == 'user_enrollment'
         enrollment_data = call_args[1]
-        self.assertEqual(enrollment_data['user_id'], 1)
-        self.assertEqual(enrollment_data['course_id'], 1)
-        self.assertEqual(enrollment_data['status'], ENROLLMENT_STATUS_ENROLLED)
-        self.assertIn('time_start', enrollment_data)
-        self.assertIn('time_end', enrollment_data)
+        assert enrollment_data['user_id'] == 1
+        assert enrollment_data['course_id'] == 1
+        assert enrollment_data['status'] == ENROLLMENT_STATUS_ENROLLED
+        assert 'time_start' in enrollment_data
+        assert 'time_end' in enrollment_data
     
+    @pytest.mark.asyncio
+    @pytest.mark.asyncio
     @patch('enrollment.logger')
     async def test_create_user_enrollment_existing_enrollment(self, mock_logger):
         """Тест попытки создания записи, которая уже существует"""
@@ -73,11 +76,12 @@ class TestEnrollmentFunctions(unittest.TestCase):
         result = await create_user_enrollment(self.mock_db, 1, 1)
         
         # Проверки
-        self.assertTrue(result)
+        assert result is True
         self.mock_db.get_record.assert_called_once()
         self.mock_db.insert_record.assert_not_called()
         mock_logger.info.assert_called_with("Запись на курс 1 для пользователя 1 уже существует")
     
+    @pytest.mark.asyncio
     @patch('enrollment.logger')
     async def test_create_user_enrollment_course_not_found(self, mock_logger):
         """Тест создания записи для несуществующего курса"""
@@ -91,10 +95,11 @@ class TestEnrollmentFunctions(unittest.TestCase):
         result = await create_user_enrollment(self.mock_db, 1, 999)
         
         # Проверки
-        self.assertFalse(result)
+        assert result is False
         mock_logger.error.assert_called_with("Курс 999 не найден")
         self.mock_db.insert_record.assert_not_called()
     
+    @pytest.mark.asyncio
     @patch('enrollment.logger')
     async def test_create_user_enrollment_exception(self, mock_logger):
         """Тест обработки исключения при создании записи"""
@@ -107,10 +112,11 @@ class TestEnrollmentFunctions(unittest.TestCase):
         result = await create_user_enrollment(self.mock_db, 1, 1)
         
         # Проверки
-        self.assertFalse(result)
+        assert result is False
         mock_logger.error.assert_called_with("Ошибка при создании записи на курс: Database error")
         logger.info("Тест обработки исключения при создании записи завершен успешно")
     
+    @pytest.mark.asyncio
     @patch('enrollment.logger')
     async def test_create_user_enrollment_access_time_zero(self, mock_logger):
         """Тест создания записи для курса с access_time = 0"""
@@ -127,23 +133,25 @@ class TestEnrollmentFunctions(unittest.TestCase):
         result = await create_user_enrollment(self.mock_db, 1, 1)
         
         # Проверки
-        self.assertTrue(result)
+        assert result is True
         self.mock_db.get_record.assert_called()
-        self.mock_db.insert_record.assert_called_once()  # Запись должна создаваться с time_end = 0
+        self.mock_db.insert_record.assert_called_once()  # Запись должна создаваться с time_end = None
         
         # Проверяем, что запись создана с правильными данными
         call_args = self.mock_db.insert_record.call_args[0]
-        self.assertEqual(call_args[0], 'user_enrollment')
+        assert call_args[0] == 'user_enrollment'
         enrollment_data = call_args[1]
-        self.assertEqual(enrollment_data['user_id'], 1)
-        self.assertEqual(enrollment_data['course_id'], 1)
-        self.assertEqual(enrollment_data['status'], ENROLLMENT_STATUS_ENROLLED)
-        self.assertEqual(enrollment_data['time_end'], 0)  # Бесконечная подписка
-        self.assertIn('time_start', enrollment_data)
+        assert enrollment_data['user_id'] == 1
+        assert enrollment_data['course_id'] == 1
+        assert enrollment_data['status'] == ENROLLMENT_STATUS_ENROLLED
+        assert enrollment_data['time_end'] is None  # Бесконечная подписка
+        assert 'time_start' in enrollment_data
         
-        mock_logger.info.assert_called_with("Курс 1 не имеет ограничений по времени (access_time = 0), создается бесконечная подписка")
+        # Проверяем, что логируется сообщение о создании бесконечной подписки
+        mock_logger.info.assert_any_call("Курс 1 не имеет ограничений по времени (access_time = 0), создается бесконечная подписка")
         logger.info("Тест создания записи для курса с access_time = 0 завершен успешно")
     
+    @pytest.mark.asyncio
     @patch('enrollment.logger')
     async def test_update_user_enrollment_no_enrollment(self, mock_logger):
         """Тест обновления записи, которая не существует"""
@@ -154,12 +162,14 @@ class TestEnrollmentFunctions(unittest.TestCase):
         result = await update_user_enrollment(self.mock_db, 1, 1)
         
         # Проверки
-        self.assertTrue(result)
+        assert result is True
         self.mock_db.get_record.assert_called_once()
         self.mock_db.update_record.assert_not_called()
         mock_logger.info.assert_called_with("Запись на курс 1 для пользователя 1 не найдена")
     
+    @pytest.mark.asyncio
     @patch('enrollment.logger')
+    @pytest.mark.asyncio
     @patch('enrollment.datetime')
     async def test_update_user_enrollment_time_not_expired(self, mock_datetime, mock_logger):
         """Тест обновления записи, время которой не истекло"""
@@ -180,11 +190,13 @@ class TestEnrollmentFunctions(unittest.TestCase):
         result = await update_user_enrollment(self.mock_db, 1, 1)
         
         # Проверки
-        self.assertTrue(result)
+        assert result is True
         self.mock_db.get_record.assert_called_once()
         self.mock_db.update_record.assert_not_called()
     
+    @pytest.mark.asyncio
     @patch('enrollment.logger')
+    @pytest.mark.asyncio
     @patch('enrollment.datetime')
     async def test_update_user_enrollment_time_expired(self, mock_datetime, mock_logger):
         """Тест обновления записи, время которой истекло"""
@@ -205,11 +217,12 @@ class TestEnrollmentFunctions(unittest.TestCase):
         result = await update_user_enrollment(self.mock_db, 1, 1)
         
         # Проверки
-        self.assertTrue(result)
+        assert result is True
         self.mock_db.get_record.assert_called_once()
-        self.mock_db.update_record.assert_called_once_with(1, {'status': ENROLLMENT_STATUS_NOT_ENROLLED})
+        self.mock_db.update_record.assert_called_once_with('user_enrollment', 1, {'status': ENROLLMENT_STATUS_NOT_ENROLLED})
         mock_logger.info.assert_called_with("Время доступа к курсу 1 для пользователя 1 истекло, статус обновлен")
     
+    @pytest.mark.asyncio
     @patch('enrollment.logger')
     async def test_update_user_enrollment_exception(self, mock_logger):
         """Тест обработки исключения при обновлении записи"""
@@ -222,21 +235,22 @@ class TestEnrollmentFunctions(unittest.TestCase):
         result = await update_user_enrollment(self.mock_db, 1, 1)
         
         # Проверки
-        self.assertFalse(result)
+        assert result is False
         mock_logger.error.assert_called_with("Ошибка при обновлении записи на курс: Database error")
         logger.info("Тест обработки исключения при обновлении записи завершен успешно")
     
+    @pytest.mark.asyncio
     @patch('enrollment.logger')
-    async def test_update_user_enrollment_time_end_zero(self, mock_logger):
-        """Тест обновления записи с time_end = 0 (бесконечная подписка)"""
-        logger.info("Запуск теста обновления записи с time_end = 0")
+    async def test_update_user_enrollment_time_end_none(self, mock_logger):
+        """Тест обновления записи с time_end = None (бесконечная подписка)"""
+        logger.info("Запуск теста обновления записи с time_end = None")
         
-        # Настройка моков - запись с time_end = 0
+        # Настройка моков - запись с time_end = None
         self.mock_db.get_record.return_value = {
             'id': 1,
             'user_id': 1,
             'course_id': 1,
-            'time_end': 0,  # Бесконечная подписка
+            'time_end': None,  # Бесконечная подписка
             'status': ENROLLMENT_STATUS_ENROLLED
         }
         
@@ -244,12 +258,13 @@ class TestEnrollmentFunctions(unittest.TestCase):
         result = await update_user_enrollment(self.mock_db, 1, 1)
         
         # Проверки
-        self.assertTrue(result)
+        assert result is True
         self.mock_db.get_record.assert_called_once()
         self.mock_db.update_record.assert_not_called()  # Статус не должен обновляться
-        mock_logger.info.assert_called_with("Подписка на курс 1 для пользователя 1 бесконечная (time_end = 0)")
-        logger.info("Тест обновления записи с time_end = 0 завершен успешно")
+        mock_logger.info.assert_called_with("Подписка на курс 1 для пользователя 1 бесконечная (time_end = None)")
+        logger.info("Тест обновления записи с time_end = None завершен успешно")
     
+    @pytest.mark.asyncio
     @patch('enrollment.logger')
     async def test_get_course_access_info_enrolled(self, mock_logger):
         """Тест получения информации о доступе для записанного пользователя"""
@@ -288,15 +303,16 @@ class TestEnrollmentFunctions(unittest.TestCase):
             result = await get_course_access_info(self.mock_db, 1, 1)
         
         # Проверки
-        self.assertIsInstance(result, dict)
-        self.assertIn('time_left', result)
-        self.assertIn('user_enrolment', result)
-        self.assertEqual(result['user_enrolment'], ENROLLMENT_STATUS_ENROLLED)
-        self.assertEqual(result['time_left'], 5.0)  # 5 часов осталось
+        assert isinstance(result, dict)
+        assert 'time_left' in result
+        assert 'user_enrolment' in result
+        assert result['user_enrolment'] == ENROLLMENT_STATUS_ENROLLED
+        assert result['time_left'] == 5.0  # 5 часов осталось
         
         logger.info(f"Результат: time_left={result['time_left']}, user_enrolment={result['user_enrolment']}")
         logger.info("Тест получения информации о доступе для записанного пользователя завершен успешно")
     
+    @pytest.mark.asyncio
     @patch('enrollment.logger')
     async def test_get_course_access_info_not_enrolled(self, mock_logger):
         """Тест получения информации о доступе для незаписанного пользователя"""
@@ -316,15 +332,16 @@ class TestEnrollmentFunctions(unittest.TestCase):
         result = await get_course_access_info(self.mock_db, 1, 1)
         
         # Проверки
-        self.assertIsInstance(result, dict)
-        self.assertIn('time_left', result)
-        self.assertIn('user_enrolment', result)
-        self.assertEqual(result['user_enrolment'], ENROLLMENT_STATUS_NOT_ENROLLED)
-        self.assertEqual(result['time_left'], 48.0)  # Время доступа из курса
+        assert isinstance(result, dict)
+        assert 'time_left' in result
+        assert 'user_enrolment' in result
+        assert result['user_enrolment'] == ENROLLMENT_STATUS_NOT_ENROLLED
+        assert result['time_left'] == 48.0  # Время доступа из курса
         
         logger.info(f"Результат: time_left={result['time_left']}, user_enrolment={result['user_enrolment']}")
         logger.info("Тест получения информации о доступе для незаписанного пользователя завершен успешно")
     
+    @pytest.mark.asyncio
     @patch('enrollment.logger')
     async def test_get_course_access_info_unlimited_course(self, mock_logger):
         """Тест получения информации о доступе для курса без ограничений"""
@@ -344,25 +361,25 @@ class TestEnrollmentFunctions(unittest.TestCase):
         result = await get_course_access_info(self.mock_db, 1, 1)
         
         # Проверки
-        self.assertIsInstance(result, dict)
-        self.assertIn('time_left', result)
-        self.assertIn('user_enrolment', result)
-        self.assertEqual(result['user_enrolment'], ENROLLMENT_STATUS_NOT_ENROLLED)
-        self.assertEqual(result['time_left'], -1)  # Специальное значение для бесконечного доступа
+        assert isinstance(result, dict)
+        assert 'time_left' in result
+        assert 'user_enrolment' in result
+        assert result['user_enrolment'] == ENROLLMENT_STATUS_NOT_ENROLLED
+        assert result['time_left'] == -1  # Специальное значение для бесконечного доступа
         
         logger.info(f"Результат: time_left={result['time_left']}, user_enrolment={result['user_enrolment']}")
         logger.info("Тест получения информации о доступе для курса без ограничений завершен успешно")
 
 
-class TestEnrollmentConstants(unittest.TestCase):
+class TestEnrollmentConstants:
     """Тесты для констант статусов подписки"""
     
     def test_enrollment_status_constants(self):
         """Тест значений констант статусов подписки"""
-        self.assertEqual(ENROLLMENT_STATUS_NOT_ENROLLED, 0)
-        self.assertEqual(ENROLLMENT_STATUS_ENROLLED, 1)
+        assert ENROLLMENT_STATUS_NOT_ENROLLED == 0
+        assert ENROLLMENT_STATUS_ENROLLED == 1
 
 
 if __name__ == '__main__':
     # Запуск тестов
-    unittest.main()
+    pytest.main([__file__, '-v'])
