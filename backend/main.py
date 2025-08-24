@@ -16,9 +16,10 @@ from notification_service import send_service_message, send_service_document
 from config import load_config
 import json
 from logger import logger  # Импортируем логгер
-
 # Импортируем функции для работы с записями пользователей на курсы
 from enrollment import create_user_enrollment, get_course_access_info
+# Импортируем вспомогательные функции
+from misc import send_survey_to_crm, remove_timestamps
 
 
 db = PGApi()
@@ -147,25 +148,6 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 
 
-def remove_timestamps(data):
-    """
-    Рекурсивно удаляет ключи time_created и time_modified из всех объектов.
-    """
-    if isinstance(data, list):
-        # Если это список, обрабатываем каждый элемент
-        return [remove_timestamps(item) for item in data]
-    elif isinstance(data, dict):
-        # Если это словарь, удаляем ключи и обрабатываем вложенные структуры
-        return {
-            key: remove_timestamps(value)
-            for key, value in data.items()
-            if key not in {"time_created", "time_modified"}
-        }
-    else:
-        # Если это не список и не словарь, возвращаем как есть
-        return data
-    
-
 async def trigger_event(event_name: str, user_id: int, instance_id: int, data: Any = None):
     """
     Триггерит событие с указанным именем и данными.
@@ -182,6 +164,7 @@ async def trigger_event(event_name: str, user_id: int, instance_id: int, data: A
     event_id = await db.insert_record('user_actions_log', params)
 
     user = await db.get_record("users", {"id": user_id})
+    level = await db.get_record("levels", {"id": user["level"]})
 
     if event_name == 'course_viewed':
         course = await db.get_record("courses", {"id": instance_id})
@@ -196,7 +179,11 @@ async def trigger_event(event_name: str, user_id: int, instance_id: int, data: A
         Пользователь @{user["username"]} ({user["telegram_id"]}) {user["first_name"]} {user["last_name"]} прошел входное тестирование в DSpace!
 
 {formatted_answers}
+        <b>Уровень:</b> {level["name"]}
         """
+        
+        # Отправляем данные в CRM
+        asyncio.create_task(send_survey_to_crm(user, data, level))
     elif event_name == 'course_completed':
         course = await db.get_record("courses", {"id": instance_id})
         text = f"""

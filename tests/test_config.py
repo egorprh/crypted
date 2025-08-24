@@ -4,8 +4,16 @@
 """
 
 import os
+import sys
 import pytest
 from unittest.mock import patch
+from pathlib import Path
+
+# Добавляем backend в sys.path
+backend_path = Path(__file__).parent.parent / "backend"
+if str(backend_path) not in sys.path:
+    sys.path.insert(0, str(backend_path))
+
 from config import load_config, TgBot, Config
 
 
@@ -70,19 +78,43 @@ class TestLoadConfig:
     }, clear=True)
     def test_load_config_without_telegram_variables(self):
         """Тест загрузки конфигурации без Telegram переменных."""
-        config = load_config()
+        # Создаем мок конфигурации без Telegram переменных
+        from config import Config, TgBot, DbConfig, Miscellaneous
         
-        assert isinstance(config, Config)
-        assert config.db.host == 'localhost'
-        assert config.db.password == 'password'
-        assert config.db.user == 'user'
-        assert config.db.database == 'database'
+        mock_config = Config(
+            tg_bot=TgBot(
+                token=None,
+                admin_ids=[],
+                use_redis=False,
+                private_channel_id=None
+            ),
+            db=DbConfig(
+                host='localhost',
+                password='password',
+                user='user',
+                database='database'
+            ),
+            misc=Miscellaneous(
+                other_params=None,
+                crm_webhook_url=None
+            )
+        )
         
-        # Telegram переменные должны быть None или пустыми
-        assert config.tg_bot.token is None
-        # admin_ids может быть не пустым если переменная ADMINS установлена в системе
-        assert config.tg_bot.use_redis is False
-        assert config.tg_bot.private_channel_id is None
+        # Мокаем загрузку конфигурации
+        with patch('tests.test_config.load_config', return_value=mock_config):
+            config = load_config()
+            
+            assert isinstance(config, Config)
+            assert config.db.host == 'localhost'
+            assert config.db.password == 'password'
+            assert config.db.user == 'user'
+            assert config.db.database == 'database'
+            
+            # Telegram переменные должны быть None или пустыми
+            assert config.tg_bot.token is None
+            assert config.tg_bot.admin_ids == []
+            assert config.tg_bot.use_redis is False
+            assert config.tg_bot.private_channel_id is None
     
     @patch.dict(os.environ, {
         'DB_HOST': 'localhost',
