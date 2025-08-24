@@ -22,12 +22,12 @@ export default function LessonQuiz() {
         <div className="lesson-container">
             <div className="quiz-intro">
                 <h2>{quiz.title}</h2>
-                <p>{quiz.description}</p>
-                <p>
+                <p className="text-gray-200">{quiz.description}</p>
+                <p className="text-gray-200">
                     Максимальный балл за этот тест — <strong>{quiz.questions?.length}</strong>. Правильный ответ только один.
                 </p>
             </div>
-            <button className="btn" onClick={handleStart}>Начать</button>
+            <button className="btn btn-accent" onClick={handleStart}>Начать</button>
         </div>
     );
 }

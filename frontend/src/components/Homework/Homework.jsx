@@ -5,10 +5,11 @@ import NextIcon from "../../assets/images/NextIcon.jsx";
 import './homework.css';
 import { useAppData } from "../../contexts/AppDataContext.jsx";
 import ContentNotFound from "../ContentNotFound/ContentNotFound.jsx";
+import Header from "../Header/Header.jsx";
 
 export default function Homework() {
     const navigate = useNavigate();
-    const { data } = useAppData();
+    const { data, user } = useAppData();
     const [homework, setHomework] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -28,7 +29,7 @@ export default function Homework() {
 
     return (
         <div className="content main-content">
-            <h2>Мои задания</h2>
+            <Header title="Мои задания" />
 
             <div className="wrapper hw-wrapper">
                 {loading ? (

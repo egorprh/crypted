@@ -1,3 +1,7 @@
+.quiz-results-content {
+    margin-bottom: 120px;
+}
+
 .quiz-results-content h1 {
     font-size: var(--fs-md);
     text-align: left;
@@ -24,7 +28,7 @@
     height: 16px;
 }
 
-.quiz-results-content .quiz-answer input[type="radio"]:checked::before {
+.quiz-results-content .quiz-answer input[type="radio"]::before {
     top: 2px;
     left: 2px;
 }

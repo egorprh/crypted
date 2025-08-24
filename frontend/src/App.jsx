@@ -1,7 +1,10 @@
-import React, {Suspense, lazy } from 'react';
+import React, { Suspense, lazy, useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useAppData } from './contexts/AppDataContext.jsx';
 import Preloader from './components/ui/Preloader/Preloader.jsx';
+import getConfigValue from "./components/helpers/getConfigValue.js";
+import LoadScreen from "./components/Intro/LoadScreen.jsx";
+import LevelSelect from "./components/LevelSelect/LevelSelect.jsx";
 
 const Layout= lazy(() => import('./components/Layouts/Layout.jsx'));
 const Home = lazy(() => import('./components/Home/Home.jsx'));
@@ -20,7 +23,45 @@ const QuizLayout = lazy(() => import('./components/Layouts/QuizLayout.jsx'));
 const LessonQuizTest = lazy(() => import('./components/LessonQuizTest/LessonQuizTest.jsx'));
 
 export default function App() {
-  const { appReady, user } = useAppData();
+  const { data, appReady, user } = useAppData();
+  const config = data && data.config || [];
+
+  const loadScreen = getConfigValue(config, "show_load_screen");
+  const userLevel = getConfigValue(config, "user_level");
+
+  const [showLoadScreen, setShowLoadScreen] = useState(false);
+  const [showLevelSelect, setShowLevelSelect] = useState(false);
+
+  useEffect(() => {
+    if (loadScreen === "1") {
+      setShowLoadScreen(true);
+    }
+  }, [config]);
+
+  useEffect(() => {
+    if (userLevel === "0") {
+      setShowLevelSelect(true);
+    }
+  }, [config]);
+
+  if (showLoadScreen) {
+    return (
+        <LoadScreen
+            videoSrc="/videos/intro.webm"
+            onContinue={() => setShowLoadScreen(false)}
+        />
+    );
+  }
+
+  if (showLevelSelect) {
+    return (
+        <LevelSelect
+            levels={data?.levels || []}
+            user={user}
+            onContinue={() => setShowLevelSelect(false)}
+        />
+    );
+  }
 
   if (!appReady) {
     return <Preloader />;

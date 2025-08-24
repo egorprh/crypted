@@ -1,7 +1,7 @@
 {
     "btns": [
       { "label": "Контент", "value": "content" },
-      { "label": "Материалы", "value": "materials" },
+      { "label": "Материал", "value": "materials" },
       { "label": "Домашка", "value": "quiz" }
     ]
 }

@@ -1,21 +1,42 @@
 .header {
     display: flex;
-    gap: 20px;
-    padding: 15px 20px;
-    color: var(--white);
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.header-text {
+    display: flex;
+    flex-direction: column;
 }
 
 .avatar {
-    width: 45px;
-    height: 45px;
+    width: 38px;
+    height: 38px;
     border-radius: 50%;
 }
 
-.header h1 {
-    font-size: var(--fs-md);
-    margin-bottom: 4px;
+.header h2 {
+    margin-bottom: 0;
+    line-height: 1.1;
 }
 
-.header p {
-    font-size: var(--fs-xs);
+.header .username {
+    font-size: var(--fs-s);
+    color: var(--gray-100);
+}
+
+.header .image {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 38px;
+    height: 38px;
+    background-color: var(--white);
+    border-radius: 50%;
+}
+
+.header svg {
+    fill: var(--logo-bg);
 }
