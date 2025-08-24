@@ -2461,7 +2461,28 @@
             ]
         }
     ],
-    "events": [],
+    "events": [
+        {
+            "id": 4,
+            "title": "Методичка",
+            "description": "Смотрите прямую трансляцию реальных сделок и учите стратегии профессионалов.",
+            "author": "Иван Профессионал",
+            "image": "https://example.com/images/live_trading.jpg",
+            "date": "2023-12-30",
+            "link": "https://example.com/images/live_trading.jpg",
+            "price": "Бесплатно"
+        },
+        {
+            "id": 5,
+            "title": "Методичка 2",
+            "description": "Смотрите прямую трансляцию.",
+            "author": "Иван Профессионал",
+            "image": "",
+            "date": "2023-12-30",
+            "link": "https://example.com/images/live_trading.jpg",
+            "price": "500 $"
+        }
+    ],
     "homework": [],
     "faq": [
         {
@@ -2501,11 +2522,28 @@
             "visible": true
         }
     ],
+    "levels": [
+        {
+            "id": 1,
+            "name": "Начальный уровень",
+            "desc": "Знаешь базовые вещи, типы ордеров и трендов, но еще не понимаешь в рисках и стратегиях."
+        },
+        {
+            "id": 2,
+            "name": "Средний уровень",
+            "desc": "Разбираешься в графиках, индикаторах, адекватно анализируешь рынок и используешь стопы. Понимаешь, как управлять рисками, но иногда можешь ошибиться в прогнозах."
+        },
+        {
+            "id": 3,
+            "name": "Продвинутый уровень",
+            "desc": "Прогнозируешь рынок и умеешь управляет рисками. Используешь технический, и фундаментальный анализы, автоматизируешь сделки."
+        }
+    ],
     "config": [
         {
             "id": 1,
             "name": "curator_btn_text",
-            "value": "Написать"
+            "value": "Написать сообщение"
         },
         {
             "id": 2,
@@ -2526,7 +2564,291 @@
             "id": 5,
             "name": "bot_link",
             "value": "https://t.me/dept_mainbot"
+        },
+        {
+            "id": 6,
+            "name": "show_load_screen",
+            "value": "1"
+        },
+        {
+            "id": 7,
+            "name": "user_level",
+            "value": "0"
         }
     ],
-    "events_count": 0
+    "events_count": 0,
+    "homework": [
+        {
+            "id": 243,
+            "quiz_id": 1,
+            "user_id": 73,
+            "progress": 100.0,
+            "course_title": "Старт в торговле криптовалютой",
+            "lesson_title": "Урок 1: Что такое криптовалюта и чем она лучше других активов?",
+            "questions": [
+                {
+                    "id": 1,
+                    "qid": 4,
+                    "text": "Что такое криптовалюта?",
+                    "type": "quiz",
+                    "answers": [
+                        {
+                            "id": 1,
+                            "text": "Электронная почта с защитой",
+                            "correct": false,
+                            "question_id": 4,
+                            "user_answer": false
+                        },
+                        {
+                            "id": 2,
+                            "text": "Виртуальная валюта, использующая криптографию",
+                            "correct": true,
+                            "question_id": 4,
+                            "user_answer": true
+                        },
+                        {
+                            "id": 3,
+                            "text": "Онлайн-банковская карта",
+                            "correct": false,
+                            "question_id": 4,
+                            "user_answer": false
+                        }
+                    ]
+                },
+                {
+                    "id": 1,
+                    "qid": 4,
+                    "text": "Что такое криптовалюта?",
+                    "type": "quiz",
+                    "answers": [
+                        {
+                            "id": 1,
+                            "text": "Электронная почта с защитой",
+                            "correct": false,
+                            "question_id": 4,
+                            "user_answer": false
+                        },
+                        {
+                            "id": 2,
+                            "text": "Виртуальная валюта, использующая криптографию",
+                            "correct": true,
+                            "question_id": 4,
+                            "user_answer": true
+                        },
+                        {
+                            "id": 3,
+                            "text": "Онлайн-банковская карта",
+                            "correct": false,
+                            "question_id": 4,
+                            "user_answer": false
+                        }
+                    ]
+                },
+                {
+                    "id": 1,
+                    "qid": 4,
+                    "text": "Что такое криптовалюта?",
+                    "type": "quiz",
+                    "answers": [
+                        {
+                            "id": 1,
+                            "text": "Электронная почта с защитой",
+                            "correct": false,
+                            "question_id": 4,
+                            "user_answer": false
+                        },
+                        {
+                            "id": 2,
+                            "text": "Виртуальная валюта, использующая криптографию",
+                            "correct": true,
+                            "question_id": 4,
+                            "user_answer": true
+                        },
+                        {
+                            "id": 3,
+                            "text": "Онлайн-банковская карта",
+                            "correct": false,
+                            "question_id": 4,
+                            "user_answer": false
+                        }
+                    ]
+                },
+                {
+                    "id": 1,
+                    "qid": 4,
+                    "text": "Что такое криптовалюта?",
+                    "type": "quiz",
+                    "answers": [
+                        {
+                            "id": 1,
+                            "text": "Электронная почта с защитой",
+                            "correct": false,
+                            "question_id": 4,
+                            "user_answer": false
+                        },
+                        {
+                            "id": 2,
+                            "text": "Виртуальная валюта, использующая криптографию",
+                            "correct": true,
+                            "question_id": 4,
+                            "user_answer": true
+                        },
+                        {
+                            "id": 3,
+                            "text": "Онлайн-банковская карта",
+                            "correct": false,
+                            "question_id": 4,
+                            "user_answer": false
+                        }
+                    ]
+                },
+                {
+                    "id": 1,
+                    "qid": 4,
+                    "text": "Что такое криптовалюта?",
+                    "type": "quiz",
+                    "answers": [
+                        {
+                            "id": 1,
+                            "text": "Электронная почта с защитой",
+                            "correct": false,
+                            "question_id": 4,
+                            "user_answer": false
+                        },
+                        {
+                            "id": 2,
+                            "text": "Виртуальная валюта, использующая криптографию",
+                            "correct": true,
+                            "question_id": 4,
+                            "user_answer": true
+                        },
+                        {
+                            "id": 3,
+                            "text": "Онлайн-банковская карта",
+                            "correct": false,
+                            "question_id": 4,
+                            "user_answer": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": 243,
+            "quiz_id": 1,
+            "user_id": 73,
+            "progress": 100.0,
+            "course_title": "Старт в торговле криптовалютой",
+            "lesson_title": "Урок 1: Что такое криптовалюта и чем она лучше других активов?",
+            "questions": [
+                {
+                    "id": 1,
+                    "qid": 4,
+                    "text": "Что такое криптовалюта?",
+                    "type": "quiz",
+                    "answers": [
+                        {
+                            "id": 1,
+                            "text": "Электронная почта с защитой",
+                            "correct": false,
+                            "question_id": 4,
+                            "user_answer": false
+                        },
+                        {
+                            "id": 2,
+                            "text": "Виртуальная валюта, использующая криптографию",
+                            "correct": true,
+                            "question_id": 4,
+                            "user_answer": true
+                        },
+                        {
+                            "id": 3,
+                            "text": "Онлайн-банковская карта",
+                            "correct": false,
+                            "question_id": 4,
+                            "user_answer": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": 243,
+            "quiz_id": 1,
+            "user_id": 73,
+            "progress": 100.0,
+            "course_title": "Старт в торговле криптовалютой",
+            "lesson_title": "Урок 1: Что такое криптовалюта и чем она лучше других активов?",
+            "questions": [
+                {
+                    "id": 1,
+                    "qid": 4,
+                    "text": "Что такое криптовалюта?",
+                    "type": "quiz",
+                    "answers": [
+                        {
+                            "id": 1,
+                            "text": "Электронная почта с защитой",
+                            "correct": false,
+                            "question_id": 4,
+                            "user_answer": false
+                        },
+                        {
+                            "id": 2,
+                            "text": "Виртуальная валюта, использующая криптографию",
+                            "correct": true,
+                            "question_id": 4,
+                            "user_answer": true
+                        },
+                        {
+                            "id": 3,
+                            "text": "Онлайн-банковская карта",
+                            "correct": false,
+                            "question_id": 4,
+                            "user_answer": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": 243,
+            "quiz_id": 1,
+            "user_id": 73,
+            "progress": 100.0,
+            "course_title": "Старт в торговле криптовалютой",
+            "lesson_title": "Урок 1: Что такое криптовалюта и чем она лучше других активов?",
+            "questions": [
+                {
+                    "id": 1,
+                    "qid": 4,
+                    "text": "Что такое криптовалюта?",
+                    "type": "quiz",
+                    "answers": [
+                        {
+                            "id": 1,
+                            "text": "Электронная почта с защитой",
+                            "correct": false,
+                            "question_id": 4,
+                            "user_answer": false
+                        },
+                        {
+                            "id": 2,
+                            "text": "Виртуальная валюта, использующая криптографию",
+                            "correct": true,
+                            "question_id": 4,
+                            "user_answer": true
+                        },
+                        {
+                            "id": 3,
+                            "text": "Онлайн-банковская карта",
+                            "correct": false,
+                            "question_id": 4,
+                            "user_answer": false
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
 }
