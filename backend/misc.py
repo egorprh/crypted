@@ -70,8 +70,25 @@ def remove_timestamps(data):
     Returns:
         Очищенные данные без временных меток
     """
+    # Список полей с временными метками, которые нужно удалить
+    timestamp_fields = ['created_at', 'updated_at', 'time_created', 'time_modified']
+    
     if isinstance(data, dict):
-        return {k: remove_timestamps(v) for k, v in data.items() if k not in ['created_at', 'updated_at']}
+        # Удаляем временные метки и рекурсивно обрабатываем остальные поля
+        cleaned_data = {}
+        removed_fields = []
+        
+        for k, v in data.items():
+            if k in timestamp_fields:
+                removed_fields.append(k)
+            else:
+                cleaned_data[k] = remove_timestamps(v)
+        
+        # Логируем удаленные поля (только если они были найдены)
+        # if removed_fields:
+        #     logger.debug(f"Удалены временные метки: {removed_fields}")
+            
+        return cleaned_data
     elif isinstance(data, list):
         return [remove_timestamps(item) for item in data]
     else:

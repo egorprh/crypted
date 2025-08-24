@@ -21,6 +21,9 @@ from enrollment import create_user_enrollment, get_course_access_info
 # Импортируем вспомогательные функции
 from misc import send_survey_to_crm, remove_timestamps
 
+# Импорт для настройки админки
+from admin.admin_setup import setup_admin
+
 
 db = PGApi()
 
@@ -146,6 +149,9 @@ async def lifespan(app: FastAPI):
 
 #https://habr.com/ru/articles/799337/
 app = FastAPI(lifespan=lifespan)
+
+# Настраиваем админ панель
+setup_admin(app)
 
 
 async def trigger_event(event_name: str, user_id: int, instance_id: int, data: Any = None):

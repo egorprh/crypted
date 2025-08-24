@@ -1,8 +1,13 @@
 # Базовый Python образ
 FROM python:3.11-slim
 
-# Устанавливаем PostgreSQL-клиент
-RUN apt-get update && apt-get install -y postgresql-client && apt-get clean
+# Устанавливаем PostgreSQL-клиент, сервер (для pg_dump) и зависимости для psycopg2
+RUN apt-get update && apt-get install -y \
+    postgresql-client \
+    postgresql \
+    libpq-dev \
+    gcc \
+    && apt-get clean
 
 WORKDIR /app
 

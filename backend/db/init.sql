@@ -14,6 +14,18 @@ GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO deptmaster;
 ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO deptmaster;
 ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO deptmaster;
 
+-- Создание таблицы files для хранения загруженных файлов
+CREATE TABLE IF NOT EXISTS files (
+    id BIGSERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    path VARCHAR(500) NOT NULL,
+    size BIGINT,
+    mime_type VARCHAR(100),
+    description TEXT,
+    time_modified TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    time_created TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Создание таблицы users
 CREATE TABLE IF NOT EXISTS users (
     id BIGSERIAL PRIMARY KEY,

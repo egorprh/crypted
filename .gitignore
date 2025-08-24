@@ -22,3 +22,5 @@ node_modules/
 .env.development
 .env.production
 deploy/
+.pytest_cache/
+uploads/

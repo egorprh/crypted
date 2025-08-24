@@ -2,6 +2,16 @@ from typing import Any, Dict, Optional
 from pydantic import BaseModel
 from datetime import datetime
 
+class File(BaseModel):
+    id: int
+    name: str
+    path: str
+    size: Optional[int] = None
+    mime_type: Optional[str] = None
+    description: Optional[str] = None
+    time_modified: Optional[datetime] = None
+    time_created: Optional[datetime] = None
+
 class User(BaseModel):
     id: int
     telegram_id: int
