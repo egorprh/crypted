@@ -1,15 +1,9 @@
-.bottom-nav {
-    display: flex;
-    justify-content: space-evenly;
-}
-
 .nav-item {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
-    gap: 8px;
-    padding: 5px 10px;
+    gap: 2px;
     border-radius: var(--brs-sm);
     text-decoration: none;
 

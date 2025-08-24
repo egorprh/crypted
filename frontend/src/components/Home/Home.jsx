@@ -8,10 +8,16 @@ import { useSurvey } from '../../contexts/SurveyContext.jsx';
 import ContentNotFound from "../ContentNotFound/ContentNotFound.jsx";
 import GiftIcon from "../../assets/images/GiftIcon.jsx";
 import Modal from '../ui/Modal/Modal.jsx';
+import Header from "../Header/Header.jsx";
+import ArrowBtnIcon from "../../assets/images/ArrowBtnIcon.jsx";
+import LockIcon from "../../assets/images/LockIcon.jsx";
+import LabelIcon from "../../assets/images/LabelIcon.jsx";
+import handleImageError from "../helpers/handleImageError.js";
+import Logo from "../../assets/images/Logo.jsx";
 
-export default function Home({ user }) {
+export default function Home() {
     const navigate = useNavigate();
-    const { data, loading, error } = useAppData();
+    const { data, loading, error, user } = useAppData();
     const { surveyPassed } = useSurvey();
     const [showAlert, setShowAlert] = useState(false);
     const [popupData, setPopupData] = useState(null);
@@ -53,89 +59,132 @@ export default function Home({ user }) {
         });
     };
 
-    const closePopup = () => setPopupData(null);
+    const closePopup = () => {
+        setPopupData(null);
+    };
 
     if (error) return <div className="error">Ошибка: {error}</div>;
 
     return (
-        <div className="courses-wrapper content main-content">
-            <section className="courses">
-                <div className="courses-title">
-                    <img src={user?.photo_url || 'avatar.jpg'} alt="Аватар" className="avatar" />
-                    <h2>Мои курсы</h2>
-                </div>
+        <>
+            <div className="courses-wrapper content main-content">
+                <Header />
 
-                {data?.enter_survey && !surveyPassed && (
-                    <div className="survey-banner">
-                        <p>Пройдите входное тестирование, чтобы получить доступ к курсам</p>
-                        <button className="btn" onClick={() => navigate('/lessons/enter-survey')}>
-                            Пройти
-                        </button>
-                    </div>
-                )}
-
-                {loading ? (
-                    <div className="loading">Загрузка курсов...</div>
-                ) : data?.courses?.length ? (
-                    data.courses.map((course) => (
+                <section className="courses">
+                    {data?.enter_survey && !surveyPassed && (
                         <div
-                            key={course.id}
-                            className="card course-card"
-                            onClick={() => handleCourseClick(course)}
+                            className="card white-header-card survey-banner"
+                            onClick={() => navigate('/lessons/enter-survey')}
                         >
-                            <div className="course-header" style={course.color ? { backgroundColor: course.color } : {}}>
-                                <img src="/images/logo.png" alt="Course" className="logo" />
+                            <div className="card-header">
+                                <img src="/images/logo-primary.png" alt="Course" className="logo"/>
                             </div>
-                            <div className="course-body">
+
+                            <div className="card-body">
                                 <div className="d-flex card-title-wrapper">
-                                    <p className="card-title">{course.title}</p>
-                                    {course.has_popup && (
-                                        <span className="icon" onClick={(e) => {
-                                            e.stopPropagation();
-                                            handleGiftClick(course);
-                                        }}>
-                                            <GiftIcon />
-                                        </span>
-                                    )}
+                                    <p className="card-title">Входное тестирование</p>
                                 </div>
-                                <div className="course-footer">
+                                <p className="card-text">
+                                    Прежде чем начать обучение, необходимо пройти тест, который определит твой уровень в
+                                    трейдинге.
+                                </p>
+                                <div className="card-footer">
                                     <div className="tag">
-                                        {(course.newprice || course.oldprice) && (
-                                            <img src="/images/free.png" alt="price-icon" />
-                                        )}
-                                        {course.oldprice && <span className="old-price">{course.oldprice}</span>}
-                                        {course.newprice && <span className="new-price">{course.newprice}</span>}
+                                        <div className="tag-img">
+                                            <LabelIcon />
+                                        </div>
+                                        <span className="new-price">Бесплатно</span>
                                     </div>
-                                    <span className="start-btn">Начать</span>
+                                    <span className="btn btn-white btn-flex">
+                                        Начать
+                                        <ArrowBtnIcon/>
+                                    </span>
                                 </div>
                             </div>
                         </div>
-                    ))
-                ) : (
-                    <ContentNotFound message="Курсы не найдены" />
-                )}
-            </section>
+                    )}
 
-            <PageLink
-                title="Предстоящие мероприятия"
-                subtitle="Стримы, бэктесты, разбор позиции."
-                to="/calendar"
-                events_count={data?.events_count}
-            />
+                    {loading ? (
+                        <div className="loading">Загрузка курсов...</div>
+                    ) : data?.courses?.length ? (
+                        data.courses.map((course) => (
+                            <div
+                                key={course.id}
+                                className="course-card"
+                                onClick={() => handleCourseClick(course)}
+                            >
+                                <div className="course-header">
+                                    <img
+                                        src={course.image || '/images/default-event.png'}
+                                        alt="Course"
+                                        className="course-header-img"
+                                    />
+                                </div>
 
-            {showAlert && (
-                <Alert text="Пройдите входное тестирование" />
+                                <div className="course-body">
+                                    <div className="d-flex course-title-wrapper card-title-wrapper">
+                                        <p className="course-title">{course.title}</p>
+                                        <div className="tag">
+                                            {(course.newprice || course.oldprice) && (
+                                                <div className="tag-img">
+                                                    <LabelIcon/>
+                                                </div>
+                                            )}
+                                            {course.oldprice && <span className="old-price">{course.oldprice}</span>}
+                                            {course.newprice && <span className="new-price">{course.newprice}</span>}
+                                        </div>
+                                    </div>
+
+                                    <div className="course-description">
+                                        {course.description}
+                                    </div>
+
+                                    <div className="course-footer">
+                                        {course.has_popup && (
+                                            <div className="btn icon gift-btn" onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleGiftClick(course);
+                                            }}>
+                                                <div className="gift-icon-wrapper">
+                                                    <GiftIcon/>
+                                                </div>
+                                                Подарок от dept.
+                                            </div>
+                                        )}
+                                        <span className="start-btn btn">
+                                            <span className="logo-icon-wrapper">
+                                                <Logo/>
+                                            </span>
+                                            Начать курс
+                                            <ArrowBtnIcon/>
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <hr/>
+                            </div>
+                        ))
+                    ) : (
+                        <ContentNotFound message="Курсы не найдены"/>
+                    )}
+                </section>
+            </div>
+
+            {data?.enter_survey && !surveyPassed && (
+                <div data-blur="true">
+                    <LockIcon/>
+                </div>
             )}
 
             {popupData && (
                 <Modal onClose={closePopup}>
                     <div className="popup-content">
-                        <img src={popupData.img} alt="Подарок" className="popup-image" />
+                        <img src={popupData.img} alt="Подарок" className="popup-image"/>
                         <h3>{popupData.title}</h3>
                         <p>{popupData.desc}</p>
                     </div>
                 </Modal>
             )}
-        </div>
+        </>
     );
 }

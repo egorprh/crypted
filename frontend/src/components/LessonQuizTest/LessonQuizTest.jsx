@@ -5,6 +5,9 @@ import 'react-circular-progressbar/dist/styles.css';
 import './lesson-quiz-test.css';
 import { useAppData } from '../../contexts/AppDataContext.jsx';
 import Alert from "../ui/Alert/Alert.jsx";
+import Header from "../Header/Header.jsx";
+import CalendarHeaderIcon from "../../assets/images/CalendarHeaderIcon.jsx";
+import HomeworkIcon from "../../assets/images/HomeworkIcon.jsx";
 
 export default function LessonQuizTest({ user }) {
     const { courseId, lessonId } = useParams();
@@ -12,6 +15,7 @@ export default function LessonQuizTest({ user }) {
     const { data, loading, error, setData, setLoading } = useAppData();
 
     const [quiz, setQuiz] = useState(null);
+    const [lesson, setLesson] = useState(null);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [selectedAnswer, setSelectedAnswer] = useState(null);
     const [isAnswered, setIsAnswered] = useState(false);
@@ -26,6 +30,8 @@ export default function LessonQuizTest({ user }) {
         if (!loading && data) {
             const course = data.courses?.find(c => String(c.id) === courseId);
             const foundLesson = course?.lessons?.find(l => String(l.id) === lessonId);
+            setLesson(foundLesson);
+
             if (foundLesson?.quizzes?.length) {
                 setQuiz(foundLesson.quizzes[0]);
             } else {
@@ -146,39 +152,60 @@ export default function LessonQuizTest({ user }) {
     const question = quiz?.questions && quiz.questions[currentQuestionIndex];
 
     return (
-        <div className="quiz">
-            <div className="quiz-question">
-                <div className="progress">
-                    <p>Вопрос {currentQuestionIndex + 1} из {quiz?.questions?.length || 0}</p>
-                    <progress value={currentQuestionIndex + 1} max={quiz?.questions?.length}></progress>
+        <>
+            <div className="quiz">
+                <div>
+                    <Header
+                        title={<div> Домашнее задание по уроку: <br/> {lesson.title} </div>}
+                        svg={<HomeworkIcon />}
+                    />
+                    <div className="quiz-question">
+                        <div className="progress-bar">
+                            {quiz.questions.map((q, index) => {
+                                let status = "";
+                                if (index < userAnswers.length) {
+                                    const userAnswer = userAnswers[index];
+                                    const correctAnswer = q.answers.find(a => a.correct);
+                                    status = userAnswer.answerId === correctAnswer.id ? "correct" : "incorrect";
+                                }
+
+                                return <div key={q.id} className={`progress-segment ${status}`}></div>;
+                            })}
+                        </div>
+                        <p className="question-count">Вопрос {currentQuestionIndex + 1} из {quiz.questions.length}</p>
+                        <h2>{question?.text}</h2>
+                        <div className="quiz-answers">
+                            {question?.answers?.map(answer => {
+                                const isSelected = selectedAnswer === answer.id;
+                                const highlight = isAnswered
+                                    ? answer.correct ? 'correct' : (isSelected ? 'incorrect' : '') : '';
+
+                                return (
+                                    <label key={answer.id} className={`quiz-answer ${highlight}`}>
+                                        <input
+                                            type="radio"
+                                            name="answer"
+                                            checked={isSelected}
+                                            onChange={() => handleAnswerSelect(answer.id)}
+                                            disabled={isAnswered}
+                                        />
+                                        {answer.text}
+                                    </label>
+                                );
+                            })}
+                        </div>
+                    </div>
                 </div>
-                <h2>{question?.text}</h2>
-                <div className="quiz-answers">
-                    {question?.answers?.map(answer => {
-                        const isSelected = selectedAnswer === answer.id;
-                        const highlight = isAnswered
-                            ? answer.correct ? 'correct' : (isSelected ? 'incorrect' : '') : '';
-                        return (
-                            <label key={answer.id} className={`quiz-answer ${highlight}`}>
-                                <input
-                                    type="radio"
-                                    name="answer"
-                                    checked={isSelected}
-                                    onChange={() => handleAnswerSelect(answer.id)}
-                                    disabled={isAnswered}
-                                />
-                                {answer.text}
-                            </label>
-                        );
-                    })}
+
+                <div className="actions">
+                    {!isAnswered
+                        ? <button className="btn" onClick={handleCheck}
+                                  disabled={selectedAnswer == null}>Проверить</button>
+                        : <button className={`btn ${wasCorrect ? 'btn-correct' : 'btn-incorrect'}`}
+                                  onClick={handleNextQuestion}>{wasCorrect ? 'Правильно! К следующему' : 'Неправильно! К следующему'}</button>
+                    }
                 </div>
             </div>
-            <div className="actions">
-                {!isAnswered
-                    ? <button className="btn" onClick={handleCheck} disabled={selectedAnswer == null}>Проверить</button>
-                    : <button className={`btn ${wasCorrect ? 'btn-correct' : 'btn-incorrect'}`} onClick={handleNextQuestion}>{wasCorrect ? 'Правильно, к следующему' : 'Неправильно, к следующему'}</button>
-                }
-            </div>
-        </div>
+        </>
     );
 }

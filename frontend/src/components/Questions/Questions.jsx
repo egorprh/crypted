@@ -5,6 +5,10 @@ import { useAppData } from "../../contexts/AppDataContext.jsx";
 import getConfigValue from "../helpers/getConfigValue.js";
 import handleImageError from "../helpers/handleImageError.js";
 import ContentNotFound from "../ContentNotFound/ContentNotFound.jsx";
+import CalendarHeaderIcon from "../../assets/images/CalendarHeaderIcon.jsx";
+import Header from "../Header/Header.jsx";
+import QuestionsHeaderIcon from "../../assets/images/QuetionsHeaderIcon.jsx";
+import MessageIcon from "../../assets/images/MessageIcon.jsx";
 
 export default function Questions() {
     const {data, loading, error} = useAppData();
@@ -27,24 +31,33 @@ export default function Questions() {
 
     return (
         <div className="content main-content">
+            <Header title="FAQ" svg={<QuestionsHeaderIcon />} />
+
             <div className="questions-form-wrapper">
+                <div className="questions-text">
+                    <img
+                        className="questions-img"
+                        src={avatar || "/images/curator.png"}
+                        alt="Куратор"
+                        onError={handleImageError("/images/curator.png")}
+                    />
+                    <h3>Задать <span className="accent-color">свой вопрос</span> напрямую Ростиславу</h3>
+                </div>
+
                 <div>
-                    <h3>Вопрос Ростиславу</h3>
                     {curatorLink ? (
-                        <a href={curatorLink} className="btn">{curatorText}</a>
+                        <a href={curatorLink} className="btn">
+                            {curatorText}
+                            <MessageIcon />
+                        </a>
                     ) : (
-                        <button className="btn disabled" disabled>{curatorText}</button>
+                        <button className="btn disabled" disabled>
+                            {curatorText}
+                            <MessageIcon />
+                        </button>
                     )}
                 </div>
-                <img
-                    className="questions-img"
-                    src={avatar || "/images/curator.png"}
-                    alt="Куратор"
-                    onError={handleImageError("/images/curator.png")}
-                />
             </div>
-
-            <h2>Часто задаваемые вопросы</h2>
 
             <div className="wrapper questions-wrapper">
                 {loading ? (

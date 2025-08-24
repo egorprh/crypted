@@ -31,7 +31,7 @@ export default function Lesson() {
                 <div className="lesson-description" dangerouslySetInnerHTML={{ __html: lesson.description }} />
             </div>
 
-            <button className="btn" onClick={clickNextBtn}>Далее</button>
+            <button className="btn btn-accent" onClick={clickNextBtn}>Далее</button>
         </div>
     );
 }

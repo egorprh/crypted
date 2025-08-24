@@ -9,6 +9,8 @@ import '../QuizResults/quiz-results.css';
 import './enter-survey.css';
 import Alert from "../ui/Alert/Alert.jsx";
 import ContentNotFound from "../ContentNotFound/ContentNotFound.jsx";
+import Modal from "../ui/Modal/Modal.jsx";
+import FireworkIcon from "../../assets/images/FireworksIcon.jsx";
 
 export default function EnterSurvey({ user }) {
     const navigate = useNavigate();
@@ -19,6 +21,7 @@ export default function EnterSurvey({ user }) {
     const [errors, setErrors] = useState({});
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState(false);
+    const [showCongratsModal, setShowCongratsModal] = useState(false);
 
     const userId = user?.id || 0;
     const surveyId = data?.enter_survey?.id;
@@ -114,11 +117,12 @@ export default function EnterSurvey({ user }) {
             .then((res) => {
                 if (res.ok) {
                     setSurveyPassed(true);
-                    navigate('/');
+                    setShowCongratsModal(true)
                 } else {
                     setError(true);
                     setTimeout(() => setError(false), 1000);
                     setIsSubmitting(false);
+                    setShowCongratsModal(true)
                 }
             })
             .catch(() => {
@@ -137,8 +141,8 @@ export default function EnterSurvey({ user }) {
                 Назад
             </Link>
 
-            <form className="quiz" onSubmit={handleSubmit} noValidate>
-                <div className="quiz-wrapper">
+            <form className="survey-wrapper" onSubmit={handleSubmit} noValidate>
+                <div>
                     <h1>Входное тестирование</h1>
                     {data?.enter_survey?.description && (
                         <p className="survey-description">{data.enter_survey.description}</p>
@@ -147,12 +151,12 @@ export default function EnterSurvey({ user }) {
                     {data?.enter_survey?.questions?.length
                         ?
                         data.enter_survey.questions.map((question) => (
-                        <div key={question.id} className={`quiz-question ${errors[question.id] ? 'error' : ''}`}>
+                        <div key={question.id} className={`survey-question ${errors[question.id] ? 'error' : ''}`}>
                             <h2>{question.id}. {question.text}</h2>
                             {errors[question.id] && (
                                 <div className="error-text">{errors[question.id]}</div>
                             )}
-                            <div className="quiz-answers">
+                            <div className="survey-answers">
                                 {question.type === 'quiz' && question.answers?.map((option) => (
                                     <label className="quiz-answer" key={option.id}>
                                         <input
@@ -168,7 +172,7 @@ export default function EnterSurvey({ user }) {
                             </div>
                             {(question.type === 'phone' || question.type === 'text' || question.type === 'age') && (
                                 <input
-                                    className="quiz-input"
+                                    className="survey-input"
                                     type="text"
                                     name={`q-${question.id}`}
                                     placeholder={question.type === 'phone'
@@ -184,9 +188,26 @@ export default function EnterSurvey({ user }) {
                     }
                 </div>
 
-                <button className="btn" type="submit" disabled={isSubmitting}>
+                <button className="btn btn-accent" type="submit" disabled={isSubmitting}>
                     Отправить
                 </button>
+
+                {showCongratsModal && (
+                    <Modal className="congrats-modal" onClose={() => {
+                        setShowCongratsModal(false);
+                    }
+                    }>
+                        <FireworkIcon />
+                        <h2>Поздравляем!</h2>
+                        <p>Вам доступен новый курс</p>
+                        <button className="btn btn-accent" onClick={() => {
+                            setShowCongratsModal(false)
+                            navigate('/');
+                        }}>
+                            Понятно
+                        </button>
+                    </Modal>
+                )}
             </form>
         </div>
     );

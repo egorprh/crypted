@@ -3,16 +3,14 @@
     inset: 0;
     display: flex;
     justify-content: center;
-    align-items: flex-end;
-    background: rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
+    align-items: center;
+    background: rgba(0, 0, 0, 0.93);
     z-index: 999;
     padding-bottom: 40px;
 }
 
 .modal {
-    background: var(--secondary);
+    background: var(--gray-700);
     border-radius: var(--brs-md);
     padding: 45px 20px 20px;
     width: 86%;
@@ -21,6 +19,7 @@
     color: var(--white);
     box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
     position: relative;
+    z-index: 998;
 }
 
 .modal-close {
