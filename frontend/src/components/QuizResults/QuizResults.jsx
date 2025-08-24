@@ -100,7 +100,7 @@ export default function QuizResults({ user }) {
                     :
                     <ContentNotFound message="Не удалось загрузить результаты теста" />
                 }
-                <button className="btn" onClick={repeatQuiz}>Пройти заново</button>
+                <button className="btn btn-accent" onClick={repeatQuiz}>Пройти заново</button>
             </div>
         </div>
     );

@@ -7,10 +7,13 @@ import HomeworkIcon from "../../assets/images/HomeworkIcon.jsx";
 import QuestionsIcon from "../../assets/images/QuetionsIcon.jsx";
 import { useLocation } from "react-router-dom";
 import { useAppData } from "../../contexts/AppDataContext.jsx";
+import { useSurvey } from "../../contexts/SurveyContext.jsx";
+import LockIcon from "../../assets/images/LockIcon.jsx";
 
 export default function Footer() {
     const location = useLocation();
     const { data } = useAppData()
+    const { surveyPassed } = useSurvey();
 
     const navItems = [
         {
@@ -25,7 +28,7 @@ export default function Footer() {
         },
         {
             path: "/calendar",
-            title: "Календарь",
+            title: "Курсы",
             icon: (
                 <div className="icon-with-badge">
                     <CalendarIcon />
@@ -52,16 +55,26 @@ export default function Footer() {
     return (
         <footer>
             <nav className="bottom-nav">
-                {navItems.map((item) => (
-                    <NavItem
-                        key={item.path}
-                        title={item.title}
-                        className={isActive(item.path) ? 'nav-item active' : 'nav-item'}
-                        to={item.path}
-                    >
-                        {item.icon}
-                    </NavItem>
-                ))}
+                {(data?.enter_survey && !surveyPassed)
+                    ?(
+                        <div className="bottom-nav-locked">
+                            <LockIcon />
+                            <span>
+                                Чтобы открыть меню, пройдите входное тестирование
+                            </span>
+                        </div>
+                    )
+                    :
+                    navItems.map((item) => (
+                        <NavItem
+                            key={item.path}
+                            title={item.title}
+                            className={isActive(item.path) ? 'nav-item active' : 'nav-item'}
+                            to={item.path}
+                        >
+                            {item.icon}
+                        </NavItem>
+                    ))}
             </nav>
         </footer>
     );

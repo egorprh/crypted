@@ -1,0 +1,82 @@
+.levels-wrapper {
+    display: flex;
+    height: calc(100% - 80px);
+}
+
+.card.level-select {
+    flex-grow: 1;
+    overflow: auto;
+
+    .card-header {
+        padding: 16px;
+
+        h2 {
+            font-size: var(--fs-sm);
+        }
+    }
+
+    .card-body {
+        padding: 16px;
+        border-bottom-left-radius: var(--brs-md);
+        border-bottom-right-radius: var(--brs-md);
+    }
+
+    .levels {
+        display: block;
+        padding: 12px;
+        border-radius: var(--brs-sm);
+    }
+
+    .level-name {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 10px;
+        font-size: var(--fs-sm);
+        color: var(--white);
+
+        svg {
+            width: 12px;
+            height: 12px;
+            fill: var(--white);
+        }
+    }
+
+    .levels.active {
+        background-color: var(--gray-600);
+
+        .level-name {
+            color: var(--logo-bg);
+        }
+
+        svg {
+            fill: var(--logo-bg);
+        }
+    }
+
+    .level-description {
+        color: var(--gray-200);
+    }
+
+    .levels:not(:last-child) {
+        margin-bottom: 16px;
+    }
+}
+
+.btn.levels-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: auto;
+    font-size: 20px;
+
+    svg path {
+        width: 100%;
+        height: 100%;
+    }
+}
+
+.btn.levels-btn:disabled {
+    background-color: var(--gray-400);
+}

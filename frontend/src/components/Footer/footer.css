@@ -1,11 +1,50 @@
 .bottom-nav {
-    width: 100%;
-    max-width: 600px;
-    padding: 20px;
-    background: var(--secondary);
+    display: flex;
+    justify-content: space-evenly;
+    width: calc(100vw - 40px);
+    max-width: calc(600px - 40px);
+
+    padding: 16px 24px;
+    margin-inline: 20px;
+
+    border-radius: var(--brs-lg);
+    border: 1px solid var(--gray-200-05);
+    overflow: hidden;
+
+    position: absolute;
+    bottom: 20px;
+    z-index: 100;
+}
+
+.bottom-nav::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    background: rgba(16, 16, 16, 0.3);
+    z-index: 0;
+}
+
+.bottom-nav > * {
+    position: relative;
+    z-index: 1;
     color: var(--white);
-    position: fixed;
-    bottom: 0;
+}
+
+.bottom-nav-locked {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 14px;
+    font-size: var(--fs-s);
+    line-height: 1;
+    color: var(--gray-100);
+
+    svg {
+        flex-shrink: 0;
+        fill: var(--gray-200);
+    }
 }
 
 .icon-with-badge {
