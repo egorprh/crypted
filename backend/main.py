@@ -523,6 +523,15 @@ async def get_app_data(user_id: int):
     return data
 
 
+# Роут для фавикона
+@app.get("/favicon.ico")
+async def favicon():
+    return FileResponse(
+        os.path.join(os.path.dirname(__file__), "..", "frontend", "dist", "images", "favicon.ico"),
+        media_type="image/x-icon"
+    )
+
+
 # Обработчик для несуществующих маршрутов
 @app.exception_handler(StarletteHTTPException)
 async def custom_404_handler(request: Request, exc: StarletteHTTPException):
