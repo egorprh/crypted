@@ -27,20 +27,20 @@ async def send_survey_to_crm(user: Dict, survey_data: list, level: Dict):
             logger.warning("CRM webhook URL не настроен, пропускаем отправку в CRM")
             return
         
-        # Формируем данные для отправки
+        # Формируем данные для отправки - один объект с telegram_id, ответами на вопросы, level_id и level
         payload = {
-            "user": {
-                "telegram_id": user["telegram_id"],
-                "username": user.get("username", ""),
-                "first_name": user.get("first_name", ""),
-                "last_name": user.get("last_name", ""),
-                "level": level["name"],
-                "level_id": level["id"]
-            },
-            "survey_answers": survey_data,
-            "timestamp": datetime.now().isoformat(),
-            "event_type": "enter_survey"
+            "telegram_id": user["telegram_id"],
+            "level_id": level["id"],
+            "level": level["name"],
+            "timestamp": datetime.now().isoformat()
         }
+        
+        # Добавляем ответы на каждый вопрос как отдельные поля
+        for i, answer_data in enumerate(survey_data, 1):
+            question_key = f"question_{i}"
+            answer_key = f"answer_{i}"
+            payload[question_key] = answer_data["question"]
+            payload[answer_key] = answer_data["answer"]
         
         # Отправляем POST запрос в CRM
         async with aiohttp.ClientSession() as session:
