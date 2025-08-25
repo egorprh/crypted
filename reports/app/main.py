@@ -67,16 +67,22 @@ class PostgresToSheetsSync:
             with self.pg_conn.cursor() as cursor:
                 cursor.execute(f"""
                     SELECT 
-                        user_id, 
-                        telegram_id, 
-                        username, 
-                        first_name, 
-                        last_name, 
-                        user_registration_date,
-                        question_text,
-                        user_answer
-                    FROM {self.pg_view}
-                    ORDER BY user_id
+                        u.id AS user_id, 
+                        u.telegram_id, 
+                        u.username, 
+                        u.first_name, 
+                        u.last_name, 
+                        u.time_created AS user_registration_date,
+                        l.name AS user_level,
+                        q.text AS question_text,
+                        ua.text AS user_answer
+                    FROM users u
+                    LEFT JOIN levels l ON u.level = l.id
+                    LEFT JOIN user_answers ua ON u.id = ua.user_id
+                    LEFT JOIN survey_questions sq ON ua.instance_qid = sq.id
+                    LEFT JOIN questions q ON sq.question_id = q.id
+                    WHERE ua.type = 'survey'
+                    ORDER BY u.id
                 """)
                 raw_data = cursor.fetchall()
 
@@ -100,11 +106,12 @@ class PostgresToSheetsSync:
                         'first_name': row[3] or '',
                         'last_name': row[4] or '',
                         'registration_date': row[5].strftime('%Y-%m-%d %H:%M:%S') if row[5] else '',
+                        'user_level': row[6] or 'Не указан',  # Добавляем уровень пользователя
                     }
                 
                 # Обработка вопросов и ответов
-                question_key = self.normalize_question(row[6])
-                users[user_id][question_key] = row[7]
+                question_key = self.normalize_question(row[7])
+                users[user_id][question_key] = row[8]
                 questions.add(question_key)
 
             # Формируем заголовки и строки
@@ -114,7 +121,8 @@ class PostgresToSheetsSync:
                 'username',
                 'first_name',
                 'last_name',
-                'registration_date'
+                'registration_date',
+                'user_level'  # Добавляем столбец уровня
             ]
             question_headers = sorted(questions)
             headers = base_headers + question_headers
@@ -136,14 +144,16 @@ class PostgresToSheetsSync:
             with self.pg_conn.cursor() as cursor:
                 cursor.execute("""
                     SELECT
-                        id,
-                        telegram_id,
-                        username,
-                        first_name,
-                        last_name,
-                        time_created
-                    FROM users
-                    ORDER BY id
+                        u.id,
+                        u.telegram_id,
+                        u.username,
+                        u.first_name,
+                        u.last_name,
+                        u.time_created,
+                        l.name AS level_name
+                    FROM users u
+                    LEFT JOIN levels l ON u.level = l.id
+                    ORDER BY u.id
                 """)
                 raw_data = cursor.fetchall()
 
@@ -158,7 +168,8 @@ class PostgresToSheetsSync:
                 'username',
                 'first_name',
                 'last_name',
-                'registration_date'
+                'registration_date',
+                'level_name'
             ]
 
             rows = []
@@ -169,7 +180,8 @@ class PostgresToSheetsSync:
                     row[2] or '',  # username
                     row[3] or '',  # first_name
                     row[4] or '',  # last_name
-                    row[5].strftime('%Y-%m-%d %H:%M:%S') if row[5] else ''  # registration_date
+                    row[5].strftime('%Y-%m-%d %H:%M:%S') if row[5] else '',  # registration_date
+                    row[6] or 'Не указан'  # level_name
                 ])
 
             return headers, rows
@@ -190,16 +202,20 @@ class PostgresToSheetsSync:
                         u.username,
                         u.first_name,
                         u.last_name,
+                        l.name AS user_level,
                         MIN(CASE WHEN ual.action = 'course_viewed' AND ual.instance_id = {courseid} THEN ual.time_created END) AS first_course_view,
                         MIN(CASE WHEN ual.action = 'course_completed' AND ual.instance_id = {courseid} THEN ual.time_created END) AS course_completion_date
                     FROM 
                         users u
                     LEFT JOIN 
+                        levels l ON u.level = l.id
+                    LEFT JOIN 
                         user_actions_log ual ON u.id = ual.user_id 
                         AND ual.instance_id = {courseid}
                         AND ual.action IN ('course_viewed', 'course_completed')
                     GROUP BY 
-                        u.id, u.telegram_id, u.username, u.first_name, u.last_name ORDER BY "course_completion_date", "first_course_view"
+                        u.id, u.telegram_id, u.username, u.first_name, u.last_name, l.name 
+                    ORDER BY "course_completion_date", "first_course_view"
                 """)
                 raw_data = cursor.fetchall()
 
@@ -214,6 +230,7 @@ class PostgresToSheetsSync:
                 'username',
                 'first_name',
                 'last_name',
+                'user_level',
                 'first_course_view',
                 'course_completion_date'
             ]
@@ -226,8 +243,9 @@ class PostgresToSheetsSync:
                     row[2] or '',  # username
                     row[3] or '',  # first_name
                     row[4] or '',  # last_name
-                    row[5].strftime('%Y-%m-%d %H:%M:%S') if row[5] and isinstance(row[5], datetime.datetime) else '',  # first_course_view
-                    row[6].strftime('%Y-%m-%d %H:%M:%S') if row[6] and isinstance(row[6], datetime.datetime) else ''  # course_completion_date
+                    row[5] or 'Не указан',  # user_level
+                    row[6].strftime('%Y-%m-%d %H:%M:%S') if row[6] and isinstance(row[6], datetime.datetime) else '',  # first_course_view
+                    row[7].strftime('%Y-%m-%d %H:%M:%S') if row[7] and isinstance(row[7], datetime.datetime) else ''  # course_completion_date
                 ])
 
             return headers, rows
