@@ -284,8 +284,8 @@ async def save_level(request: Request):
     
     try:
         request = await request.json()
-        user_id = request["userId"]
-        level = request["level"]
+        user_id = request["telegram_id"]
+        level = request["level_id"]
         
         # Получаем пользователя по telegram_id
         user = await db.get_record("users", {"telegram_id": user_id})

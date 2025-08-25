@@ -1,1 +1,0 @@
-import{j as o}from"./index-CRjUz0L_.js";function n({children:s,onClose:a,className:l}){return o.jsx("div",{className:`modal-backdrop ${l}`,onClick:a,children:o.jsxs("div",{className:"modal",onClick:c=>c.stopPropagation(),children:[o.jsx("button",{className:"modal-close",onClick:a,children:"×"}),s]})})}export{n as M};

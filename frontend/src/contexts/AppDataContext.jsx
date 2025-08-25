@@ -13,6 +13,9 @@ export const AppDataProvider = ({ children }) => {
         const tg = window.Telegram?.WebApp;
         tg?.ready();
         tg?.expand();
+        
+        // Установить синий цвет для шапки Telegram
+        tg?.setHeaderColor('#246AFF');
 
         const u = tg?.initDataUnsafe?.user;
 

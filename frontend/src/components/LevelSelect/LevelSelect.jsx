@@ -58,7 +58,7 @@ export default function LevelSelect({ onContinue }) {
                                         <ArrowBtnIcon/>
                                     </div>
                                     <div className="level-description">
-                                        {level.desc}
+                                        {level.description}
                                     </div>
                                 </a>
                             ))}
