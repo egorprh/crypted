@@ -528,3 +528,70 @@ class UserEnrolmentAdmin(ModelView, model=UserEnrolment):
     can_edit = True
     can_delete = True
     can_view_details = True
+
+
+class LevelAdmin(ModelView, model=Level):
+    """
+    Админ представление для управления уровнями.
+    """
+    name = "Уровень"
+    name_plural = "Уровни"
+    icon = "fa-solid fa-layer-group"
+    page_size = 30
+    
+    # Отображаемые колонки
+    column_list = [Level.id, Level.name, Level.description, Level.time_created]
+    column_searchable_list = [Level.name, Level.description]
+    column_sortable_list = [Level.id, Level.name, Level.time_created]
+    
+    # Русские названия колонок
+    column_labels = {
+        'id': 'ID',
+        'name': 'Название уровня',
+        'description': 'Описание уровня',
+        'time_modified': 'Дата изменения',
+        'time_created': 'Дата создания'
+    }
+    
+    # Исключаем автоматические поля
+    form_excluded_columns = ["time_modified", "time_created"]
+    
+    # Права доступа
+    can_create = True
+    can_edit = True
+    can_delete = True
+    can_view_details = True
+
+
+class UserActionsLogAdmin(ModelView, model=UserActionsLog):
+    """
+    Админ представление для управления логами действий пользователей.
+    """
+    name = "Лог действий"
+    name_plural = "Логи действий"
+    icon = "fa-solid fa-clipboard-list"
+    page_size = 50
+    
+    # Отображаемые колонки
+    column_list = [UserActionsLog.id, UserActionsLog.user_id, UserActionsLog.action, UserActionsLog.instance_id, UserActionsLog.time_created]
+    column_searchable_list = [UserActionsLog.action]
+    column_sortable_list = [UserActionsLog.id, UserActionsLog.user_id, UserActionsLog.instance_id, UserActionsLog.time_created]
+    
+    # Русские названия колонок
+    column_labels = {
+        'id': 'ID',
+        'user_id': 'ID пользователя',
+        'action': 'Действие',
+        'instance_id': 'ID экземпляра',
+        'time_modified': 'Дата изменения',
+        'time_created': 'Дата создания'
+    }
+    
+    # Исключаем автоматические поля
+    form_excluded_columns = ["time_modified", "time_created"]
+    
+    # Права доступа
+    can_create = False
+    can_edit = False
+    can_delete = True
+    can_view_details = True
