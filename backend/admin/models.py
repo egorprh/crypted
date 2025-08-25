@@ -247,6 +247,7 @@ class Event(Base):
     date = Column(String(255), comment="Дата события")
     price = Column(String(255), comment="Цена события")
     link = Column(String(255), comment="Ссылка на событие")
+    sort_order = Column(BigInteger, default=0, comment="Порядок сортировки")
     visible = Column(Boolean, default=False, comment="Видимость события")
     time_modified = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     time_created = Column(DateTime(timezone=True), server_default=func.now())

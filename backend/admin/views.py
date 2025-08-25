@@ -393,15 +393,15 @@ class EventAdmin(ModelView, model=Event):
     """
     Админ представление для управления событиями.
     """
-    name = "Событие"
-    name_plural = "События"
+    name = "Материалы (для вкладки Курсы)"
+    name_plural = "Материалы (для вкладки Курсы)"
     icon = "fa-solid fa-calendar"
     page_size = 30
     
     # Отображаемые колонки
-    column_list = [Event.id, Event.title, Event.author, Event.date, Event.visible, Event.time_created]
+    column_list = [Event.id, Event.title, Event.author, Event.date, Event.sort_order, Event.visible, Event.time_created]
     column_searchable_list = [Event.title, Event.description, Event.author]
-    column_sortable_list = [Event.id, Event.title, Event.date, Event.visible, Event.time_created]
+    column_sortable_list = [Event.id, Event.title, Event.date, Event.sort_order, Event.visible, Event.time_created]
     
     # Русские названия колонок
     column_labels = {
@@ -413,6 +413,7 @@ class EventAdmin(ModelView, model=Event):
         'date': 'Дата',
         'price': 'Цена',
         'link': 'Ссылка',
+        'sort_order': 'Порядок сортировки',
         'visible': 'Видимое',
         'time_modified': 'Дата изменения',
         'time_created': 'Дата создания'

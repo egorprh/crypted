@@ -149,6 +149,7 @@ class Event(BaseModel):
     date: Optional[str] = None
     price: Optional[str] = None
     link: Optional[str] = None
+    sort_order: int = 0
     visible: bool = False
     time_modified: Optional[datetime] = None
     time_created: Optional[datetime] = None

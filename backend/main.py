@@ -440,7 +440,7 @@ async def get_app_data(user_id: int):
 
         course["lessons"] = lessons
 
-    events = await db.get_records_sql("SELECT * FROM events WHERE visible = $1 ORDER BY date DESC ", True)
+    events = await db.get_records_sql("SELECT * FROM events WHERE visible = $1 ORDER BY sort_order", True)
 
     faq = await db.get_records_sql("SELECT * FROM faq WHERE visible = $1 ORDER BY id", True)
 
