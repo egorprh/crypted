@@ -2467,7 +2467,7 @@
             "title": "Методичка",
             "description": "Смотрите прямую трансляцию реальных сделок и учите стратегии профессионалов.",
             "author": "Иван Профессионал",
-            "image": "https://example.com/images/live_trading.jpg",
+            "image": "/images/7deee7ae3b3431eea7fb676bad0ed564833a92b3.png",
             "date": "2023-12-30",
             "link": "https://example.com/images/live_trading.jpg",
             "price": "Бесплатно"
@@ -2483,7 +2483,6 @@
             "price": "500 $"
         }
     ],
-    "homework": [],
     "faq": [
         {
             "id": 1,
@@ -2526,7 +2525,7 @@
         {
             "id": 1,
             "name": "Начальный уровень",
-            "desc": "Знаешь базовые вещи, типы ордеров и трендов, но еще не понимаешь в рисках и стратегиях."
+            "desc": ""
         },
         {
             "id": 2,
@@ -2735,7 +2734,7 @@
         },
         {
             "id": 243,
-            "quiz_id": 1,
+            "quiz_id": 2,
             "user_id": 73,
             "progress": 100.0,
             "course_title": "Старт в торговле криптовалютой",
@@ -2774,7 +2773,7 @@
         },
         {
             "id": 243,
-            "quiz_id": 1,
+            "quiz_id": 3,
             "user_id": 73,
             "progress": 100.0,
             "course_title": "Старт в торговле криптовалютой",
@@ -2813,7 +2812,7 @@
         },
         {
             "id": 243,
-            "quiz_id": 1,
+            "quiz_id": 4,
             "user_id": 73,
             "progress": 100.0,
             "course_title": "Старт в торговле криптовалютой",

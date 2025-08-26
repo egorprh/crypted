@@ -1,0 +1,72 @@
+.btn {
+    display: inline-block;
+    background-color: var(--primary);
+    color: var(--white);
+    font-size: var(--fs-s);
+    font-weight: 500;
+    line-height: 1;
+    padding: 10px 20px;
+    border-radius: var(--brs-md);
+    border: none;
+    cursor: pointer;
+    text-align: center;
+}
+
+.btn-dropdown {
+    background-color: var(--gray-600);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    svg {
+        transition: rotate .3s ease;
+    }
+}
+
+.btn-dropdown.expanded svg {
+    rotate: 270deg;
+}
+
+.btn-dropdown svg {
+    width: 10px;
+    height: 10px;
+    fill: var(--white);
+    rotate: 90deg;
+}
+
+.btn-green {
+    background-color: var(--green);
+}
+
+.btn-full-width {
+    width: 100%;
+}
+
+.btn-flex {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    svg {
+        height: 10px;
+    }
+}
+
+.btn-accent {
+    background-color: var(--logo-bg);
+    color: var(--white);
+
+    svg {
+        fill: var(--white);
+    }
+}
+
+.btn-white {
+    background-color: var(--white);
+    color: var(--secondary);
+
+    svg {
+        fill: var(--secondary);
+    }
+}

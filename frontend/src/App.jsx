@@ -3,14 +3,13 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { useAppData } from './contexts/AppDataContext.jsx';
 import Preloader from './components/ui/Preloader/Preloader.jsx';
 import getConfigValue from "./components/helpers/getConfigValue.js";
-import LoadScreen from "./components/Intro/LoadScreen.jsx";
+import LoadScreen from "./components/LoadScreen/LoadScreen.jsx";
 import LevelSelect from "./components/LevelSelect/LevelSelect.jsx";
 
 const Layout= lazy(() => import('./components/Layouts/Layout.jsx'));
 const Home = lazy(() => import('./components/Home/Home.jsx'));
 const EnterSurvey = lazy(() => import('./components/EnterSurvey/EnterSurvey.jsx'));
 const Calendar = lazy(() => import('./components/Calendar/Calendar.jsx'));
-const EventPage = lazy(() => import('./components/EventPage/EventPage.jsx'));
 const Homework = lazy(() => import('./components/Homework/Homework.jsx'));
 const QuizResults = lazy(() => import('./components/QuizResults/QuizResults.jsx'));
 const Questions = lazy(() => import('./components/Questions/Questions.jsx'));
@@ -75,7 +74,6 @@ export default function App() {
               <Route path="/" element={<Home user={user} />} />
               <Route path="/lessons/enter-survey" element={<EnterSurvey user={user} />} />
               <Route path="/calendar" element={<Calendar />} />
-              <Route path="/calendar/event/:id" element={<EventPage />} />
               <Route path="/homework" element={<Homework />} />
               <Route path="/homework/results/:quizId" element={<QuizResults user={user} />} />
               <Route path="/faq" element={<Questions />} />

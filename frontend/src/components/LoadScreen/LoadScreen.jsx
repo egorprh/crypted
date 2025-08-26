@@ -4,7 +4,7 @@ import Logo from "../../assets/images/Logo.jsx";
 
 export default function LoadScreen({ videoSrc, onContinue }) {
     return (
-        <div className="intro-screen">
+        <div className="intro-screen container">
             <video
                 className="intro-video"
                 src={videoSrc}

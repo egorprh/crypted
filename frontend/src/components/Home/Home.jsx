@@ -14,23 +14,19 @@ import LockIcon from "../../assets/images/LockIcon.jsx";
 import LabelIcon from "../../assets/images/LabelIcon.jsx";
 import handleImageError from "../helpers/handleImageError.js";
 import Logo from "../../assets/images/Logo.jsx";
+import GiftModalIcon from "../../assets/images/GiftModalIcon.jsx";
+import Button from "../ui/Button/Button.jsx";
+import HomeworkBadgeIcon from "../../assets/images/HomeworkBadgeIcon.jsx";
 
 export default function Home() {
     const navigate = useNavigate();
     const { data, loading, error, user } = useAppData();
     const { surveyPassed } = useSurvey();
-    const [showAlert, setShowAlert] = useState(false);
     const [popupData, setPopupData] = useState(null);
 
     const userId = user?.id || 0;
 
     const handleCourseClick = (course) => {
-        if (data?.enter_survey && !surveyPassed) {
-            setShowAlert(true);
-            setTimeout(() => setShowAlert(false), 1000);
-            return;
-        }
-
         fetch('/api/course_viewed', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -47,15 +43,13 @@ export default function Home() {
 
     const handleGiftClick = (course) => {
         const defaultPopup = {
-            popup_title: "Бесплатный доступ в торговую группу",
-            popup_desc: "Каждый кто пройдёт все 10 уроков, получит доступ в нашу торговую группу на 5 дней бесплатно.",
-            popup_img: "images/giftImage.svg"
+            popup_title: "Бесплатная консультация с аналитиком",
+            popup_desc: "После полного прохождения курса, вам будет доступен созвон с аналитиком, для определения вашей торговой системы."
         };
 
         setPopupData({
             title: course.popup_title || defaultPopup.popup_title,
             desc: course.popup_desc || defaultPopup.popup_desc,
-            img: course.popup_img || defaultPopup.popup_img
         });
     };
 
@@ -90,7 +84,7 @@ export default function Home() {
                                 </p>
                                 <div className="card-footer">
                                     <div className="tag">
-                                        <div className="tag-img">
+                                        <div className="icon-wrapper">
                                             <LabelIcon />
                                         </div>
                                         <span className="new-price">Бесплатно</span>
@@ -119,6 +113,26 @@ export default function Home() {
                                         alt="Course"
                                         className="course-header-img"
                                     />
+
+                                    <div className="course-header-overlay">
+                                        <div className="badges">
+                                            <div className="d-flex">
+                                                <div className="icon-wrapper accent">
+                                                    {course.lessons?.length ?? course.lessons_count ?? 0}
+                                                </div>
+                                                Видеоуроков
+                                            </div>
+
+                                            {course.lessons?.length > 0 && (
+                                                <div className="d-flex">
+                                                    <div className="hw-icon icon-wrapper accent">
+                                                        <HomeworkBadgeIcon />
+                                                    </div>
+                                                    Домашние задания
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <div className="course-body">
@@ -126,7 +140,7 @@ export default function Home() {
                                         <p className="course-title">{course.title}</p>
                                         <div className="tag">
                                             {(course.newprice || course.oldprice) && (
-                                                <div className="tag-img">
+                                                <div className="icon-wrapper">
                                                     <LabelIcon/>
                                                 </div>
                                             )}
@@ -152,7 +166,7 @@ export default function Home() {
                                             </div>
                                         )}
                                         <span className="start-btn btn">
-                                            <span className="logo-icon-wrapper">
+                                            <span className="icon-wrapper">
                                                 <Logo/>
                                             </span>
                                             Начать курс
@@ -177,11 +191,14 @@ export default function Home() {
             )}
 
             {popupData && (
-                <Modal onClose={closePopup}>
+                <Modal className="gift-modal" onClose={closePopup}>
                     <div className="popup-content">
-                        <img src={popupData.img} alt="Подарок" className="popup-image"/>
+                        <div className="popup-image">
+                            <GiftModalIcon />
+                        </div>
                         <h3>{popupData.title}</h3>
-                        <p>{popupData.desc}</p>
+                        <p className="text-gray-200">{popupData.desc}</p>
+                        <Button onClick={closePopup} type="btn-accent" text="Понятно" />
                     </div>
                 </Modal>
             )}

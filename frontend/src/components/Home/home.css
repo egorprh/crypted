@@ -23,6 +23,19 @@
   margin-bottom: 0;
 }
 
+.course-header {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--brs-md);
+  margin-bottom: 16px;
+  border: 1px solid var(--bg);
+
+  .hw-icon svg {
+    width: 11px;
+    height: 11px;
+  }
+}
+
 .course-card {
   margin-bottom: 20px;
 
@@ -31,7 +44,7 @@
     border-radius: var(--brs-md);
     aspect-ratio: 1.78;
     object-fit: cover;
-    margin-bottom: 16px;
+    display: block;
   }
 }
 
@@ -44,6 +57,25 @@
   display: flex;
   align-items: center;
   gap: 14px;
+}
+
+.course-card .course-header-overlay {
+  display: flex;
+  justify-content: center;
+  align-items: end;
+  padding-bottom: 24px;
+  position: absolute;
+  bottom: -6px;
+  right: 0;
+  width: 100%;
+  background: linear-gradient(to bottom, transparent 0%, black 100%);
+  min-height: 86px;
+}
+
+.course-card .badges {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
 .start-btn {
@@ -69,21 +101,6 @@
 .start-btn svg {
   width: 10px;
   height: 11px;
-}
-
-.logo-icon-wrapper {
-  width: 20px;
-  height: 20px;
-  align-items: center;
-  justify-content: center;
-  background-color: var(--logo-bg);
-  border-radius: 50%;
-
-  svg {
-    width: 13px;
-    height: 13px;
-    fill: var(--white);
-  }
 }
 
 .gift-icon-wrapper {
@@ -145,6 +162,28 @@
 
 .survey-banner .card-title {
   margin-bottom: 4px;
+}
+
+
+.popup-content {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  .popup-image {
+    margin-bottom: 24px;
+  }
+
+  svg {
+    fill: var(--white);
+  }
+
+  p {
+    margin-bottom: 16px;
+    text-align: center;
+  }
 }
 
 

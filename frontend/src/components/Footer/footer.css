@@ -47,15 +47,16 @@
     }
 }
 
-.icon-with-badge {
-    position: relative;
-    display: inline-block;
-}
-
-.nav-item .icon-with-badge .badge-events-count {
-    top: -6px;
-    right: -8px;
-    color: var(--white);
-    font-size: 10px;
+.bottom-gradient-overlay {
+    background: linear-gradient(180deg, transparent 30%, var(--gray-700) 100%);
+    bottom: 0;
+    height: 120px;
+    left: 0;
+    pointer-events: none;
+    position: fixed;
+    right: 0;
+    z-index: 99;
+    max-width: 600px;
+    margin-inline: auto;
 }
 

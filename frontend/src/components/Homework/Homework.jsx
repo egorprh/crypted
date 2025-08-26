@@ -6,6 +6,8 @@ import './homework.css';
 import { useAppData } from "../../contexts/AppDataContext.jsx";
 import ContentNotFound from "../ContentNotFound/ContentNotFound.jsx";
 import Header from "../Header/Header.jsx";
+import Logo from "../../assets/images/Logo.jsx";
+import Button from "../ui/Button/Button.jsx";
 
 export default function Homework() {
     const navigate = useNavigate();
@@ -36,23 +38,31 @@ export default function Homework() {
                     <div className="loading">Загрузка заданий...</div>
                 ) : (
                     homework && homework.length ? (
-                        homework.map(hw => (
+                        homework.map((hw, i) => (
                             <div
                                 key={hw.id}
-                                className="card hw-card"
+                                className="card hw-card white-header-card"
                                 onClick={() => handleTaskClick(hw.quiz_id)}
                             >
-                                <div className="card-title">{hw.lesson_title}</div>
-                                <div className="hw-icon">
-                                    <p className="hw-descr">
-                                        Результаты теста: {hw.progress}%
+                                <div className="card-header">
+                                    <Logo />
+                                    <div className="card-title">Урок {i + 1} из {homework.length}</div>
+                                </div>
+
+                                <div className="card-body">
+                                    <h3>
+                                        {hw.lesson_title}
+                                    </h3>
+                                    <p className="text-gray-200">
+                                        {`"Курс ${hw.course_title}"`}
                                     </p>
-                                    <NextIcon />
+
+                                    <Button type="btn-white btn-full-width btn-flex"  hasArrow text="Мои результаты" />
                                 </div>
                             </div>
                         ))
                     ) : (
-                       <ContentNotFound message="Нет выполненных заданий" />
+                        <ContentNotFound message="Нет выполненных заданий"/>
                     )
                 )}
             </div>

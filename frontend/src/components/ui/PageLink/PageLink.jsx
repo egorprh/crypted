@@ -13,9 +13,6 @@ export default function PageLink({ title, subtitle, to, events_count }) {
             <div className="arrow">
                 <ArrowIcon />
             </div>
-            {events_count > 0 && (
-                <span className="badge-events-count">{events_count}</span>
-            )}
         </Link>
     );
 }
