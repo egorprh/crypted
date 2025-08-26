@@ -76,6 +76,7 @@ export default function Footer() {
                         </NavItem>
                     ))}
             </nav>
+            <div className="bottom-gradient-overlay"></div>
         </footer>
     );
 }

@@ -5,11 +5,14 @@ import Header from "../Header/Header.jsx";
 import { useAppData } from "../../contexts/AppDataContext.jsx";
 import ArrowBtnIcon from "../../assets/images/ArrowBtnIcon.jsx";
 import ArrowIcon from "../../assets/images/ArrowIcon.jsx";
+import Button from "../ui/Button/Button.jsx";
 
 export default function LevelSelect({ onContinue }) {
     const { data, user } = useAppData();
     const [selected, setSelected] = useState(null);
     const [loading, setLoading] = useState(false);
+
+    const userId = user?.id || 0;
 
     const handleSubmit = async () => {
         if (!selected) return;
@@ -23,7 +26,7 @@ export default function LevelSelect({ onContinue }) {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    telegram_id: user.telegram_id || user.id,
+                    telegram_id: userId,
                     level_id: selected,
                 }),
             });
@@ -64,14 +67,15 @@ export default function LevelSelect({ onContinue }) {
                             ))}
                         </div>
                     </div>
-                    <button
-                        className="btn btn-accent btn-full-width levels-btn"
-                        disabled={!selected || loading}
+
+                    <Button
+                        type="btn btn-accent btn-full-width levels-btn"
                         onClick={handleSubmit}
-                    >
-                        {loading ? "Сохраняем..." : "Далее"}
-                        {!loading && <ArrowIcon />}
-                    </button>
+                        disabled={!selected || loading}
+                        text={loading ? "Сохраняем..." : "Далее"}
+                        hasLongArrow={!loading}
+
+                    />
                 </div>
             </main>
         </div>

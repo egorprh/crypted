@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+
 import "./calendar.css";
 import { useAppData } from "../../contexts/AppDataContext.jsx";
 import handleImageError from "../helpers/handleImageError.js";
@@ -8,6 +8,7 @@ import Header from "../Header/Header.jsx";
 import CalendarHeaderIcon from "../../assets/images/CalendarHeaderIcon.jsx";
 import LabelIcon from "../../assets/images/LabelIcon.jsx";
 import ArrowBtnIcon from "../../assets/images/ArrowBtnIcon.jsx";
+import Button from "../ui/Button/Button.jsx";
 
 export default function Calendar() {
     const { data, loading, error } = useAppData();
@@ -39,18 +40,17 @@ export default function Calendar() {
                                     <p className="event-title">{event.title}</p>
                                     <div className="event-show-more">
                                         <div className="tag">
-                                            <div className="tag-img">
+                                            <div className="icon-wrapper green">
                                                 <LabelIcon/>
                                             </div>
                                             <span className="new-price">{event.price}</span>
                                         </div>
-                                        <button
+                                        <Button
+                                            type={isExpanded ? "btn-dropdown expanded" : "btn-dropdown"}
                                             onClick={() => setExpandedId(isExpanded ? null : event.id)}
-                                            className="btn btn-dropdown"
-                                        >
-                                            Подробнее
-                                            <ArrowBtnIcon/>
-                                        </button>
+                                            hasArrow
+                                            text="Подробнее"
+                                        />
                                     </div>
 
                                     {isExpanded && (

@@ -49,8 +49,6 @@ export default function QuizResults({ user }) {
     const repeatQuiz = () => {
         if (courseId && lessonId) {
             navigate(`/lessons/${courseId}/${lessonId}/quiz`);
-        } else {
-            console.error('Нет данных для перехода к тесту');
         }
     };
 

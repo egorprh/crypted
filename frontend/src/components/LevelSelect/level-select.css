@@ -8,7 +8,7 @@
     overflow: auto;
 
     .card-header {
-        padding: 16px;
+        padding: 16px 34px;
 
         h2 {
             font-size: var(--fs-sm);
@@ -16,7 +16,6 @@
     }
 
     .card-body {
-        padding: 16px;
         border-bottom-left-radius: var(--brs-md);
         border-bottom-right-radius: var(--brs-md);
     }
@@ -31,8 +30,8 @@
         display: flex;
         align-items: center;
         gap: 8px;
-        margin-bottom: 10px;
         font-size: var(--fs-sm);
+        line-height: 1;
         color: var(--white);
 
         svg {
@@ -54,7 +53,8 @@
         }
     }
 
-    .level-description {
+    .level-description:not(:empty) {
+        margin-top: 12px;
         color: var(--gray-200);
     }
 
