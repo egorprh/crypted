@@ -427,10 +427,13 @@ async def get_app_data(user_id: int):
         course["user_enrolment"] = access_info["user_enrolment"]
         
         lessons = await db.get_records_sql("SELECT * FROM lessons WHERE course_id = $1 AND visible = $2 ORDER BY id", course["id"], True)
+        has_home_work = False
+        
         for lesson in lessons:
             lesson["materials"] = await db.get_records_sql("SELECT * FROM materials WHERE lesson_id = $1 AND visible = $2 ORDER BY id", lesson["id"], True)
             lesson["quizzes"] = await db.get_records_sql("SELECT * FROM quizzes WHERE lesson_id = $1 AND visible = $2 ORDER BY id", lesson["id"], True)
             for quiz in lesson["quizzes"]:
+                has_home_work = True
                 quiz["questions"] = await db.get_records_sql(
                     f"""SELECT q.* FROM quiz_questions qq
                     JOIN questions q ON qq.question_id = q.id
@@ -438,6 +441,10 @@ async def get_app_data(user_id: int):
                 for question in quiz["questions"]:
                     question["answers"] = await db.get_records("answers", {"question_id": question["id"]})
 
+        # Добавляем количество уроков в курсе
+        course["lesson_count"] = len(lessons)
+        # Проверяем, есть ли квизы в собранном массиве lessons
+        course["has_home_work"] = has_home_work        
         course["lessons"] = lessons
 
     events = await db.get_records_sql("SELECT * FROM events WHERE visible = $1 ORDER BY sort_order", True)
@@ -456,7 +463,9 @@ async def get_app_data(user_id: int):
             up.user_id, 
             up.progress, 
             c.title AS course_title, 
-            l.title AS lesson_title
+            l.title AS lesson_title,
+            l.sort_order AS lesson_order,
+            c.id AS course_id
         FROM quiz_attempts up
         LEFT JOIN quizzes q ON up.quiz_id = q.id
         LEFT JOIN lessons l ON q.lesson_id = l.id
@@ -471,6 +480,13 @@ async def get_app_data(user_id: int):
     """
     homeworks = await db.get_records_sql(homeworks_sql)
     for homework in homeworks:
+        # Получаем количество уроков в курсе
+        lesson_count = await db.get_records_sql(
+            "SELECT COUNT(*) FROM lessons WHERE course_id = $1 AND visible = $2", 
+            homework["course_id"], True
+        )
+        homework["lesson_count"] = lesson_count[0]["count"] if lesson_count else 0
+        
         homework["questions"] = await db.get_records_sql("""
                     SELECT qq.id, q.id AS qid, q.text, q.type FROM quiz_questions qq
                     JOIN questions q ON qq.question_id = q.id
