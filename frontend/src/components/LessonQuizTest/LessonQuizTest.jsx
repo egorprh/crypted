@@ -8,8 +8,10 @@ import Alert from "../ui/Alert/Alert.jsx";
 import Header from "../Header/Header.jsx";
 import CalendarHeaderIcon from "../../assets/images/CalendarHeaderIcon.jsx";
 import HomeworkIcon from "../../assets/images/HomeworkIcon.jsx";
+import { preload } from "react-dom";
+import getConfigValue from "../helpers/getConfigValue.js";
 
-export default function LessonQuizTest({ user }) {
+export default function LessonQuizTest({ user, setShowLoadScreen }) {
     const { courseId, lessonId } = useParams();
     const navigate = useNavigate();
     const { data, loading, error, setData, setLoading } = useAppData();
