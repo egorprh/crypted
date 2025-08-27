@@ -185,7 +185,7 @@ async def trigger_event(event_name: str, user_id: int, instance_id: int, data: A
         Пользователь @{user["username"]} ({user["telegram_id"]}) {user["first_name"]} {user["last_name"]} прошел входное тестирование в DSpace!
 
 {formatted_answers}
-        <b>Уровень:</b> {level["name"]}
+<b>Уровень:</b> {level["name"]}
         """
         
         # Отправляем данные в CRM
