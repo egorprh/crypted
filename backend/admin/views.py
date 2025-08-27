@@ -4,6 +4,7 @@
 """
 
 from sqladmin import ModelView
+import os
 from admin.models import (
     File, User, Course, UserActionsLog, Lesson, Materials, Quiz, Survey, 
     Question, SurveyQuestion, QuizQuestion, Answer, UserAnswer, 
@@ -50,7 +51,7 @@ class FileAdmin(ModelView, model=File):
     
     form_args = {
         'name': {
-            'upload_folder': 'uploads',
+            'upload_folder': os.path.join(os.path.dirname(__file__), 'uploads'),
             'allowed_extensions': ['jpg', 'jpeg', 'png', 'gif', 'webp', 'pdf', 'doc', 'docx'],
             'max_size': 10 * 1024 * 1024  # 10MB
         }
@@ -62,19 +63,26 @@ class FileAdmin(ModelView, model=File):
     can_delete = True
     can_view_details = True
     
-    async def on_model_change(self, model, is_created, data, request):
+    async def on_model_change(self, data, model, is_created, request):
         """
         Обработка при создании/изменении модели файла.
         
         Args:
+            data: Данные формы
             model: Модель файла
             is_created: True если это создание новой записи
-            data: Данные формы
             request: HTTP запрос
         """
-        if is_created and hasattr(model, 'name') and isinstance(model.name, dict):
+        # Преобразуем dict из кастомного FileUploadField в скалярные поля
+        file_payload = None
+        if isinstance(data, dict) and isinstance(data.get('name'), dict):
+            file_payload = data.get('name')
+        elif hasattr(model, 'name') and isinstance(model.name, dict):
+            file_payload = model.name
+
+        if is_created and file_payload:
             # Если name содержит данные о загруженном файле
-            file_data = model.name
+            file_data = file_payload
             original_name = file_data.get('name', '')
             file_path = file_data.get('path', '')
             file_size = file_data.get('size', 0)
@@ -85,6 +93,12 @@ class FileAdmin(ModelView, model=File):
             model.path = file_path
             model.size = file_size
             model.mime_type = mime_type
+            # Также нормализуем входные данные формы, чтобы в БД ушли строки, а не dict
+            if isinstance(data, dict):
+                data['name'] = original_name
+                data['path'] = file_path
+                data['size'] = file_size
+                data['mime_type'] = mime_type
             
             logger.info(f"Создан новый файл: {original_name} ({file_size} байт)")
 
