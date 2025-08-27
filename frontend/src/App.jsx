@@ -1,4 +1,4 @@
-import React, { Suspense, lazy, useState, useEffect } from 'react';
+import React, { Suspense, lazy, useState, useEffect, useRef } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useAppData } from './contexts/AppDataContext.jsx';
 import Preloader from './components/ui/Preloader/Preloader.jsx';
@@ -31,9 +31,12 @@ export default function App() {
   const [showLoadScreen, setShowLoadScreen] = useState(false);
   const [showLevelSelect, setShowLevelSelect] = useState(false);
 
+  const hasPlayedLoadScreen = useRef(false);
+
   useEffect(() => {
-    if (loadScreen === "1") {
+    if (loadScreen === "1" && !hasPlayedLoadScreen.current) {
       setShowLoadScreen(true);
+      hasPlayedLoadScreen.current = true;
     }
   }, [config]);
 

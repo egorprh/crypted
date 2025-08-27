@@ -52,6 +52,8 @@ export default function Footer() {
         return location.pathname.startsWith(path);
     };
 
+    if (location.pathname === "/lessons/enter-survey") return null;
+
     return (
         <footer>
             <nav className="bottom-nav">

@@ -4,19 +4,26 @@ import Footer from "../Footer/Footer.jsx";
 import Header from "../Header/Header.jsx";
 import { useAppData } from "../../contexts/AppDataContext.jsx";
 import ArrowBtnIcon from "../../assets/images/ArrowBtnIcon.jsx";
-import ArrowIcon from "../../assets/images/ArrowIcon.jsx";
 import Button from "../ui/Button/Button.jsx";
 
 export default function LevelSelect({ onContinue }) {
     const { data, user } = useAppData();
     const [selected, setSelected] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(false);
+    const [validation, setValidation] = useState("");
 
     const userId = user?.id || 0;
 
     const handleSubmit = async () => {
-        if (!selected) return;
+        if (!selected) {
+            setError(true);
+            setValidation("Выберите уровень");
+            setTimeout(() => setError(false), 1000);
+            return;
+        }
 
+        setValidation("Выберите уровень");
         setLoading(true);
 
         try {
@@ -43,18 +50,24 @@ export default function LevelSelect({ onContinue }) {
             <main>
                 <Header />
                 <div className="wrapper levels-wrapper">
-                    <div className="level-select card white-header-card">
+                    <div className={`level-select card white-header-card ${error ? "error" : ""}`}>
                         <div className="card-header">
                             <h2>
                                 Какой ваш уровень знаний?
                             </h2>
+
+                            {validation && <p className="error-text">{validation}</p>}
                         </div>
                         <div className="card-body levels-list">
                             {data && data.levels.map(level => (
                                 <a
                                     className={`levels ${selected === level.id ? "active" : ""}`}
                                     key={level.id}
-                                    onClick={() => setSelected(level.id)}
+                                    onClick={() => {
+                                        setSelected(level.id);
+                                        setValidation("")
+                                    }
+                                }
                                 >
                                     <div className="level-name">
                                         {level.name}
@@ -69,16 +82,14 @@ export default function LevelSelect({ onContinue }) {
                     </div>
 
                     <Button
-                        type="btn btn-accent btn-full-width levels-btn"
+                        type={`btn btn-full-width levels-btn ${selected && "btn-accent"}`}
                         onClick={handleSubmit}
-                        disabled={!selected || loading}
+                        disabled={loading}
                         text={loading ? "Сохраняем..." : "Далее"}
                         hasLongArrow={!loading}
-
                     />
                 </div>
             </main>
         </div>
-
     );
 }

@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import PageLink from '../ui/PageLink/PageLink.jsx';
-import Alert from '../ui/Alert/Alert.jsx';
 import './home.css';
 import { useAppData } from '../../contexts/AppDataContext.jsx';
 import { useSurvey } from '../../contexts/SurveyContext.jsx';
@@ -12,7 +10,6 @@ import Header from "../Header/Header.jsx";
 import ArrowBtnIcon from "../../assets/images/ArrowBtnIcon.jsx";
 import LockIcon from "../../assets/images/LockIcon.jsx";
 import LabelIcon from "../../assets/images/LabelIcon.jsx";
-import handleImageError from "../helpers/handleImageError.js";
 import Logo from "../../assets/images/Logo.jsx";
 import GiftModalIcon from "../../assets/images/GiftModalIcon.jsx";
 import Button from "../ui/Button/Button.jsx";
@@ -83,16 +80,7 @@ export default function Home() {
                                     трейдинге.
                                 </p>
                                 <div className="card-footer">
-                                    <div className="tag">
-                                        <div className="icon-wrapper">
-                                            <LabelIcon />
-                                        </div>
-                                        <span className="new-price">Бесплатно</span>
-                                    </div>
-                                    <span className="btn btn-white btn-flex">
-                                        Начать
-                                        <ArrowBtnIcon/>
-                                    </span>
+                                    <Button type="btn-white btn-full-width btn-flex" text="Начать" hasArrow={true} />
                                 </div>
                             </div>
                         </div>

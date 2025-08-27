@@ -9,6 +9,7 @@
   --white: #fff;
   --success: #4caf50;
   --danger: #f44336;
+  --danger-dark: #651616;
   --green: #2E9D69;
 
   --primary-transparent: rgba(65, 133, 244, 0.25);
@@ -129,8 +130,9 @@ main:has([data-blur="true"]) {
 [data-blur="true"] {
   position: fixed;
   inset: 0;
-  backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  transform: translate3d(0, 0, 0);
   background: rgba(16, 16, 16, 0.7);
   z-index: 90;
 
