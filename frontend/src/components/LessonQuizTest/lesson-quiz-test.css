@@ -12,7 +12,7 @@ header .homework-icon {
 }
 
 .quiz-container h2 {
-    font-size: var(--fs-sm);
+    font-size: var(--fs-xxxl);
 }
 
 .quiz-container header {
@@ -20,7 +20,7 @@ header .homework-icon {
 }
 
 .quiz-container header h2 {
-    font-size: var(--fs-s);
+    font-size: var(--fs-xl);
 }
 
 .quiz-footer {
@@ -50,6 +50,7 @@ header .homework-icon {
     align-items: center;
     gap: 10px;
     font-size: var(--fs-s);
+    font-weight: 400;
 }
 
 .quiz-answer input[type="radio"] {
@@ -110,7 +111,6 @@ header .homework-icon {
     width: 100%;
     background-color: var(--primary);
     color: var(--white);
-    font-size: var(--fs-s);
     cursor: pointer;
     transition: background-color 0.2s ease;
 }
@@ -182,4 +182,5 @@ header .homework-icon {
 
 .question-count {
     margin-bottom: 12px;
+    font-weight: 400;
 }

@@ -9,6 +9,7 @@ import ContentNotFound from "../ContentNotFound/ContentNotFound.jsx";
 import ArrowBtnIcon from "../../assets/images/ArrowBtnIcon.jsx";
 import Header from "../Header/Header.jsx";
 import Logo from "../../assets/images/Logo.jsx";
+import TimerIcon from "../../assets/images/TImerIcon.jsx";
 
 export default function Lessons({ user }) {
     const navigate = useNavigate();
@@ -18,6 +19,7 @@ export default function Lessons({ user }) {
     const [lessons, setLessons] = useState([]);
     const [courseTitle, setCourseTitle] = useState('');
     const [courseDescr, setCourseDescr] = useState('');
+    const [courseTimer, setCourseTimer] = useState([]);
 
     useEffect(() => {
         if (!loading && data) {
@@ -27,6 +29,7 @@ export default function Lessons({ user }) {
             if (course) {
                 setCourseTitle(course.title);
                 setCourseDescr(course.description);
+                setCourseTimer(course.access_time);
                 setLessons(course.lessons);
             } else {
                 console.warn("Курс не найден");
@@ -43,14 +46,34 @@ export default function Lessons({ user }) {
 
     return (
         <div className="page-container content">
-            <Link to="/" className="back-link">
-                <BackIcon />
-                Назад
-            </Link>
+            <div className="back-link-wrapper">
+                <Link to="/" className="back-link">
+                    <BackIcon />
+                    Назад
+                </Link>
+                {courseTimer !== undefined && courseTimer !== null && courseTimer !== -1 && (
+                    <div className="access-timer">
+                        <div className="access-timer-count">
+                            <TimerIcon />
+                            {(() => {
+                                const days = Math.ceil(courseTimer / 24);
+                                const pluralRules = new Intl.PluralRules('ru-RU');
+                                const forms = {
+                                    one: 'день',
+                                    few: 'дня',
+                                    many: 'дней',
+                                    other: 'дня',
+                                };
+                                return `${days} ${forms[pluralRules.select(days)]}`;
+                            })()}
+                        </div>
+                    </div>
+                )}
+            </div>
 
             <div className="welcome">
                 <Header title={courseTitle} svg={<Logo />}/>
-                <p className="text-gray-200">{courseDescr}</p>
+                <p className="text-gray-300">{courseDescr}</p>
             </div>
 
             {lessons?.length ? lessons?.map((lesson, index) => (

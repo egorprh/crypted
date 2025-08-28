@@ -46,7 +46,7 @@ export default function Calendar() {
                                             <span className="new-price">{event.price}</span>
                                         </div>
                                         <Button
-                                            type={isExpanded ? "btn-dropdown expanded" : "btn-dropdown"}
+                                            type={isExpanded ? "btn-dropdown btn-p12 expanded" : "btn-dropdown btn-p12"}
                                             onClick={() => setExpandedId(isExpanded ? null : event.id)}
                                             hasArrow
                                             text="Подробнее"
@@ -61,7 +61,7 @@ export default function Calendar() {
                                         href={event.link}
                                         target="_blank"
                                         rel="noreferrer"
-                                        className="btn btn-green btn-full-width"
+                                        className="btn btn-green btn-full-width btn-p12"
                                     >
                                         Открыть
                                     </a>

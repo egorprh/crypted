@@ -6,7 +6,7 @@ export default function Preloader() {
         <div className="container">
             <div className="preloader">
                 <img src="/images/logo.png" alt="Logo" className="preloader-logo"/>
-                <div className="spinner"></div>
+                <div className="big-spinner"></div>
             </div>
         </div>
     );

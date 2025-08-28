@@ -2,14 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { buildStyles, CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
-import './lesson-quiz-test.css';
 import { useAppData } from '../../contexts/AppDataContext.jsx';
 import Alert from "../ui/Alert/Alert.jsx";
 import Header from "../Header/Header.jsx";
-import CalendarHeaderIcon from "../../assets/images/CalendarHeaderIcon.jsx";
 import HomeworkIcon from "../../assets/images/HomeworkIcon.jsx";
-import { preload } from "react-dom";
-import getConfigValue from "../helpers/getConfigValue.js";
+
+import './lesson-quiz-test.css';
+import Button from "../ui/Button/Button.jsx";
 
 export default function LessonQuizTest({ user, setShowLoadScreen }) {
     const { courseId, lessonId } = useParams();
@@ -25,6 +24,7 @@ export default function LessonQuizTest({ user, setShowLoadScreen }) {
     const [showSummary, setShowSummary] = useState(false);
     const [wasCorrect, setWasCorrect] = useState(false);
     const [showSaveError, setShowSaveError] = useState(false);
+    const [redirecting, setRedirecting] = useState(false);
 
     const [userAnswers, setUserAnswers] = useState([]);
 
@@ -74,6 +74,7 @@ export default function LessonQuizTest({ user, setShowLoadScreen }) {
     };
 
     const finishQuiz = () => {
+        setRedirecting(true);
         const total = quiz.questions.length;
         const progress = Math.round((correctCount / total) * 100);
         const userId = user?.id ? user.id : 0;
@@ -103,16 +104,18 @@ export default function LessonQuizTest({ user, setShowLoadScreen }) {
             })
             .then(newData => {
                 setData(newData);
-                setLoading(false);
+                setRedirecting(false);
                 navigate(`/lessons/${courseId}`);
             })
             .catch(error => {
                 setShowSaveError(true);
                 console.error('Ошибка сохранения попытки:', error);
                 setTimeout(() => {
+                    setRedirecting(false);
                     setShowSaveError(false);
                     navigate(`/lessons/${courseId}`);
                 }, 2000);
+
             });
     };
 
@@ -125,7 +128,7 @@ export default function LessonQuizTest({ user, setShowLoadScreen }) {
         const progress = Math.round((correctCount / total) * 100);
         return (
             <div className="quiz">
-                {showSaveError && <Alert text="Не удалось сохранить прогресс" /> }
+                {showSaveError && <Alert text="Не удалось сохранить прогресс"/>}
                 <h1>Результаты теста</h1>
                 <div className="results-circle">
                     <CircularProgressbar
@@ -145,7 +148,18 @@ export default function LessonQuizTest({ user, setShowLoadScreen }) {
                         <p className="correct">Правильные ответы: {correctCount}</p>
                         <p className="incorrect">Неправильные ответы: {total - correctCount}</p>
                     </div>
-                    <button className="btn" onClick={finishQuiz}>Завершить тест</button>
+                    <Button
+                        type="btn btn-accent btn-p12"
+                        onClick={finishQuiz}
+                        text={redirecting ? (
+                            <>
+                                <span className="spinner"/>
+                                Завершение...
+                            </>
+                        ) : (
+                            "Завершить тест"
+                        )}
+                    />
                 </div>
             </div>
         );
@@ -159,10 +173,10 @@ export default function LessonQuizTest({ user, setShowLoadScreen }) {
                 <div>
                     <Header
                         title={<div> Домашнее задание по уроку: <br/> {lesson.title} </div>}
-                        svg={<HomeworkIcon />}
+                        svg={<HomeworkIcon/>}
                     />
                     <div className="quiz-question">
-                        <div className="progress-bar">
+                    <div className="progress-bar">
                             {quiz.questions.map((q, index) => {
                                 let status = "";
                                 if (index < userAnswers.length) {
@@ -201,9 +215,9 @@ export default function LessonQuizTest({ user, setShowLoadScreen }) {
 
                 <div className="actions">
                     {!isAnswered
-                        ? <button className="btn" onClick={handleCheck}
+                        ? <button className="btn btn-p12" onClick={handleCheck}
                                   disabled={selectedAnswer == null}>Проверить</button>
-                        : <button className={`btn ${wasCorrect ? 'btn-correct' : 'btn-incorrect'}`}
+                        : <button className={`btn btn-p12 ${wasCorrect ? 'btn-correct' : 'btn-incorrect'}`}
                                   onClick={handleNextQuestion}>{wasCorrect ? 'Правильно! К следующему' : 'Неправильно! К следующему'}</button>
                     }
                 </div>

@@ -1,5 +1,13 @@
 .events-wrapper {
   flex-grow: 1;
+
+  .new-price {
+    font-size: var(--fs-s);
+  }
+
+  .btn-dropdown {
+    font-size: var(--fs-s);
+  }
 }
 
 .events-wrapper .tag svg {
@@ -11,8 +19,8 @@
 }
 
 .event-image {
-  width: 100%;
-  height: auto;
+  max-width: 100%;
+  aspect-ratio: 2.22;
   margin-bottom: 12px;
   object-fit: cover;
   display: block;
@@ -24,14 +32,14 @@
 }
 
 .event-title {
-  font-size: var(--fs-sm);
-  margin-bottom: 0;
+  font-size: var(--fs-xxl);
+  margin-bottom: 16px;
 }
 
 .event-show-more {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 8px;
+  margin-bottom: 16px;
 }
 
 .event-description {

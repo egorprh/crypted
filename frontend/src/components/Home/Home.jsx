@@ -14,21 +14,45 @@ import Logo from "../../assets/images/Logo.jsx";
 import GiftModalIcon from "../../assets/images/GiftModalIcon.jsx";
 import Button from "../ui/Button/Button.jsx";
 import HomeworkBadgeIcon from "../../assets/images/HomeworkBadgeIcon.jsx";
+import TimerIcon from "../../assets/images/TImerIcon.jsx";
+import getConfigValue from "../helpers/getConfigValue.js";
+import BlurPortal from "../BlurPortal/BlurPortal.jsx";
 
 export default function Home() {
     const navigate = useNavigate();
     const { data, loading, error, user } = useAppData();
     const { surveyPassed } = useSurvey();
     const [popupData, setPopupData] = useState(null);
+    const [accessPopup, setAccessPopup] = useState(null);
 
     const userId = user?.id || 0;
 
+    const config = data && data.config || [];
+    const curatorLink = getConfigValue(config, "curator_btn_link");
+
     const handleCourseClick = (course) => {
+        if (course.access_time === 0 && course.user_enrolment === 0) {
+            setAccessPopup({ type: "noaccess", course });
+            return;
+        }
+
+        if (course.access_time !== -1 && course.user_enrolment === 0) {
+            const days = Math.ceil(course.access_time / 24);
+            setAccessPopup({ type: "limited", course, days });
+            return;
+        }
+
+        goToCourse(course);
+    };
+
+    const goToCourse = (course) => {
         fetch('/api/course_viewed', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ courseId: course.id, userId }),
         }).catch(console.error);
+
+        course.user_enrolment = 1;
 
         if (course.direct_link) {
             window.open(course.direct_link, '_blank');
@@ -63,27 +87,32 @@ export default function Home() {
 
                 <section className="courses">
                     {data?.enter_survey && !surveyPassed && (
-                        <div
-                            className="card white-header-card survey-banner"
-                            onClick={() => navigate('/lessons/enter-survey')}
-                        >
-                            <div className="card-header">
-                                <img src="/images/logo-primary.png" alt="Course" className="logo"/>
+                        <BlurPortal className="enter-survey-portal">
+                            <div
+                                className="card white-header-card survey-banner"
+                                onClick={() => navigate('/lessons/enter-survey')}
+                            >
+                                <div className="card-header">
+                                    <img src="/images/logo-primary.png" alt="Course" className="logo"/>
+                                </div>
+
+                                <div className="card-body">
+                                    <div className="d-flex card-title-wrapper">
+                                        <p className="card-title">Входное тестирование</p>
+                                    </div>
+                                    <p className="text-gray-300 card-text">
+                                        Прежде чем начать обучение, необходимо пройти тест, который определит твой
+                                        уровень в
+                                        трейдинге.
+                                    </p>
+                                    <div className="card-footer">
+                                        <Button type="btn-white btn-full-width btn-flex btn-p12" text="Начать" hasArrow={true} />
+                                    </div>
+                                </div>
                             </div>
 
-                            <div className="card-body">
-                                <div className="d-flex card-title-wrapper">
-                                    <p className="card-title">Входное тестирование</p>
-                                </div>
-                                <p className="card-text">
-                                    Прежде чем начать обучение, необходимо пройти тест, который определит твой уровень в
-                                    трейдинге.
-                                </p>
-                                <div className="card-footer">
-                                    <Button type="btn-white btn-full-width btn-flex" text="Начать" hasArrow={true} />
-                                </div>
-                            </div>
-                        </div>
+                            <LockIcon />
+                        </BlurPortal>
                     )}
 
                     {loading ? (
@@ -93,7 +122,6 @@ export default function Home() {
                             <div
                                 key={course.id}
                                 className="course-card"
-                                onClick={() => handleCourseClick(course)}
                             >
                                 <div className="course-header">
                                     <img
@@ -103,41 +131,84 @@ export default function Home() {
                                     />
 
                                     <div className="course-header-overlay">
-                                        <div className="badges">
-                                            <div className="d-flex">
-                                                <div className="icon-wrapper accent">
-                                                    {course.lessons?.length ?? course.lessons_count ?? 0}
-                                                </div>
-                                                Видеоуроков
-                                            </div>
-
-                                            {course.lessons?.length > 0 && (
-                                                <div className="d-flex">
-                                                    <div className="hw-icon icon-wrapper accent">
-                                                        <HomeworkBadgeIcon />
+                                            <div className="badges">
+                                                {course.access_time !== 0 && course.lesson_count > 0 && (
+                                                    <div className="d-flex">
+                                                    <div className="icon-wrapper accent">
+                                                            {course.lesson_count}
+                                                        </div>
+                                                        {(() => {
+                                                            const pluralRules = new Intl.PluralRules("ru-RU");
+                                                            const forms = {
+                                                                one: "Видеоурок",
+                                                                few: "Видеоурока",
+                                                                many: "Видеоуроков",
+                                                                other: "Видеоурока",
+                                                            };
+                                                            return forms[pluralRules.select(course.lesson_count)];
+                                                        })()}
                                                     </div>
-                                                    Домашние задания
-                                                </div>
-                                            )}
+                                                )}
+
+                                                {course.access_time !== 0 && course.has_home_work && (
+                                                    <div className="d-flex">
+                                                        <div className="hw-icon icon-wrapper accent">
+                                                            <HomeworkBadgeIcon/>
+                                                        </div>
+                                                        Домашние задания
+                                                    </div>
+                                                )}
+                                            </div>
                                         </div>
-                                    </div>
+
+                                    {course.access_time === 0 && (
+                                        <div className="course-header-overlay-locked">
+                                            <LockIcon />
+                                            <h3>Доступ к курсу закрыт</h3>
+                                        </div>
+                                    )}
                                 </div>
 
                                 <div className="course-body">
                                     <div className="d-flex course-title-wrapper card-title-wrapper">
                                         <p className="course-title">{course.title}</p>
-                                        <div className="tag">
-                                            {(course.newprice || course.oldprice) && (
-                                                <div className="icon-wrapper">
-                                                    <LabelIcon/>
-                                                </div>
+                                        {course.user_enrolment === 0 || course.user_enrolment === undefined
+                                            ?
+                                            (<div className="tag">
+                                                {(course.newprice || course.oldprice) && (
+                                                    <div className="icon-wrapper accent">
+                                                        <LabelIcon/>
+                                                    </div>
+                                                )}
+                                                {course.oldprice &&
+                                                    <span className="old-price">{course.oldprice}</span>}
+                                                {course.newprice &&
+                                                    <span className="new-price">{course.newprice}</span>}
+                                            </div>)
+                                            :
+                                            (course.access_time !== undefined && course.access_time !== null && course.access_time !== -1 && (
+                                                    <div className="access-timer">
+                                                        <span className="text-gray-300 access-timer-text">Осталось на прохождение</span>
+                                                        <div className="access-timer-count">
+                                                            <TimerIcon/>
+                                                            {(() => {
+                                                                const days = Math.ceil(course.access_time / 24);
+                                                                const pluralRules = new Intl.PluralRules('ru-RU');
+                                                                const forms = {
+                                                                    one: 'день',
+                                                                    few: 'дня',
+                                                                    many: 'дней',
+                                                                    other: 'дня',
+                                                                };
+                                                                return `${days} ${forms[pluralRules.select(days)]}`;
+                                                            })()}
+                                                        </div>
+                                                    </div>
+                                                )
                                             )}
-                                            {course.oldprice && <span className="old-price">{course.oldprice}</span>}
-                                            {course.newprice && <span className="new-price">{course.newprice}</span>}
-                                        </div>
                                     </div>
 
-                                    <div className="course-description">
+                                    <div className="course-description text-gray-300">
                                         {course.description}
                                     </div>
 
@@ -153,16 +224,18 @@ export default function Home() {
                                                 Подарок от dept.
                                             </div>
                                         )}
-                                        <span className="start-btn btn">
-                                            <span className="icon-wrapper">
+                                        <button
+                                            className={`start-btn btn ${course.access_time === 0 ? "btn-danger" : "btn-white"}`}
+                                            onClick={() => handleCourseClick(course)}
+                                        >
+                                            <span className={`icon-wrapper ${course.access_time === 0 && "danger"}`}>
                                                 <Logo/>
                                             </span>
-                                            Начать курс
+                                            {course.access_time === 0 ? "Продлить курс" : "Начать курс"}
                                             <ArrowBtnIcon/>
-                                        </span>
+                                        </button>
                                     </div>
                                 </div>
-
                                 <hr/>
                             </div>
                         ))
@@ -172,12 +245,6 @@ export default function Home() {
                 </section>
             </div>
 
-            {data?.enter_survey && !surveyPassed && (
-                <div data-blur="true">
-                    <LockIcon/>
-                </div>
-            )}
-
             {popupData && (
                 <Modal className="gift-modal" onClose={closePopup}>
                     <div className="popup-content">
@@ -185,8 +252,67 @@ export default function Home() {
                             <GiftModalIcon />
                         </div>
                         <h3>{popupData.title}</h3>
-                        <p className="text-gray-200">{popupData.desc}</p>
-                        <Button onClick={closePopup} type="btn-accent" text="Понятно" />
+                        <p className="text-gray-300">{popupData.desc}</p>
+                        <Button onClick={closePopup} type="btn-accent btn-p9" text="Понятно" />
+                    </div>
+                </Modal>
+            )}
+
+            {accessPopup && (
+                <Modal className="access-modal" onClose={() => setAccessPopup(null)}>
+                    <div className="popup-content">
+                        {accessPopup.type === "noaccess" ? (
+                            <>
+                                <TimerIcon/>
+                                <h2>Время прохождения <span className="text-danger">истекло</span></h2>
+                                <p className="text-gray-300">
+                                    Вы не успели завершить курс вовремя. Чтобы вернуть доступ к курсу, напишите менеджеру
+                                </p>
+                                <div className="btn-wrapper">
+                                    <Button
+                                        onClick={() => {
+                                            setAccessPopup(null);
+                                        }}
+                                        type="btn-p9"
+                                        text="Закрыть"
+                                    />
+                                    <Button
+                                        onClick={() => {
+                                            setAccessPopup(null);
+                                            window.open(curatorLink, "_blank");
+                                        }}
+                                        type="btn-white btn-p9"
+                                        text="Написать"
+                                    />
+                                </div>
+                            </>
+                        ) : (
+                            <>
+                                <TimerIcon/>
+                                <h2>Время ограничено</h2>
+                                <p className="text-gray-300">
+                                    Отведённое время прохождения курса {accessPopup.days} дня, после истечения времени —
+                                    курс будет недоступен
+                                </p>
+                                <div className="btn-wrapper">
+                                    <Button
+                                        onClick={() => {
+                                            setAccessPopup(null);
+                                        }}
+                                        type="btn-p9"
+                                        text="Назад"
+                                    />
+                                    <Button
+                                        onClick={() => {
+                                            goToCourse(accessPopup.course);
+                                            setAccessPopup(null);
+                                        }}
+                                        type="btn-accent btn-p9"
+                                        text="Начать"
+                                    />
+                                </div>
+                            </>
+                        )}
                     </div>
                 </Modal>
             )}

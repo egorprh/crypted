@@ -6,6 +6,8 @@ import getConfigValue from "./components/helpers/getConfigValue.js";
 import LoadScreen from "./components/LoadScreen/LoadScreen.jsx";
 import LevelSelect from "./components/LevelSelect/LevelSelect.jsx";
 
+import './main.css';
+
 const Layout= lazy(() => import('./components/Layouts/Layout.jsx'));
 const Home = lazy(() => import('./components/Home/Home.jsx'));
 const EnterSurvey = lazy(() => import('./components/EnterSurvey/EnterSurvey.jsx'));

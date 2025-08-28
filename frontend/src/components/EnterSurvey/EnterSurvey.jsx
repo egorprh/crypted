@@ -1,16 +1,17 @@
-// src/pages/EnterSurvey/EnterSurvey.jsx
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAppData } from '../../contexts/AppDataContext.jsx';
 import { useSurvey } from '../../contexts/SurveyContext.jsx';
 import BackIcon from '../../assets/images/BackIcon.jsx';
 import '../LessonQuizTest/lesson-quiz-test.css';
-import '../QuizResults/quiz-results.css';
-import './enter-survey.css';
 import Alert from "../ui/Alert/Alert.jsx";
 import ContentNotFound from "../ContentNotFound/ContentNotFound.jsx";
 import Modal from "../ui/Modal/Modal.jsx";
 import FireworkIcon from "../../assets/images/FireworksIcon.jsx";
+
+import '../../main.css'
+import '../QuizResults/quiz-results.css';
+import './enter-survey.css';
 
 export default function EnterSurvey({ user }) {
     const navigate = useNavigate();
@@ -145,16 +146,16 @@ export default function EnterSurvey({ user }) {
                 <div>
                     <h1>Входное тестирование</h1>
                     {data?.enter_survey?.description && (
-                        <p className="survey-description">{data.enter_survey.description}</p>
+                        <p className="text-gray-300 survey-description">{data.enter_survey.description}</p>
                     )}
 
                     {data?.enter_survey?.questions?.length
                         ?
                         data.enter_survey.questions.map((question) => (
                         <div key={question.id} className={`survey-question ${errors[question.id] ? 'error' : ''}`}>
-                            <h2>{question.id}. {question.text}</h2>
+                            <h3>{question.id}. {question.text}</h3>
                             {errors[question.id] && (
-                                <div className="error-text">{errors[question.id]}</div>
+                                <div className="error-text-survey">{errors[question.id]}</div>
                             )}
                             <div className="survey-answers">
                                 {question.type === 'quiz' && question.answers?.map((option) => (
@@ -195,12 +196,13 @@ export default function EnterSurvey({ user }) {
                 {showCongratsModal && (
                     <Modal className="congrats-modal" onClose={() => {
                         setShowCongratsModal(false);
+                        navigate('/');
                     }
                     }>
                         <FireworkIcon />
-                        <h2>Поздравляем!</h2>
-                        <p>Вам доступен новый курс</p>
-                        <button className="btn btn-accent" onClick={() => {
+                        <h1>Поздравляем!</h1>
+                        <p className="text-gray-300">Вам доступен новый курс</p>
+                        <button className="btn btn-accent btn-p9" onClick={() => {
                             setShowCongratsModal(false)
                             navigate('/');
                         }}>

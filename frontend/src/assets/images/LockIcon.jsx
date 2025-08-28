@@ -8,6 +8,7 @@ export default function LockIcon() {
             width={26}
             height={34}
             viewBox="0 0 512 512"
+            className="lock-icon"
             style={{
                 enableBackground: "new 0 0 512 512",
             }}

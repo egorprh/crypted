@@ -4,16 +4,16 @@ import Logo from "../../assets/images/Logo.jsx";
 
 export default function LoadScreen({ videoSrc, onContinue }) {
     return (
-        <div className="intro-screen container">
+        <div className="load-screen container">
             <video
-                className="intro-video"
+                className="load-video"
                 src={videoSrc}
                 autoPlay
                 muted
                 playsInline
             />
-            <div className="intro-overlay">
-                <button className="intro-btn" onClick={onContinue}>
+            <div className="load-overlay">
+                <button className="load-btn" onClick={onContinue}>
                     <Logo />
                     Открыть платформу
                 </button>

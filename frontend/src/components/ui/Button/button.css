@@ -1,15 +1,18 @@
 .btn {
     display: inline-block;
-    background-color: var(--primary);
+    padding: 14px 20px;
+
+    background-color: var(--gray-600);
     color: var(--white);
-    font-size: var(--fs-s);
+    font-size: var(--fs-l);
     font-weight: 500;
     line-height: 1;
-    padding: 10px 20px;
+    text-align: center;
+
     border-radius: var(--brs-md);
     border: none;
+
     cursor: pointer;
-    text-align: center;
 }
 
 .btn-dropdown {
@@ -24,14 +27,14 @@
 }
 
 .btn-dropdown.expanded svg {
-    rotate: 270deg;
+    rotate: 90deg;
 }
 
 .btn-dropdown svg {
     width: 10px;
     height: 10px;
     fill: var(--white);
-    rotate: 90deg;
+    rotate: 0deg;
 }
 
 .btn-green {
@@ -69,4 +72,22 @@
     svg {
         fill: var(--secondary);
     }
+}
+
+.btn-danger {
+    background-color: var(--danger);
+    color: var(--white);
+
+    svg {
+        fill: var(--danger);
+    }
+}
+
+.btn-p12 {
+    padding-block: 12px;
+}
+
+.btn-p9 {
+    padding-block: 9px;
+    font-size: var(--fs-s);
 }
