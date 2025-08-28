@@ -4,6 +4,7 @@ import DownloadIcon from "../../assets/images/DownloadIcon.jsx";
 import '../Lesson/lesson.css';
 import './lesson-materials.css';
 import ContentNotFound from "../ContentNotFound/ContentNotFound.jsx";
+import Button from "../ui/Button/Button.jsx";
 
 export default function LessonMaterials() {
     const {lesson, lessonId, courseId} = useOutletContext();
@@ -20,26 +21,14 @@ export default function LessonMaterials() {
 
                 {lesson?.materials?.length > 0 ? (
                     lesson.materials.map((material) => (
-                        <div key={material.id} className="material-item">
-                            <div className="material-link">
-                                <h3>
-                                    {material.title}
-                                </h3>
-                                <p>
-                                    {material.description}
-                                </p>
-                                <a href={material.url} className="btn" target="_blank" rel="noopener noreferrer" download>
-                                    Скачать
-                                    <DownloadIcon />
-                                </a>
-                            </div>
-                        </div>
+                        <a href={material.url} className="btn btn-accent btn-p12" target="_blank" rel="noopener noreferrer" download>
+                            Скачать материал из урока
+                        </a>
                     ))
                 ) : (
                     <ContentNotFound message="Материалы не найдены" />
                 )}
             </div>
-            <button className="btn btn-accent" onClick={clickNextBtn}>Далее</button>
         </div>
     );
 }

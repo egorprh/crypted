@@ -2,8 +2,12 @@
     flex-grow: 1;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
     gap: 8px;
+
+    h2 {
+        font-size: var(--fs-xxl);
+        line-height: 1.04;
+    }
 }
 
 .lesson-header {
@@ -33,7 +37,7 @@
 }
 
 .lesson-title {
-    font-size: var(--fs-sm);
+    font-size: var(--fs-l);
 }
 
 .video-container {

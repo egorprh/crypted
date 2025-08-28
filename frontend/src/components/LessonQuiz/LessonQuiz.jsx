@@ -3,6 +3,7 @@ import { useNavigate, useOutletContext } from 'react-router-dom';
 import '../Lesson/lesson.css';
 import './lesson-quiz.css';
 import ContentNotFound from "../ContentNotFound/ContentNotFound.jsx";
+import Button from "../ui/Button/Button.jsx";
 
 export default function LessonQuiz() {
     const navigate = useNavigate();
@@ -22,12 +23,12 @@ export default function LessonQuiz() {
         <div className="lesson-container">
             <div className="quiz-intro">
                 <h2>{quiz.title}</h2>
-                <p className="text-gray-200">{quiz.description}</p>
-                <p className="text-gray-200">
+                <p className="text-gray-300">{quiz.description}</p>
+                <p className="text-gray-300">
                     Максимальный балл за этот тест — <strong>{quiz.questions?.length}</strong>. Правильный ответ только один.
                 </p>
             </div>
-            <button className="btn btn-accent" onClick={handleStart}>Начать</button>
+            <Button onClick={handleStart} text="Начать" type="btn-accent btn-p12" />
         </div>
     );
 }

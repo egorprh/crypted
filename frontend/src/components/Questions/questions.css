@@ -12,6 +12,10 @@
     background-color: var(--secondary);
     cursor: pointer;
 
+    p {
+        font-size: var(--fs-l);
+    }
+
     svg {
         fill: var(--secondary);
         rotate: 180deg;
@@ -36,12 +40,13 @@
 }
 
 .answer {
-    padding: 15px 20px;
+    padding: 18px 24px;
     border-radius: var(--brs-md);
     background-color: var(--white);
     color: var(--secondary);
     transition: all 0.3s ease;
     overflow: hidden;
+    font-weight: 400;
 }
 
 .answer.hidden {
@@ -63,7 +68,7 @@
 .questions-form-wrapper {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 24px;
     margin-bottom: 24px;
     padding: 24px;
     background-color: var(--secondary);
@@ -88,7 +93,7 @@
     background-color: var(--white);
     color: var(--secondary);
     text-align: center;
-    font-size: var(--fs-sm);
+    font-size: var(--fs-l);
     line-height: 1;
 }
 
@@ -103,7 +108,7 @@
 }
 
 .questions-form-wrapper h3 {
-    font-size: var(--fs-sm);
+    font-size: var(--fs-xl);
     line-height: 1;
 }
 

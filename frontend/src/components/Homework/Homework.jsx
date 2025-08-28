@@ -46,18 +46,18 @@ export default function Homework() {
                             >
                                 <div className="card-header">
                                     <Logo />
-                                    <div className="card-title">Урок {i + 1} из {homework.length}</div>
+                                    <div className="card-title">Урок {hw.lesson || 0} из {hw.lesson_count || 0}</div>
                                 </div>
 
                                 <div className="card-body">
                                     <h3>
                                         {hw.lesson_title}
                                     </h3>
-                                    <p className="text-gray-200">
+                                    <p className="text-gray-300">
                                         {`"Курс ${hw.course_title}"`}
                                     </p>
 
-                                    <Button type="btn-white btn-full-width btn-flex"  hasArrow text="Мои результаты" />
+                                    <Button type="btn-accent btn-full-width btn-flex"  hasArrow text="Мои результаты" />
                                 </div>
                             </div>
                         ))

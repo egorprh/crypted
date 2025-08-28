@@ -1,24 +1,20 @@
 .levels-wrapper {
     display: flex;
-    height: calc(100% - 80px);
+    height: calc(100% - 90px);
 }
 
 .card.level-select {
-    flex-grow: 1;
     overflow: auto;
 
     .card-header {
-        padding: 16px 34px;
+        padding: 20px 26px 17px 26px;
         display: flex;
         flex-direction: column;
         align-items: start;
-
-        h2 {
-            font-size: var(--fs-sm);
-        }
     }
 
     .card-body {
+        padding: 28px 18px;
         border-bottom-left-radius: var(--brs-md);
         border-bottom-right-radius: var(--brs-md);
         border: 1px solid transparent;
@@ -27,7 +23,7 @@
 
     .levels {
         display: block;
-        padding: 12px;
+        padding: 10px;
         border-radius: var(--brs-sm);
     }
 
@@ -35,8 +31,8 @@
         display: flex;
         align-items: center;
         gap: 8px;
-        font-size: var(--fs-sm);
-        line-height: 1;
+        font-size: var(--fs-l);
+        line-height: 1.125;
         color: var(--white);
 
         svg {
@@ -59,8 +55,10 @@
     }
 
     .level-description:not(:empty) {
+        font-size: var(--fs-s);
         margin-top: 12px;
         color: var(--gray-200);
+        font-weight: 400;
     }
 
     .levels:not(:last-child) {

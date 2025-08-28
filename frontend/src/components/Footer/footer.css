@@ -1,6 +1,6 @@
 .bottom-nav {
     display: flex;
-    justify-content: space-evenly;
+    justify-content: space-between;
     width: calc(100vw - 40px);
     max-width: calc(600px - 40px);
 
@@ -38,6 +38,7 @@
     align-items: center;
     gap: 14px;
     font-size: var(--fs-s);
+    font-weight: 500;
     line-height: 1;
     color: var(--gray-100);
 

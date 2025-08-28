@@ -2,7 +2,7 @@
     display: flex;
     align-items: center;
     gap: 16px;
-    margin-bottom: 24px;
+    margin-bottom: 35px;
 }
 
 .header-text {
@@ -11,18 +11,20 @@
 }
 
 .avatar {
-    width: 38px;
-    height: 38px;
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
 }
 
 .header h2 {
+    font-size: var(--fs-xxxl);
     margin-bottom: 0;
     line-height: 1.1;
 }
 
 .header .username {
     font-size: var(--fs-s);
+    line-height: 1;
     color: var(--gray-100);
 }
 

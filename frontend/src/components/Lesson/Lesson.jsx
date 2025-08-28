@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate, useOutletContext } from 'react-router-dom';
 import './lesson.css';
+import Button from "../ui/Button/Button.jsx";
 
 export default function Lesson() {
     const { lesson, lessonId, courseId } = useOutletContext();
@@ -30,8 +31,6 @@ export default function Lesson() {
 
                 <div className="lesson-description" dangerouslySetInnerHTML={{ __html: lesson.description }} />
             </div>
-
-            <button className="btn btn-accent" onClick={clickNextBtn}>Далее</button>
         </div>
     );
 }

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Outlet, useLocation, useNavigate, useParams } from "react-router-dom";
-import './layout.css';
 import BackIcon from "../../assets/images/BackIcon.jsx";
 import { TabButtons } from "../ui/TabButton/TabButtons.jsx";
 import tabButtons from "../ui/TabButton/LessonsTabButtons.json";
