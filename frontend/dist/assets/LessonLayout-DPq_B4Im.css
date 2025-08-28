@@ -1,1 +1,0 @@
-.tabs{display:flex;justify-content:space-around;gap:8px;margin-bottom:20px}.tabs button{width:100%;padding:10px 16px;font-size:var(--fs-xs);border:none;border-radius:var(--brs-md);color:var(--white);background-color:var(--gray-600);cursor:pointer;transition:all .3s ease}.tabs button.active{background-color:var(--white);color:var(--gray-600)}.tabs button:focus{outline:none}

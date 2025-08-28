@@ -4,7 +4,7 @@
 
 import asyncio
 import aiohttp
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Dict, Any
 from config import load_config
 from logger import logger
@@ -27,33 +27,41 @@ async def send_survey_to_crm(user: Dict, survey_data: list, level: Dict):
             logger.warning("CRM webhook URL не настроен, пропускаем отправку в CRM")
             return
         
-        # Формируем данные для отправки - один объект с telegram_id, ответами на вопросы, level_id и level
+        # Извлекаем значения имени, возраста и телефона из survey_data
+        def extract_answer(keywords):
+            for item in survey_data:
+                q = str(item.get("question", "")).lower()
+                if any(k in q for k in keywords):
+                    return item.get("answer")
+            return None
+
+        name_value = extract_answer(["имя", "как вас зовут", "фамилия", "фио", "name"])
+        age_value = extract_answer(["возраст", "лет", "age"])
+        phone_value = extract_answer(["телефон", "phone", "номер"])
+
+        # Формируем плоский payload с требуемыми ключами
         payload = {
             "telegram_id": user["telegram_id"],
+            "username": user.get("username"),
             "level_id": level["id"],
             "level": level["name"],
-            "timestamp": datetime.now().isoformat()
+            "name": name_value,
+            "age": age_value,
+            "phone": phone_value
         }
-        
-        # Добавляем ответы на каждый вопрос как отдельные поля
-        for i, answer_data in enumerate(survey_data, 1):
-            question_key = f"question_{i}"
-            answer_key = f"answer_{i}"
-            payload[question_key] = answer_data["question"]
-            payload[answer_key] = answer_data["answer"]
         
         # Отправляем POST запрос в CRM
         async with aiohttp.ClientSession() as session:
-            async with session.post(
+            response = await session.post(
                 config.misc.crm_webhook_url,
                 json=payload,
                 headers={"Content-Type": "application/json"},
                 timeout=aiohttp.ClientTimeout(total=30)
-            ) as response:
-                if response.status == 200:
-                    logger.info(f"Данные опроса успешно отправлены в CRM для пользователя {user['telegram_id']}")
-                else:
-                    logger.error(f"Ошибка отправки в CRM: статус {response.status}, ответ: {await response.text()}")
+            )
+            if response.status == 200:
+                logger.info(f"Данные опроса успешно отправлены в CRM для пользователя {user['telegram_id']}")
+            else:
+                logger.error(f"Ошибка отправки в CRM: статус {response.status}, ответ: {await response.text()}")
                     
     except Exception as e:
         logger.error(f"Ошибка при отправке данных в CRM: {e}")

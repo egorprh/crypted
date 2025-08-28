@@ -423,10 +423,10 @@ async def get_app_data(user_id: int):
         access_info = await get_course_access_info(db, user["id"], course["id"])
         
         # Добавляем информацию о времени и статусе записи к курсу
-        course["time_left"] = access_info["time_left"]
+        course["access_time"] = access_info["time_left"]
         course["user_enrolment"] = access_info["user_enrolment"]
         
-        lessons = await db.get_records_sql("SELECT * FROM lessons WHERE course_id = $1 AND visible = $2 ORDER BY id", course["id"], True)
+        lessons = await db.get_records_sql("SELECT * FROM lessons WHERE course_id = $1 AND visible = $2 ORDER BY sort_order", course["id"], True)
         has_home_work = False
         
         for lesson in lessons:

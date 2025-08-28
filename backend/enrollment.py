@@ -3,7 +3,7 @@
 Содержит функции для создания и обновления записей пользователей на курсы.
 """
 
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from logger import logger
 
 # Константы статусов подписки
@@ -44,8 +44,8 @@ async def create_user_enrollment(db, user_id: int, course_id: int):
         # Получаем время доступа к курсу (в часах)
         access_time_hours = course.get('access_time', 0)
         
-        # Вычисляем время окончания доступа
-        current_time = datetime.now()
+        # Вычисляем время окончания доступа (используем timezone-aware время в UTC)
+        current_time = datetime.now(timezone.utc)
         
         # Если access_time == 0, создаем бесконечную подписку (time_end = None)
         if access_time_hours == 0:
@@ -96,9 +96,15 @@ async def update_user_enrollment(db, user_id: int, course_id: int):
             logger.info(f"Запись на курс {course_id} для пользователя {user_id} не найдена")
             return True  # Нет записи - считаем успешным
         
-        # Проверяем, не истекло ли время доступа
-        current_time = datetime.now()
+        # Проверяем, не истекло ли время доступа (используем timezone-aware время в UTC)
+        current_time = datetime.now(timezone.utc)
+        # Если current_time вернулся naive (например, замокан), приводим к UTC
+        if getattr(current_time, 'tzinfo', None) is None:
+            current_time = current_time.replace(tzinfo=timezone.utc)
         time_end = enrollment.get('time_end')
+        # Приводим time_end к timezone-aware UTC, если он naive (без isinstance, чтобы не ломаться при моках)
+        if time_end is not None and getattr(time_end, 'tzinfo', None) is None:
+            time_end = time_end.replace(tzinfo=timezone.utc)
         
         # Если time_end == None, подписка бесконечная
         if time_end is None:
@@ -158,7 +164,12 @@ async def get_course_access_info(db, user_id: int, course_id: int):
                 # Бесконечная подписка
                 time_left = -1  # Специальное значение для бесконечной подписки
             elif time_end:
-                current_time = datetime.now()
+                # Приводим time_end к timezone-aware UTC, если он naive
+                if getattr(time_end, 'tzinfo', None) is None:
+                    time_end = time_end.replace(tzinfo=timezone.utc)
+                current_time = datetime.now(timezone.utc)
+                if getattr(current_time, 'tzinfo', None) is None:
+                    current_time = current_time.replace(tzinfo=timezone.utc)
                 time_diff = time_end - current_time
                 time_left = max(0, time_diff.total_seconds() / 3600)  # Конвертируем в часы
         else:

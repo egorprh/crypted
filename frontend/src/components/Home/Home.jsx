@@ -231,7 +231,7 @@ export default function Home() {
                                             <span className={`icon-wrapper ${course.access_time === 0 && "danger"}`}>
                                                 <Logo/>
                                             </span>
-                                            {course.access_time === 0 ? "Продлить курс" : "Начать курс"}
+                                            {course.access_time === 0 ? "Продлить курс" : course.user_enrolment === 0 ? "Начать курс" : "Продолжить"}
                                             <ArrowBtnIcon/>
                                         </button>
                                     </div>
@@ -291,7 +291,16 @@ export default function Home() {
                                 <TimerIcon/>
                                 <h2>Время ограничено</h2>
                                 <p className="text-gray-300">
-                                    Отведённое время прохождения курса {accessPopup.days} дня, после истечения времени —
+                                    Отведённое время прохождения курса {(() => {
+                                                                const pluralRules = new Intl.PluralRules('ru-RU');
+                                                                const forms = {
+                                                                    one: 'день',
+                                                                    few: 'дня',
+                                                                    many: 'дней',
+                                                                    other: 'дня',
+                                                                };
+                                                                return `${accessPopup.days} ${forms[pluralRules.select(accessPopup.days)]}`;
+                                                            })()}, после истечения времени —
                                     курс будет недоступен
                                 </p>
                                 <div className="btn-wrapper">

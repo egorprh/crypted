@@ -46,7 +46,7 @@ export default function Homework() {
                             >
                                 <div className="card-header">
                                     <Logo />
-                                    <div className="card-title">Урок {hw.lesson || 0} из {hw.lesson_count || 0}</div>
+                                    <div className="card-title">Урок {hw.lesson_order || 0} из {hw.lesson_count || 0}</div>
                                 </div>
 
                                 <div className="card-body">

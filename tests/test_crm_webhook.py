@@ -80,17 +80,16 @@ class TestSendSurveyToCRM:
             assert call_args[0][0] == "https://test-crm.com/webhook"
             assert call_args[1]["headers"]["Content-Type"] == "application/json"
             
-            # Проверяем структуру payload
+            # Проверяем структуру payload (плоский формат)
             payload = call_args[1]["json"]
-            assert payload["user"]["telegram_id"] == 123456789
-            assert payload["user"]["username"] == "test_user"
-            assert payload["user"]["first_name"] == "Тест"
-            assert payload["user"]["last_name"] == "Пользователь"
-            assert payload["user"]["level"] == "Начинающий"
-            assert payload["user"]["level_id"] == 1
-            assert payload["survey_answers"] == test_survey_data
-            assert payload["event_type"] == "enter_survey"
-            assert "timestamp" in payload
+            assert payload["telegram_id"] == 123456789
+            assert payload["username"] == "test_user"
+            assert payload["level"] == "Начинающий"
+            assert payload["level_id"] == 1
+            # Поля из опроса
+            assert "name" in payload
+            assert "age" in payload
+            assert "phone" in payload
     
     @pytest.mark.asyncio
     async def test_send_survey_to_crm_no_webhook_url(self, test_user, test_survey_data, test_level):

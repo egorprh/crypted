@@ -16,6 +16,10 @@
             "popup_img": null,
             "direct_link": "",
             "sort_order": 1,
+            "lesson_count": 1,
+            "has_home_work": true,
+            "access_time": -1,
+            "user_enrolment": 0,
             "lessons": [
                 {
                     "id": 11,
@@ -57,6 +61,8 @@
             "popup_img": null,
             "direct_link": null,
             "sort_order": 2,
+            "access_time": 23,
+            "user_enrolment": 0,
             "lessons": [
                 {
                     "id": 1,
@@ -115,294 +121,6 @@
                                             "text": "Обычные деньги в цифровом виде",
                                             "correct": false,
                                             "question_id": 4
-                                        }
-                                    ]
-                                },
-                                {
-                                    "id": 5,
-                                    "text": "Как работает децентрализация в криптовалютах?",
-                                    "type": "quiz",
-                                    "visible": true,
-                                    "answers": [
-                                        {
-                                            "id": 5,
-                                            "text": "Все управляется центральным банком",
-                                            "correct": false,
-                                            "question_id": 5
-                                        },
-                                        {
-                                            "id": 6,
-                                            "text": "Сеть контролируется правительством",
-                                            "correct": false,
-                                            "question_id": 5
-                                        },
-                                        {
-                                            "id": 7,
-                                            "text": "Управление распределено между множеством узлов",
-                                            "correct": true,
-                                            "question_id": 5
-                                        },
-                                        {
-                                            "id": 8,
-                                            "text": "Решения принимаются владельцем криптовалюты",
-                                            "correct": false,
-                                            "question_id": 5
-                                        }
-                                    ]
-                                },
-                                {
-                                    "id": 6,
-                                    "text": "Какой криптовалютой считается \"цифровое золото\"?",
-                                    "type": "quiz",
-                                    "visible": true,
-                                    "answers": [
-                                        {
-                                            "id": 9,
-                                            "text": "Ethereum",
-                                            "correct": false,
-                                            "question_id": 6
-                                        },
-                                        {
-                                            "id": 10,
-                                            "text": "Ripple",
-                                            "correct": false,
-                                            "question_id": 6
-                                        },
-                                        {
-                                            "id": 11,
-                                            "text": "Litecoin",
-                                            "correct": false,
-                                            "question_id": 6
-                                        },
-                                        {
-                                            "id": 12,
-                                            "text": "Bitcoin",
-                                            "correct": true,
-                                            "question_id": 6
-                                        }
-                                    ]
-                                },
-                                {
-                                    "id": 7,
-                                    "text": "Что из перечисленного относится к стейблкойнам?",
-                                    "type": "quiz",
-                                    "visible": true,
-                                    "answers": [
-                                        {
-                                            "id": 13,
-                                            "text": "Dogecoin",
-                                            "correct": false,
-                                            "question_id": 7
-                                        },
-                                        {
-                                            "id": 14,
-                                            "text": "USD Coin",
-                                            "correct": true,
-                                            "question_id": 7
-                                        },
-                                        {
-                                            "id": 15,
-                                            "text": "Ethereum",
-                                            "correct": false,
-                                            "question_id": 7
-                                        },
-                                        {
-                                            "id": 16,
-                                            "text": "Litecoin",
-                                            "correct": false,
-                                            "question_id": 7
-                                        }
-                                    ]
-                                },
-                                {
-                                    "id": 8,
-                                    "text": "Что из этого может усилить корреляцию между криптовалютами и фондовыми рынками?",
-                                    "type": "quiz",
-                                    "visible": true,
-                                    "answers": [
-                                        {
-                                            "id": 17,
-                                            "text": "Увеличение добычи биткойна",
-                                            "correct": false,
-                                            "question_id": 8
-                                        },
-                                        {
-                                            "id": 18,
-                                            "text": "Рост числа институциональных инвестиций",
-                                            "correct": true,
-                                            "question_id": 8
-                                        },
-                                        {
-                                            "id": 19,
-                                            "text": "Запрет на трейдинг в некоторых странах",
-                                            "correct": false,
-                                            "question_id": 8
-                                        },
-                                        {
-                                            "id": 20,
-                                            "text": "Снижение интереса к фондовому рынку",
-                                            "correct": false,
-                                            "question_id": 8
-                                        }
-                                    ]
-                                },
-                                {
-                                    "id": 9,
-                                    "text": "Что лучше всего описывает мемкоины?",
-                                    "type": "quiz",
-                                    "visible": true,
-                                    "answers": [
-                                        {
-                                            "id": 21,
-                                            "text": "Полностью анонимные криптовалюты",
-                                            "correct": false,
-                                            "question_id": 9
-                                        },
-                                        {
-                                            "id": 22,
-                                            "text": "Привязаны к доллару США",
-                                            "correct": false,
-                                            "question_id": 9
-                                        },
-                                        {
-                                            "id": 23,
-                                            "text": "Созданы как шутка или по фану",
-                                            "correct": true,
-                                            "question_id": 9
-                                        },
-                                        {
-                                            "id": 24,
-                                            "text": "Используются исключительно правительствами",
-                                            "correct": false,
-                                            "question_id": 9
-                                        }
-                                    ]
-                                },
-                                {
-                                    "id": 10,
-                                    "text": "Почему усилилась корреляция между криптовалютами и фондовыми индексами?",
-                                    "type": "quiz",
-                                    "visible": true,
-                                    "answers": [
-                                        {
-                                            "id": 25,
-                                            "text": "Потому что криптовалюты стали устаревать",
-                                            "correct": false,
-                                            "question_id": 10
-                                        },
-                                        {
-                                            "id": 26,
-                                            "text": "Из-за санкций против криптовалют",
-                                            "correct": false,
-                                            "question_id": 10
-                                        },
-                                        {
-                                            "id": 27,
-                                            "text": "Из-за роста институциональных инвестиций и макроэкономических факторов",
-                                            "correct": true,
-                                            "question_id": 10
-                                        },
-                                        {
-                                            "id": 28,
-                                            "text": "Потому что майнинг стал незаконным",
-                                            "correct": false,
-                                            "question_id": 10
-                                        }
-                                    ]
-                                },
-                                {
-                                    "id": 11,
-                                    "text": "Какой индекс включает в себя крупнейшие технологические компании и влияет на крипторынок?",
-                                    "type": "quiz",
-                                    "visible": true,
-                                    "answers": [
-                                        {
-                                            "id": 29,
-                                            "text": "Dow Jones",
-                                            "correct": false,
-                                            "question_id": 11
-                                        },
-                                        {
-                                            "id": 30,
-                                            "text": "Nasdaq 100",
-                                            "correct": true,
-                                            "question_id": 11
-                                        },
-                                        {
-                                            "id": 31,
-                                            "text": "MSCI World",
-                                            "correct": false,
-                                            "question_id": 11
-                                        },
-                                        {
-                                            "id": 32,
-                                            "text": "Nikkei 225",
-                                            "correct": false,
-                                            "question_id": 11
-                                        }
-                                    ]
-                                },
-                                {
-                                    "id": 12,
-                                    "text": "Какое из следующих утверждений — преимущество криптовалют?",
-                                    "type": "quiz",
-                                    "visible": true,
-                                    "answers": [
-                                        {
-                                            "id": 33,
-                                            "text": "Необходимость верификации личности через банк",
-                                            "correct": false,
-                                            "question_id": 12
-                                        },
-                                        {
-                                            "id": 34,
-                                            "text": "Транзакции скрыты от всех",
-                                            "correct": false,
-                                            "question_id": 12
-                                        },
-                                        {
-                                            "id": 35,
-                                            "text": "Международные переводы занимают часы",
-                                            "correct": false,
-                                            "question_id": 12
-                                        },
-                                        {
-                                            "id": 36,
-                                            "text": "Высокая степень прозрачности благодаря блокчейну",
-                                            "correct": true,
-                                            "question_id": 12
-                                        }
-                                    ]
-                                },
-                                {
-                                    "id": 13,
-                                    "text": "В чем заключается ценность ограниченной эмиссии криптовалют, таких как Bitcoin?",
-                                    "type": "quiz",
-                                    "visible": true,
-                                    "answers": [
-                                        {
-                                            "id": 37,
-                                            "text": "Увеличение инфляции",
-                                            "correct": false,
-                                            "question_id": 13
-                                        },
-                                        {
-                                            "id": 38,
-                                            "text": "Повышенная волатильность",
-                                            "correct": false,
-                                            "question_id": 13
-                                        },
-                                        {
-                                            "id": 39,
-                                            "text": "Защита от обесценивания из-за ограниченного предложения",
-                                            "correct": true,
-                                            "question_id": 13
-                                        },
-                                        {
-                                            "id": 40,
-                                            "text": "Необходимость регулярной переоценки",
-                                            "correct": false,
-                                            "question_id": 13
                                         }
                                     ]
                                 }
@@ -2575,13 +2293,15 @@
             "value": "0"
         }
     ],
-    "events_count": 0,
+    "events_count": 2,
     "homework": [
         {
             "id": 243,
             "quiz_id": 1,
             "user_id": 73,
             "progress": 100.0,
+            "lesson": 1,
+            "lesson_count": 4,
             "course_title": "Старт в торговле криптовалютой",
             "lesson_title": "Урок 1: Что такое криптовалюта и чем она лучше других активов?",
             "questions": [

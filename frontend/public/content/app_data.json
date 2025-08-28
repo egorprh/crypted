@@ -18,8 +18,8 @@
             "sort_order": 1,
             "lesson_count": 1,
             "has_home_work": true,
-            "access_time": 0,
-            "user_enrolment": 1,
+            "access_time": -1,
+            "user_enrolment": 0,
             "lessons": [
                 {
                     "id": 11,
@@ -61,7 +61,7 @@
             "popup_img": null,
             "direct_link": null,
             "sort_order": 2,
-            "access_time": 49,
+            "access_time": 23,
             "user_enrolment": 0,
             "lessons": [
                 {
