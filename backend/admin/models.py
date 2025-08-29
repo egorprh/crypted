@@ -114,6 +114,13 @@ class Lesson(Base):
     sort_order = Column(BigInteger, default=0, comment="Порядок сортировки")
     time_modified = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     time_created = Column(DateTime(timezone=True), server_default=func.now())
+    
+    # Связь с курсом для удобного отображения и выбора в админке
+    course = relationship("Course", backref="lessons")
+    
+    def __str__(self):
+        # Безопасное отображение без обращения к связанным объектам
+        return f"Урок {self.id}: {self.title} (курс {self.course_id})"
 
 
 class Materials(Base):
@@ -130,6 +137,13 @@ class Materials(Base):
     lesson_id = Column(BigInteger, ForeignKey("lessons.id", ondelete="CASCADE"), comment="ID урока")
     time_modified = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     time_created = Column(DateTime(timezone=True), server_default=func.now())
+    
+    # Связь с уроком для удобного отображения и выбора в админке
+    lesson = relationship("Lesson", backref="materials")
+    
+    def __str__(self):
+        # Безопасное отображение без обращения к связанным объектам
+        return f"Материал {self.id}: {self.title} (урок {self.lesson_id})"
 
 
 class Quiz(Base):
@@ -145,6 +159,13 @@ class Quiz(Base):
     lesson_id = Column(BigInteger, ForeignKey("lessons.id", ondelete="CASCADE"), comment="ID урока")
     time_modified = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     time_created = Column(DateTime(timezone=True), server_default=func.now())
+    
+    # Связь с уроком для удобного отображения и выбора в админке
+    lesson = relationship("Lesson", backref="quizzes")
+    
+    def __str__(self):
+        # Безопасное отображение без обращения к связанным объектам
+        return f"Тест {self.id}: {self.title} (урок {self.lesson_id})"
 
 
 class Survey(Base):
@@ -326,7 +347,9 @@ class UserEnrolment(Base):
     course = relationship("Course", backref="enrollments")
     
     def __str__(self):
-        return f"Запись {self.id}: {self.user} на курс {self.course}"
+        # Важно не обращаться к self.user / self.course, чтобы не триггерить lazy load
+        # на отсоединённых инстансах (DetachedInstanceError) в админке
+        return f"Запись {self.id}: user_id={self.user_id}, course_id={self.course_id}"
     
     @property
     def formatted_time_end(self):

@@ -21,7 +21,7 @@ export default function LessonMaterials() {
 
                 {lesson?.materials?.length > 0 ? (
                     lesson.materials.map((material) => (
-                        <a href={material.url} className="btn btn-accent btn-p12" target="_blank" rel="noopener noreferrer" download>
+                        <a href={material.url} className="btn btn-accent btn-p12" target="_blank" rel="noopener noreferrer">
                             Скачать материал из урока
                         </a>
                     ))

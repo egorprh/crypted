@@ -170,7 +170,7 @@ export default function Home() {
                                 <div className="course-body">
                                     <div className="d-flex course-title-wrapper card-title-wrapper">
                                         <p className="course-title">{course.title}</p>
-                                        {course.access_time === -1
+                                        {course.access_time === -1 || course.user_enrolment === 0
                                             ?
                                             (<div className="tag">
                                                 {(course.newprice || course.oldprice) && (

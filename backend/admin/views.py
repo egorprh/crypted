@@ -202,7 +202,7 @@ class LessonAdmin(ModelView, model=Lesson):
     page_size = 30
     
     # Отображаемые колонки
-    column_list = [Lesson.id, Lesson.title, Lesson.course_id, Lesson.visible, Lesson.sort_order, Lesson.time_created]
+    column_list = [Lesson.id, Lesson.title, Lesson.course, Lesson.visible, Lesson.sort_order, Lesson.time_created]
     column_searchable_list = [Lesson.title, Lesson.description]
     column_sortable_list = [Lesson.id, Lesson.title, Lesson.course_id, Lesson.sort_order, Lesson.time_created]
     
@@ -214,6 +214,7 @@ class LessonAdmin(ModelView, model=Lesson):
         'video_url': 'URL видео',
         'source_url': 'Исходный URL',
         'course_id': 'ID курса',
+        'course': 'Курс',
         'image': 'Изображение',
         'visible': 'Видимый',
         'sort_order': 'Порядок сортировки',
@@ -223,6 +224,14 @@ class LessonAdmin(ModelView, model=Lesson):
     
     # Исключаем автоматические поля
     form_excluded_columns = ["time_modified", "time_created"]
+    
+    # Настройка отображения связанного курса
+    form_ajax_refs = {
+        'course': {
+            'fields': ['title', 'id'],
+            'page_size': 10
+        }
+    }
     
     # Права доступа
     can_create = True
@@ -241,7 +250,7 @@ class MaterialsAdmin(ModelView, model=Materials):
     page_size = 30
     
     # Отображаемые колонки
-    column_list = [Materials.id, Materials.title, Materials.lesson_id, Materials.visible, Materials.time_created]
+    column_list = [Materials.id, Materials.title, Materials.lesson, Materials.visible, Materials.time_created]
     column_searchable_list = [Materials.title, Materials.description]
     column_sortable_list = [Materials.id, Materials.title, Materials.lesson_id, Materials.time_created]
     
@@ -253,12 +262,21 @@ class MaterialsAdmin(ModelView, model=Materials):
         'url': 'URL',
         'visible': 'Видимый',
         'lesson_id': 'ID урока',
+        'lesson': 'Урок',
         'time_modified': 'Дата изменения',
         'time_created': 'Дата создания'
     }
     
     # Исключаем автоматические поля
     form_excluded_columns = ["time_modified", "time_created"]
+    
+    # Настройка отображения связанного урока
+    form_ajax_refs = {
+        'lesson': {
+            'fields': ['title', 'id'],
+            'page_size': 10
+        }
+    }
     
     # Права доступа
     can_create = True
@@ -277,7 +295,7 @@ class QuizAdmin(ModelView, model=Quiz):
     page_size = 30
     
     # Отображаемые колонки
-    column_list = [Quiz.id, Quiz.title, Quiz.lesson_id, Quiz.visible, Quiz.time_created]
+    column_list = [Quiz.id, Quiz.title, Quiz.lesson, Quiz.visible, Quiz.time_created]
     column_searchable_list = [Quiz.title, Quiz.description]
     column_sortable_list = [Quiz.id, Quiz.title, Quiz.lesson_id, Quiz.time_created]
     
@@ -288,12 +306,21 @@ class QuizAdmin(ModelView, model=Quiz):
         'description': 'Описание',
         'visible': 'Видимый',
         'lesson_id': 'ID урока',
+        'lesson': 'Урок',
         'time_modified': 'Дата изменения',
         'time_created': 'Дата создания'
     }
     
     # Исключаем автоматические поля
     form_excluded_columns = ["time_modified", "time_created"]
+    
+    # Настройка отображения связанного урока
+    form_ajax_refs = {
+        'lesson': {
+            'fields': ['title', 'id'],
+            'page_size': 10
+        }
+    }
     
     # Права доступа
     can_create = True
