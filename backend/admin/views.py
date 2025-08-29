@@ -407,7 +407,7 @@ class AnswerAdmin(ModelView, model=Answer):
     page_size = 30
     
     # Отображаемые колонки
-    column_list = [Answer.id, Answer.text, Answer.correct, Answer.question_id, Answer.time_created]
+    column_list = [Answer.id, Answer.text, Answer.correct, Answer.question, Answer.time_created]
     column_searchable_list = [Answer.text]
     column_sortable_list = [Answer.id, Answer.correct, Answer.question_id, Answer.time_created]
     
@@ -417,12 +417,68 @@ class AnswerAdmin(ModelView, model=Answer):
         'text': 'Текст ответа',
         'correct': 'Правильный',
         'question_id': 'ID вопроса',
+        'question': 'Вопрос',
         'time_modified': 'Дата изменения',
         'time_created': 'Дата создания'
     }
     
     # Исключаем автоматические поля
     form_excluded_columns = ["time_modified", "time_created"]
+    
+    # Настройка отображения связанного вопроса
+    form_ajax_refs = {
+        'question': {
+            'fields': ['text', 'id'],
+            'page_size': 10
+        }
+    }
+    
+    # Права доступа
+    can_create = True
+    can_edit = True
+    can_delete = True
+    can_view_details = True
+
+
+class QuizQuestionAdmin(ModelView, model=QuizQuestion):
+    """
+    Админ представление для управления связями тестов и вопросов.
+    """
+    name = "Вопрос теста"
+    name_plural = "Вопросы тестов"
+    icon = "fa-solid fa-link"
+    page_size = 30
+    
+    # Отображаемые колонки
+    column_list = [QuizQuestion.id, QuizQuestion.quiz, QuizQuestion.question, QuizQuestion.time_created]
+    column_searchable_list = []
+    column_sortable_list = [QuizQuestion.id, QuizQuestion.quiz_id, QuizQuestion.question_id, QuizQuestion.time_created]
+    
+    # Русские названия колонок
+    column_labels = {
+        'id': 'ID',
+        'quiz_id': 'ID теста',
+        'quiz': 'Тест',
+        'question_id': 'ID вопроса',
+        'question': 'Вопрос',
+        'time_modified': 'Дата изменения',
+        'time_created': 'Дата создания'
+    }
+    
+    # Исключаем автоматические поля
+    form_excluded_columns = ["time_modified", "time_created"]
+    
+    # Настройка отображения связанных объектов
+    form_ajax_refs = {
+        'quiz': {
+            'fields': ['title', 'id'],
+            'page_size': 10
+        },
+        'question': {
+            'fields': ['text', 'id'],
+            'page_size': 10
+        }
+    }
     
     # Права доступа
     can_create = True

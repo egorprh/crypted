@@ -194,6 +194,10 @@ class Question(Base):
     visible = Column(Boolean, default=True, comment="Видимость вопроса")
     time_modified = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     time_created = Column(DateTime(timezone=True), server_default=func.now())
+    
+    def __str__(self):
+        # Безопасное отображение без обращения к связанным объектам
+        return f"Вопрос {self.id}: {self.text[:50]}... (тип: {self.type})"
 
 
 class SurveyQuestion(Base):
@@ -220,6 +224,14 @@ class QuizQuestion(Base):
     question_id = Column(BigInteger, ForeignKey("questions.id", ondelete="CASCADE"), comment="ID вопроса")
     time_modified = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     time_created = Column(DateTime(timezone=True), server_default=func.now())
+    
+    # Связи с тестом и вопросом для удобного отображения в админке
+    quiz = relationship("Quiz", backref="quiz_questions")
+    question = relationship("Question", backref="quiz_questions")
+    
+    def __str__(self):
+        # Безопасное отображение без обращения к связанным объектам
+        return f"Вопрос теста {self.id}: тест {self.quiz_id}, вопрос {self.question_id}"
 
 
 class Answer(Base):
@@ -234,6 +246,13 @@ class Answer(Base):
     question_id = Column(BigInteger, ForeignKey("questions.id", ondelete="CASCADE"), comment="ID вопроса")
     time_modified = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     time_created = Column(DateTime(timezone=True), server_default=func.now())
+    
+    # Связь с вопросом для удобного отображения в админке
+    question = relationship("Question", backref="answers")
+    
+    def __str__(self):
+        # Безопасное отображение без обращения к связанным объектам
+        return f"Ответ {self.id}: {self.text[:50]}... (вопрос {self.question_id})"
 
 
 class UserAnswer(Base):

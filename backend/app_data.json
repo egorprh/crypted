@@ -1,88 +1,6 @@
 {
     "courses": [
         {
-            "id": 4,
-            "title": "Учебное пособие: Трейдинг с ChatGPT",
-            "description": "Мы собрали собственный опыт применения ИИ в трейдинге в одном пособии. Как использовать ChatGPT не «для интереса», а в реальной работе. Материал, который помогает перейти от экспериментов к системе.",
-            "oldprice": null,
-            "newprice": "Бесплатно",
-            "image": "/images/course4/course4.png",
-            "color": "#3CB378",
-            "has_popup": null,
-            "popup_title": null,
-            "popup_desc": null,
-            "popup_img": null,
-            "direct_link": null,
-            "type": "main",
-            "visible": true,
-            "sort_order": 1,
-            "lessons": [
-                {
-                    "id": 12,
-                    "title": "Учебное пособие: Трейдинг с ChatGPT",
-                    "description": "Мы собрали собственный опыт применения ИИ в трейдинге в одном пособии. Как использовать ChatGPT не «для интереса», а в реальной работе. Материал, который помогает перейти от экспериментов к системе. <br> Жми далее и забирай методичку!",
-                    "video_url": null,
-                    "source_url": null,
-                    "course_id": 4,
-                    "image": "/images/course4/course4.png",
-                    "visible": true,
-                    "sort_order": 0,
-                    "materials": [
-                        {
-                            "id": 12,
-                            "title": "Методичка",
-                            "description": null,
-                            "url": "https://disk.yandex.ru/d/NG1uAD75blLIMg",
-                            "visible": true,
-                            "lesson_id": 12
-                        }
-                    ],
-                    "quizzes": []
-                }
-            ]
-        },
-        {
-            "id": 3,
-            "title": "Cтратегия заработка с dept",
-            "description": null,
-            "oldprice": null,
-            "newprice": "Бесплатно",
-            "image": "/images/course3/course3.png",
-            "color": "#15A935",
-            "has_popup": null,
-            "popup_title": null,
-            "popup_desc": null,
-            "popup_img": null,
-            "direct_link": "",
-            "type": "main",
-            "visible": true,
-            "sort_order": 2,
-            "lessons": [
-                {
-                    "id": 11,
-                    "title": "Стратегия заработка с Dept",
-                    "description": "<p>Привет, в этом видео я рассказал, как можно абсолютно бесплатно начать зарабатывать с публичным телеграмм-каналом dept.</p> \n<p>Затронул наш подход и рассказал о себе.</p> ",
-                    "video_url": "https://rutube.ru/play/embed/c4fe1748b631fad3eed38c82abf1d376/",
-                    "source_url": "https://rutube.ru/video/c4fe1748b631fad3eed38c82abf1d376/",
-                    "course_id": 3,
-                    "image": "/images/course3/course3.png",
-                    "visible": true,
-                    "sort_order": 0,
-                    "materials": [
-                        {
-                            "id": 10,
-                            "title": "Материалы",
-                            "description": "За методичкой по рискам и информацией по торговой группе к Ростиславу. Жми на кнопку.",
-                            "url": "https://t.me/rostislavdept",
-                            "visible": true,
-                            "lesson_id": 11
-                        }
-                    ],
-                    "quizzes": []
-                }
-            ]
-        },
-        {
             "id": 1,
             "title": "Старт в торговле криптовалютой",
             "description": "Курс для новичков, желающих освоить основы торговли криптовалютами.",
@@ -90,23 +8,28 @@
             "newprice": "Бесплатно",
             "image": "",
             "color": null,
-            "has_popup": true,
+            "has_popup": null,
             "popup_title": null,
             "popup_desc": null,
             "popup_img": null,
             "direct_link": null,
             "type": "main",
+            "level": 0,
+            "access_time": -1,
             "visible": true,
-            "sort_order": 3,
+            "sort_order": 0,
+            "user_enrolment": 1,
+            "lesson_count": 10,
+            "has_home_work": true,
             "lessons": [
                 {
                     "id": 1,
                     "title": "Урок 1: Что такое криптовалюта и чем она лучше других активов?",
-                    "description": "",
+                    "description": null,
                     "video_url": "https://rutube.ru/play/embed/cce5cd139a6cba94c06ff38dd00d4e23/",
-                    "source_url": "https://rutube.ru/video/cce5cd139a6cba94c06ff38dd00d4e23",
+                    "source_url": null,
                     "course_id": 1,
-                    "image": "/images/course1/lesson1.png",
+                    "image": null,
                     "visible": true,
                     "sort_order": 0,
                     "materials": [
@@ -454,11 +377,11 @@
                 {
                     "id": 2,
                     "title": "Урок 2: Как выбрать биржу и пополнить счёт?",
-                    "description": "",
+                    "description": null,
                     "video_url": "https://rutube.ru/play/embed/3620513b2c2ca332018cdb61d421efce/",
-                    "source_url": "https://rutube.ru/video/3620513b2c2ca332018cdb61d421efce",
+                    "source_url": null,
                     "course_id": 1,
-                    "image": "/images/course1/lesson2.png",
+                    "image": null,
                     "visible": true,
                     "sort_order": 0,
                     "materials": [
@@ -646,11 +569,11 @@
                 {
                     "id": 3,
                     "title": "Урок 3: TradingView: как пользоваться и зачем он нужен?",
-                    "description": "",
+                    "description": null,
                     "video_url": "https://rutube.ru/play/embed/8c47de13d727a9a46c3e47acbfcd1325/",
-                    "source_url": "https://rutube.ru/video/8c47de13d727a9a46c3e47acbfcd1325",
+                    "source_url": null,
                     "course_id": 1,
-                    "image": "/images/course1/lesson3.png",
+                    "image": null,
                     "visible": true,
                     "sort_order": 0,
                     "materials": [],
@@ -829,11 +752,11 @@
                 {
                     "id": 4,
                     "title": "Урок 4: Виды стратегий и как её выбрать",
-                    "description": "",
+                    "description": null,
                     "video_url": "https://rutube.ru/play/embed/04aacf9cd57081978721bb222e1d3ed1/",
-                    "source_url": "https://rutube.ru/video/04aacf9cd57081978721bb222e1d3ed1",
+                    "source_url": null,
                     "course_id": 1,
-                    "image": "/images/course1/lesson4.png",
+                    "image": null,
                     "visible": true,
                     "sort_order": 0,
                     "materials": [
@@ -1181,11 +1104,11 @@
                 {
                     "id": 5,
                     "title": "Урок 5: WinRate и RR: просто о важном",
-                    "description": "",
+                    "description": null,
                     "video_url": "https://rutube.ru/play/embed/0e8287ba60bc585a090fd8c769936454/",
-                    "source_url": "https://rutube.ru/video/0e8287ba60bc585a090fd8c769936454",
+                    "source_url": null,
                     "course_id": 1,
-                    "image": "/images/course1/lesson5.png",
+                    "image": null,
                     "visible": true,
                     "sort_order": 0,
                     "materials": [
@@ -1533,11 +1456,11 @@
                 {
                     "id": 6,
                     "title": "Урок 6: Риск-менеджмент: как не потерять деньги?",
-                    "description": "",
+                    "description": null,
                     "video_url": "https://rutube.ru/play/embed/8ec9a6e1365ec4bad7490d92de8fe3f6/",
-                    "source_url": "https://rutube.ru/video/8ec9a6e1365ec4bad7490d92de8fe3f6",
+                    "source_url": null,
                     "course_id": 1,
-                    "image": "/images/course1/lesson6.png",
+                    "image": null,
                     "visible": true,
                     "sort_order": 0,
                     "materials": [
@@ -1725,11 +1648,11 @@
                 {
                     "id": 7,
                     "title": "Урок 7: Как работает рынок? Ордера и ликвидность",
-                    "description": "",
+                    "description": null,
                     "video_url": "https://rutube.ru/play/embed/1e8d737544b1285ddc5aad53112f0161/",
-                    "source_url": "https://rutube.ru/video/1e8d737544b1285ddc5aad53112f0161",
+                    "source_url": null,
                     "course_id": 1,
-                    "image": "/images/course1/lesson7.png",
+                    "image": null,
                     "visible": true,
                     "sort_order": 0,
                     "materials": [
@@ -2077,11 +2000,11 @@
                 {
                     "id": 8,
                     "title": "Урок 8: Трейдинг — это свобода. Почему?",
-                    "description": "",
+                    "description": null,
                     "video_url": "https://rutube.ru/play/embed/a128566ba9b9a4a8234c5105df738b21/",
-                    "source_url": "https://rutube.ru/video/a128566ba9b9a4a8234c5105df738b21",
+                    "source_url": null,
                     "course_id": 1,
-                    "image": "/images/course1/lesson8.png",
+                    "image": null,
                     "visible": true,
                     "sort_order": 0,
                     "materials": [
@@ -2269,11 +2192,11 @@
                 {
                     "id": 9,
                     "title": "Урок 9: D-Product — лучшее в инфополе трейдинга",
-                    "description": "",
+                    "description": null,
                     "video_url": "https://rutube.ru/play/embed/626342577faa6a1f65a0bc1add5bb8a0/",
-                    "source_url": "https://rutube.ru/video/626342577faa6a1f65a0bc1add5bb8a0",
+                    "source_url": null,
                     "course_id": 1,
-                    "image": "/images/course1/lesson9.png",
+                    "image": null,
                     "visible": true,
                     "sort_order": 0,
                     "materials": [
@@ -2457,47 +2380,70 @@
                             ]
                         }
                     ]
-                }
-            ]
-        },
-        {
-            "id": 2,
-            "title": "Как работать по зонам от #soft в открытом канале",
-            "description": null,
-            "oldprice": null,
-            "newprice": "Бесплатно",
-            "image": "/images/course2/course2.png",
-            "color": "#6d14b8",
-            "has_popup": null,
-            "popup_title": null,
-            "popup_desc": null,
-            "popup_img": null,
-            "direct_link": null,
-            "type": "main",
-            "visible": true,
-            "sort_order": 4,
-            "lessons": [
+                },
                 {
                     "id": 10,
-                    "title": "Методичка: Как работать по зонам от #soft в открытом канале",
-                    "description": "<p>В методичке разобрали, как торговать по торговым зонам от нашего программного обеспечения.  Удачных торгов!</p>",
+                    "title": "Новый",
+                    "description": "Новый крок",
                     "video_url": null,
                     "source_url": null,
-                    "course_id": 2,
-                    "image": "/images/course2/course2.png",
+                    "course_id": 1,
+                    "image": null,
                     "visible": true,
-                    "sort_order": 0,
+                    "sort_order": 9,
                     "materials": [
                         {
                             "id": 9,
-                            "title": "Методичка",
-                            "description": null,
-                            "url": "https://disk.yandex.ru/i/VQl2VM-5WuIpHw",
+                            "title": "Метприии",
+                            "description": "ывлодоаывовыадло",
+                            "url": "http://0.0.0.0:8015/",
                             "visible": true,
                             "lesson_id": 10
                         }
                     ],
-                    "quizzes": []
+                    "quizzes": [
+                        {
+                            "id": 10,
+                            "title": "ловлыаловадва",
+                            "description": "додывлдаолдфжаволд",
+                            "visible": true,
+                            "lesson_id": 10,
+                            "questions": [
+                                {
+                                    "id": 15,
+                                    "text": "Почему важно учитывать комиссии при выборе биржи?",
+                                    "type": "quiz",
+                                    "visible": true,
+                                    "answers": [
+                                        {
+                                            "id": 45,
+                                            "text": "Потому что это влияет на анонимность",
+                                            "correct": false,
+                                            "question_id": 15
+                                        },
+                                        {
+                                            "id": 46,
+                                            "text": "Чем ниже комиссии, тем меньше вы теряете при каждой сделке",
+                                            "correct": true,
+                                            "question_id": 15
+                                        },
+                                        {
+                                            "id": 47,
+                                            "text": "Комиссии влияют только на курс",
+                                            "correct": false,
+                                            "question_id": 15
+                                        },
+                                        {
+                                            "id": 48,
+                                            "text": "Это важно только для институциональных инвесторов",
+                                            "correct": false,
+                                            "question_id": 15
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
                 }
             ]
         }
@@ -2505,189 +2451,48 @@
     "events": [],
     "homework": [
         {
-            "id": 1373,
-            "quiz_id": 3,
+            "id": 1,
+            "quiz_id": 10,
             "user_id": 1,
-            "progress": 80.0,
+            "progress": 0.0,
             "course_title": "Старт в торговле криптовалютой",
-            "lesson_title": "Урок 3: TradingView: как пользоваться и зачем он нужен?",
+            "lesson_title": "Новый",
+            "lesson_order": 9,
+            "course_id": 1,
+            "lesson_count": 10,
             "questions": [
                 {
-                    "id": 16,
-                    "qid": 19,
-                    "text": "Для чего в первую очередь используется платформа TradingView?",
+                    "id": 66,
+                    "qid": 15,
+                    "text": "Почему важно учитывать комиссии при выборе биржи?",
                     "type": "quiz",
                     "answers": [
                         {
-                            "id": 61,
-                            "text": "Покупка криптовалют напрямую",
+                            "id": 45,
+                            "text": "Потому что это влияет на анонимность",
                             "correct": false,
-                            "question_id": 19,
-                            "user_answer": false
-                        },
-                        {
-                            "id": 62,
-                            "text": "Создание NFT",
-                            "correct": false,
-                            "question_id": 19,
-                            "user_answer": false
-                        },
-                        {
-                            "id": 63,
-                            "text": "Анализ графиков и технический анализ",
-                            "correct": true,
-                            "question_id": 19,
+                            "question_id": 15,
                             "user_answer": true
                         },
                         {
-                            "id": 64,
-                            "text": "Майндинг криптовалют",
-                            "correct": false,
-                            "question_id": 19,
-                            "user_answer": false
-                        }
-                    ]
-                },
-                {
-                    "id": 17,
-                    "qid": 20,
-                    "text": "Как называется инструмент на TradingView, с помощью которого можно рисовать уровни поддержки и сопротивления?",
-                    "type": "quiz",
-                    "answers": [
-                        {
-                            "id": 65,
-                            "text": "Магнит",
-                            "correct": false,
-                            "question_id": 20,
-                            "user_answer": false
-                        },
-                        {
-                            "id": 66,
-                            "text": "Горизонтальная линия",
+                            "id": 46,
+                            "text": "Чем ниже комиссии, тем меньше вы теряете при каждой сделке",
                             "correct": true,
-                            "question_id": 20,
+                            "question_id": 15,
                             "user_answer": false
                         },
                         {
-                            "id": 67,
-                            "text": "Эллипс",
+                            "id": 47,
+                            "text": "Комиссии влияют только на курс",
                             "correct": false,
-                            "question_id": 20,
+                            "question_id": 15,
                             "user_answer": false
                         },
                         {
-                            "id": 68,
-                            "text": "Линия тренда",
+                            "id": 48,
+                            "text": "Это важно только для институциональных инвесторов",
                             "correct": false,
-                            "question_id": 20,
-                            "user_answer": true
-                        }
-                    ]
-                },
-                {
-                    "id": 18,
-                    "qid": 21,
-                    "text": "Что позволяет сделать функция «Список наблюдения» (Watchlist)?",
-                    "type": "quiz",
-                    "answers": [
-                        {
-                            "id": 69,
-                            "text": "Просматривать только графики в реальном времени",
-                            "correct": false,
-                            "question_id": 21,
-                            "user_answer": false
-                        },
-                        {
-                            "id": 70,
-                            "text": "Следить за выбранными активами и быстро переключаться между ними",
-                            "correct": true,
-                            "question_id": 21,
-                            "user_answer": true
-                        },
-                        {
-                            "id": 71,
-                            "text": "Запускать автоматические сделки",
-                            "correct": false,
-                            "question_id": 21,
-                            "user_answer": false
-                        },
-                        {
-                            "id": 72,
-                            "text": "Сохранять настройки графика в облако",
-                            "correct": false,
-                            "question_id": 21,
-                            "user_answer": false
-                        }
-                    ]
-                },
-                {
-                    "id": 19,
-                    "qid": 22,
-                    "text": "Для чего используется функция «Алерт» (оповещение) на TradingView?",
-                    "type": "quiz",
-                    "answers": [
-                        {
-                            "id": 73,
-                            "text": "Чтобы отключить все звуки на платформе",
-                            "correct": false,
-                            "question_id": 22,
-                            "user_answer": false
-                        },
-                        {
-                            "id": 74,
-                            "text": "Для отправки уведомлений при достижении определённых условий на графике",
-                            "correct": true,
-                            "question_id": 22,
-                            "user_answer": true
-                        },
-                        {
-                            "id": 75,
-                            "text": "Для увеличения масштабов графика",
-                            "correct": false,
-                            "question_id": 22,
-                            "user_answer": false
-                        },
-                        {
-                            "id": 76,
-                            "text": "Чтобы создать заметку под графиком",
-                            "correct": false,
-                            "question_id": 22,
-                            "user_answer": false
-                        }
-                    ]
-                },
-                {
-                    "id": 20,
-                    "qid": 23,
-                    "text": "Как сохранить собственный шаблон графика с нанесёнными индикаторами и разметкой?",
-                    "type": "quiz",
-                    "answers": [
-                        {
-                            "id": 77,
-                            "text": "Нажать кнопку «Сбросить график»",
-                            "correct": false,
-                            "question_id": 23,
-                            "user_answer": false
-                        },
-                        {
-                            "id": 78,
-                            "text": "Открыть вкладку «Индикаторы»",
-                            "correct": false,
-                            "question_id": 23,
-                            "user_answer": false
-                        },
-                        {
-                            "id": 79,
-                            "text": "Использовать функцию «Сохранить шаблон» или «Сохранить макет»",
-                            "correct": true,
-                            "question_id": 23,
-                            "user_answer": true
-                        },
-                        {
-                            "id": 80,
-                            "text": "Закрыть браузер — он всё запомнит сам",
-                            "correct": false,
-                            "question_id": 23,
+                            "question_id": 15,
                             "user_answer": false
                         }
                     ]
@@ -2698,38 +2503,44 @@
     "faq": [
         {
             "id": 1,
-            "question": "Что такое D-Space Junior?",
-            "answer": "D-Space Junior — это образовательная платформа по криптовалюте и блокчейн-технологиям. Здесь ты можешь изучать основы крипты: Что такое блокчейн? Как работают рынки? Почему движется цена?   На все эти вопросы есть ответы в курсе, который я записал и придумал лично. В нём собрал базовую информацию и рассказал простым языком для того, чтобы у тебя сформировались основные понимания о финансовых рынках и ты мог развиваться дальше.  Заходи и проверяй, как у меня это получилось, ведь я даю тебе это абсолютно бесплатно! (С тебя отзыв про курс мне в лс и пару лайков в наш открытый канал. Увидимся :))",
+            "question": "Что такое D-Space?",
+            "answer": "D-Space — это образовательная платформа, которая помогает новичкам и опытным трейдерам разобраться в трейдинге через уроки, домашние задания и разборы.",
             "visible": true
         },
         {
             "id": 2,
-            "question": "Что такое D-Space Middle?",
-            "answer": "D-Space Middle — вторая ступень обучения, созданная для практикующих трейдеров, которые хотят улучшить свои результаты и хвастаться зелёными PNL. Здесь ты можешь углубить свои знания в финансовых рынках. Обучение состоит из 5 разных блоков, но всё крутится вокруг главного – Smart Money Concept и более 20 практических уроков с плавным стартом и жёстким концом. Я отобрал только то, чем пользуюсь сам и то, что действительно работает в современных реалиях.   На разработку курса я потратил более полугода, а участие в разработке принимали более 5 практикующих трейдеров, которые, кстати, общаются внутри нашего закрытого коммюнити только для учеников D-Space Middle. Но самое главное, что обучение сделано с любовью и уважением к своему делу и я говорю это с гордостью!   p.s трепещите инфоцыгане, скоро все адекватные люди будут учиться у нас",
+            "question": "Как начать обучаться?",
+            "answer": "Для начала обучения зарегистрируйтесь на сайте, выберите подходящий курс и следуйте инструкциям в личном кабинете.",
             "visible": true
         },
         {
             "id": 3,
-            "question": "Есть ли сертификаты после прохождения курсов?",
-            "answer": "Да, после прохождения курсов Junior и Middle мы выдаём индивидуальные именные сертефикаты. Можно повесить на видное место и гордиться собой!",
+            "question": "Какие есть тарифы для обучения?",
+            "answer": "Да, на платформе доступны бесплатные материалы, включая открытый канал с обучающими постами и новостями.",
             "visible": true
         },
         {
             "id": 4,
-            "question": "Можно ли учиться с телефона?",
-            "answer": "Нужно",
+            "question": "Есть ли сертификаты после прохождения курсов?",
+            "answer": "Да, на платформе доступны бесплатные материалы, включая открытый канал с обучающими постами и новостями.",
             "visible": true
         },
         {
             "id": 5,
-            "question": "Сколько времени в среднем нужно на курс?",
-            "answer": "Junior можно пройти в своём темпе, а вот на Middle потребуется 2-3 месяца усердной работы и постоянной практики, ведь только так куётся боевой дух трейдера.",
+            "question": "Можно ли учиться с телефона?",
+            "answer": "Да, на платформе доступны бесплатные материалы, включая открытый канал с обучающими постами и новостями.",
             "visible": true
         },
         {
             "id": 6,
+            "question": "Сколько времени в среднем нужно на курс?",
+            "answer": "Да, на платформе доступны бесплатные материалы, включая открытый канал с обучающими постами и новостями.",
+            "visible": true
+        },
+        {
+            "id": 7,
             "question": "Что такое D-Closed?",
-            "answer": "Dept Closed - наша закрытая группа: простое и понятное место для практикующих трейдеров. Внутри сообщества Ростислав и другие трейдеры команды делятся своими сделками. А в основе всего лежит наше авторское программное обеспечение, с помощью которого Ростислав выдает от 30 прибыльных сделок в месяц.",
+            "answer": "Вы можете связаться с поддержкой через форму обратной связи на сайте или написав в чат комьюнити.",
             "visible": true
         }
     ],
@@ -2773,12 +2584,17 @@
         },
         {
             "id": 5,
+            "name": "show_load_screen",
+            "value": "0"
+        },
+        {
+            "id": 6,
             "name": "bot_link",
-            "value": "https://t.me/depthellobot"
+            "value": ""
         },
         {
             "name": "user_level",
-            "value": "0"
+            "value": "1"
         }
     ],
     "events_count": 0
