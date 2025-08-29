@@ -1,6 +1,11 @@
 """
 Модуль для работы с записями пользователей на курсы.
 Содержит функции для создания и обновления записей пользователей на курсы.
+
+Цикл подписки:
+1) Курс не имеет ограничений по времени - бесконечная подписка (access_time = -1). На карточке показываем цену
+2) Курс имеет ограничения по времени - подписка активна (access_time > 0). На карточке показываем время доступа
+3) Подписка истекла - подписка неактивна (access_time = 0 на фронте). На карточке показываем время доступа
 """
 
 from datetime import datetime, timedelta, timezone
@@ -42,13 +47,13 @@ async def create_user_enrollment(db, user_id: int, course_id: int):
             return False
         
         # Получаем время доступа к курсу (в часах)
-        access_time_hours = course.get('access_time', 0)
+        access_time_hours = course.get('access_time', -1)
         
         # Вычисляем время окончания доступа (используем timezone-aware время в UTC)
         current_time = datetime.now(timezone.utc)
         
         # Если access_time == 0, создаем бесконечную подписку (time_end = None)
-        if access_time_hours == 0:
+        if access_time_hours == 0 or access_time_hours == -1:
             time_end = None
             logger.info(f"Курс {course_id} не имеет ограничений по времени (access_time = 0), создается бесконечная подписка")
         else:
@@ -153,30 +158,43 @@ async def get_course_access_info(db, user_id: int, course_id: int):
             logger.error(f"Курс {course_id} не найден")
             return {'time_left': 0, 'user_enrolment': ENROLLMENT_STATUS_NOT_ENROLLED}
         
-        # Вычисляем оставшееся время доступа
+        # Вычисляем оставшееся время доступа и статус записи
+        # 3 состояния:
+        # 1) Подписки нет - time_left == access_time из курса
+        # 2) Есть активная подписка - time_left == time_end - текущее время
+        # 3) Есть неактивная подписка - time_left == 0
         time_left = 0
         user_enrolment_status = ENROLLMENT_STATUS_NOT_ENROLLED
         
-        if enrollment and enrollment.get('status') == ENROLLMENT_STATUS_ENROLLED:
-            user_enrolment_status = ENROLLMENT_STATUS_ENROLLED
-            time_end = enrollment.get('time_end')
-            if time_end is None:
-                # Бесконечная подписка
-                time_left = -1  # Специальное значение для бесконечной подписки
-            elif time_end:
-                # Приводим time_end к timezone-aware UTC, если он naive
-                if getattr(time_end, 'tzinfo', None) is None:
-                    time_end = time_end.replace(tzinfo=timezone.utc)
-                current_time = datetime.now(timezone.utc)
-                if getattr(current_time, 'tzinfo', None) is None:
-                    current_time = current_time.replace(tzinfo=timezone.utc)
-                time_diff = time_end - current_time
-                time_left = max(0, time_diff.total_seconds() / 3600)  # Конвертируем в часы
+        if enrollment:
+            if enrollment.get('status') == ENROLLMENT_STATUS_ENROLLED:
+                # Есть активная подписка
+                user_enrolment_status = ENROLLMENT_STATUS_ENROLLED
+                time_end = enrollment.get('time_end')
+                if time_end is None:
+                    # Бесконечная подписка
+                    time_left = -1
+                else:
+                    # Ограниченная по времени подписка
+                    if getattr(time_end, 'tzinfo', None) is None:
+                        time_end = time_end.replace(tzinfo=timezone.utc)
+                    current_time = datetime.now(timezone.utc)
+                    if getattr(current_time, 'tzinfo', None) is None:
+                        current_time = current_time.replace(tzinfo=timezone.utc)
+                    time_diff = time_end - current_time
+                    time_left = max(0, time_diff.total_seconds() / 3600)
+            else:
+                # Есть неактивная подписка - время истекло
+                user_enrolment_status = ENROLLMENT_STATUS_NOT_ENROLLED
+                time_left = 0
         else:
-            # Если записи нет, возвращаем время доступа из курса
-            access_time = course.get('access_time', 0)
+            # Подписки нет - возвращаем время доступа из курса
+            user_enrolment_status = ENROLLMENT_STATUS_NOT_ENROLLED
+            access_time = course.get('access_time', -1)
             if access_time == 0:
                 time_left = -1  # Курс без ограничений по времени
+            elif access_time == -1:
+                time_left = -1  # Курс недоступен
             else:
                 time_left = access_time
         

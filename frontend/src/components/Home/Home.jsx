@@ -101,9 +101,7 @@ export default function Home() {
                                         <p className="card-title">Входное тестирование</p>
                                     </div>
                                     <p className="text-gray-300 card-text">
-                                        Прежде чем начать обучение, необходимо пройти тест, который определит твой
-                                        уровень в
-                                        трейдинге.
+                                        Пройдите небольшой тест, чтобы получить доступ к платформе. Это займет не более 30 секунд.
                                     </p>
                                     <div className="card-footer">
                                         <Button type="btn-white btn-full-width btn-flex btn-p12" text="Начать" hasArrow={true} />
@@ -172,7 +170,7 @@ export default function Home() {
                                 <div className="course-body">
                                     <div className="d-flex course-title-wrapper card-title-wrapper">
                                         <p className="course-title">{course.title}</p>
-                                        {course.user_enrolment === 0 || course.user_enrolment === undefined
+                                        {course.access_time === -1
                                             ?
                                             (<div className="tag">
                                                 {(course.newprice || course.oldprice) && (

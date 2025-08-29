@@ -54,7 +54,7 @@ CREATE TABLE IF NOT EXISTS courses (
     direct_link VARCHAR(255),
     type VARCHAR(255),
     level INT DEFAULT 0,
-    access_time INT DEFAULT 0,
+    access_time INT DEFAULT -1,
     visible BOOLEAN DEFAULT TRUE,
     sort_order BIGINT DEFAULT 0,
     time_modified TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,

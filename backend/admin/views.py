@@ -5,6 +5,7 @@
 
 from sqladmin import ModelView
 import os
+from sqlalchemy.orm import joinedload
 from admin.models import (
     File, User, Course, UserActionsLog, Lesson, Materials, Quiz, Survey, 
     Question, SurveyQuestion, QuizQuestion, Answer, UserAnswer, 
@@ -520,29 +521,97 @@ class UserEnrolmentAdmin(ModelView, model=UserEnrolment):
     page_size = 30
     
     # Отображаемые колонки
-    column_list = [UserEnrolment.id, UserEnrolment.user_id, UserEnrolment.course_id, UserEnrolment.status, UserEnrolment.time_created]
-    column_sortable_list = [UserEnrolment.id, UserEnrolment.user_id, UserEnrolment.course_id, UserEnrolment.status, UserEnrolment.time_created]
+    column_list = [
+        UserEnrolment.id, 
+        UserEnrolment.user_id, 
+        UserEnrolment.user,  # Связанный объект пользователя
+        UserEnrolment.course_id, 
+        UserEnrolment.course,  # Связанный объект курса
+        "formatted_time_start",  # Форматированное время начала
+        "formatted_time_end",  # Форматированное время окончания
+        "formatted_status"  # Форматированный статус
+    ]
+    
+    # Колонки для детального представления
+    column_details_list = [
+        UserEnrolment.id,
+        UserEnrolment.user,  # Связанный объект пользователя
+        UserEnrolment.course,  # Связанный объект курса
+        UserEnrolment.user_id,
+        UserEnrolment.course_id,
+        "formatted_time_start",  # Форматированное время начала
+        "formatted_time_end",  # Форматированное время окончания
+        "formatted_status",  # Форматированный статус
+        UserEnrolment.time_modified,
+        UserEnrolment.time_created
+    ]
+    column_sortable_list = [UserEnrolment.id, UserEnrolment.user_id, UserEnrolment.course_id, UserEnrolment.time_end, UserEnrolment.status, UserEnrolment.time_created]
+    column_searchable_list = [UserEnrolment.user_id, UserEnrolment.course_id, UserEnrolment.status]
+    
+    def get_search_query(self, request, search_term):
+        """Кастомный поиск с поддержкой username и названия курса"""
+        query = self.get_list_query(request)
+        
+        if search_term:
+            # Поиск по ID пользователя, ID курса, статусу, username и названию курса
+            search_filter = (
+                UserEnrolment.user_id.contains(search_term) |
+                UserEnrolment.course_id.contains(search_term) |
+                UserEnrolment.status.contains(search_term) |
+                User.username.contains(search_term) |
+                Course.title.contains(search_term)
+            )
+            query = query.filter(search_filter)
+        
+        return query
     
     # Русские названия колонок
     column_labels = {
         'id': 'ID',
         'user_id': 'ID пользователя',
         'course_id': 'ID курса',
-        'time_start': 'Время начала',
-        'time_end': 'Время окончания',
-        'status': 'Статус',
+        'user': 'Пользователь',
+        'course': 'Курс',
+        'formatted_time_start': 'Время начала',
+        'formatted_time_end': 'Время окончания',
+        'formatted_status': 'Статус',
         'time_modified': 'Дата изменения',
         'time_created': 'Дата записи'
     }
     
     # Исключаем автоматические поля
-    form_excluded_columns = ["time_modified", "time_created"]
+    form_excluded_columns = ["time_modified", "time_created", "user", "course"]
+    
+    # Настройка отображения связанных объектов
+    form_ajax_refs = {
+        'user': {
+            'fields': ['username', 'first_name', 'last_name', 'id'],
+            'page_size': 10
+        },
+        'course': {
+            'fields': ['title', 'id'],
+            'page_size': 10
+        }
+    }
     
     # Права доступа
     can_create = True
     can_edit = True
     can_delete = True
     can_view_details = True
+    
+    # Кастомные колонки для отображения username и времени окончания
+    def get_list_query(self, request):
+        """Кастомный запрос с eager loading для получения связанных данных"""
+        return (
+            self.session.query(UserEnrolment)
+            .options(
+                joinedload(UserEnrolment.user),
+                joinedload(UserEnrolment.course)
+            )
+        )
+    
+
 
 
 class LevelAdmin(ModelView, model=Level):

@@ -37,7 +37,7 @@ class Course(BaseModel):
     direct_link: Optional[str] = None
     type: Optional[str] = None
     level: int = 0
-    access_time: int = 0
+    access_time: int = -1
     visible: bool = True
     sort_order: int = 0
     time_modified: Optional[datetime] = None

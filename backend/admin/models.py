@@ -41,6 +41,16 @@ class User(Base):
     level = Column(Integer, default=0, comment="Уровень пользователя")
     time_modified = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     time_created = Column(DateTime(timezone=True), server_default=func.now())
+    
+    def __str__(self):
+        if self.username:
+            return f"{self.username}"
+        elif self.first_name and self.last_name:
+            return f"{self.first_name} {self.last_name}"
+        elif self.first_name:
+            return self.first_name
+        else:
+            return f"User {self.telegram_id}"
 
 
 class Course(Base):
@@ -63,11 +73,14 @@ class Course(Base):
     direct_link = Column(String(255), comment="Прямая ссылка")
     type = Column(String(255), comment="Тип курса")
     level = Column(Integer, default=0, comment="Уровень курса")
-    access_time = Column(Integer, default=0, comment="Время доступа")
+    access_time = Column(Integer, default=-1, comment="Время доступа")
     visible = Column(Boolean, default=True, comment="Видимость курса")
     sort_order = Column(BigInteger, default=0, comment="Порядок сортировки")
     time_modified = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     time_created = Column(DateTime(timezone=True), server_default=func.now())
+    
+    def __str__(self):
+        return self.title or f"Course {self.id}"
 
 
 class UserActionsLog(Base):
@@ -307,3 +320,34 @@ class UserEnrolment(Base):
     status = Column(Integer, default=0, comment="Статус записи (0 - незаписан, 1 - записан)")
     time_modified = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     time_created = Column(DateTime(timezone=True), server_default=func.now())
+    
+    # Связи с другими таблицами
+    user = relationship("User", backref="enrollments")
+    course = relationship("Course", backref="enrollments")
+    
+    def __str__(self):
+        return f"Запись {self.id}: {self.user} на курс {self.course}"
+    
+    @property
+    def formatted_time_end(self):
+        """Форматированное время окончания"""
+        if self.time_end is None:
+            return "Бесконечно"
+        return self.time_end.strftime("%d.%m.%Y %H:%M")
+    
+    @property
+    def formatted_time_start(self):
+        """Форматированное время начала"""
+        if self.time_start:
+            return self.time_start.strftime("%d.%m.%Y %H:%M:%S")
+        return "Не указано"
+    
+    @property
+    def formatted_status(self):
+        """Форматированный статус"""
+        if self.status == 0:
+            return "Незаписан"
+        elif self.status == 1:
+            return "Записан"
+        else:
+            return f"Неизвестно ({self.status})"
