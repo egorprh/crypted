@@ -189,6 +189,9 @@
 }
 
 .enter-survey-portal {
+  max-width: 600px;
+  margin-inline: auto;
+
   .survey-banner {
     top: 30px;
     left: 50%;
