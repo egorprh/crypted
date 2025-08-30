@@ -58,7 +58,7 @@ async def start_handler(message: Message, state: FSMContext):
     logger.info(f"{message.from_user.full_name} нажал start")
     user = message.from_user
     await welcome_user(user.id)
-    await send_service_message(bot, f"Пользователь нажал @{user.username} {user.first_name} {user.last_name} нажал /start в боте")
+    await send_service_message(bot, f"👤 Пользователь @{user.username} {user.first_name} {user.last_name} нажал /start в боте")
 
 
 @dp.message(F.chat.type == "private")
@@ -71,14 +71,14 @@ async def fallback_handler(message: Message):
 # === Запуск ===
 async def main():
     logger.info("Бот запущен")
-    await bot.send_message(ADMINS, text="Бот запущен")
+    await bot.send_message(ADMINS, text="🤖 Бот запущен")
 
     # Регистрируем антиспам
     dp.message.middleware(AntiSpamMiddleware(bot))
     dp.callback_query.middleware(AntiSpamMiddleware(bot))
 
     await dp.start_polling(bot, drop_pending_updates=True)
-    await bot.send_message(ADMINS, text="Бот остановлен")
+    await bot.send_message(ADMINS, text="🤖 Бот остановлен")
 
 
 if __name__ == "__main__":

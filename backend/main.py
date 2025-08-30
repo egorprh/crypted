@@ -62,7 +62,7 @@ async def daily_db_backup():
                     
                     # Формируем сообщение
                     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                    message = f"📦 <b>Ежедневный дамп базы данных</b>\n\n"
+                    message = f"💾 <b>Ежедневный дамп базы данных</b>\n\n"
                     message += f"📅 Дата: {timestamp}\n"
                     message += f"📊 Размер: {archive_size_mb:.2f} MB\n"
                     message += f"✅ Статус: Успешно создан"
@@ -73,7 +73,7 @@ async def daily_db_backup():
                     # Отправляем файл архива
                     await send_service_document(
                         archive_path,
-                        f"🗄️ Дамп БД от {timestamp}"
+                        f"💾 Дамп БД от {timestamp}"
                     )
                     
                     logger.info(f"Архив дампа отправлен в канал: {archive_path}")
@@ -132,11 +132,11 @@ async def lifespan(app: FastAPI):
             logger.info(f"Попытка {attempt} не удалась. Повторная попытка через {retry_delay} секунд...")
             await asyncio.sleep(retry_delay)  # Ждем перед следующей попыткой
 
-    await send_service_message("DeptSpace запущен! Состояние БД: " + ("Подключена" if db_connected else "Не подключена"))
+    await send_service_message("🚀 DeptSpace запущен! Состояние БД: " + ("Подключена" if db_connected else "Не подключена"))
 
     yield  # Основной код приложения выполняется здесь
     logger.info("Приложение остановлено")
-    await send_service_message("DeptSpace остановлен! Проверьте, если это не запланировано")
+    await send_service_message("🛑 DeptSpace остановлен! Проверьте, если это не запланировано")
     
     # app teardown
     if db_connected:
@@ -175,14 +175,14 @@ async def trigger_event(event_name: str, user_id: int, instance_id: int, data: A
     if event_name == 'course_viewed':
         course = await db.get_record("courses", {"id": instance_id})
         text = f"""
-        Переход в курс DSpace!
+        📚 Переход в курс DSpace!
 
 Пользователь @{user["username"]} ({user["telegram_id"]}) {user["first_name"]} {user["last_name"]} зашел в курс "{course['title']}"
         """
     elif event_name == 'enter_survey':
         formatted_answers = "\n".join([f"<b>{question['question']}</b>: {question['answer']}" for question in data])
         text = f"""
-        Пользователь @{user["username"]} ({user["telegram_id"]}) {user["first_name"]} {user["last_name"]} прошел входное тестирование в DSpace!
+        📝 Пользователь @{user["username"]} ({user["telegram_id"]}) {user["first_name"]} {user["last_name"]} прошел входное тестирование в DSpace!
 
 {formatted_answers}
 <b>Уровень:</b> {level["name"]}
@@ -193,7 +193,7 @@ async def trigger_event(event_name: str, user_id: int, instance_id: int, data: A
     elif event_name == 'course_completed':
         course = await db.get_record("courses", {"id": instance_id})
         text = f"""
-        Переход в курс DSpace!
+        🎓 Переход в курс DSpace!
 
 Пользователь @{user["username"]} ({user["telegram_id"]}) {user["first_name"]} {user["last_name"]} прошел все тесты в курсе "{course['title']}"
         """
