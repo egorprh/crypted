@@ -2597,5 +2597,31 @@
             "value": "1"
         }
     ],
-    "events_count": 0
+    "events_count": 0,
+    "enter_survey": {
+        "id": 1,
+        "title": "Входное тестирование",
+        "description": "Пройди входное тестирование для доступа к курсам",
+        "visible": true,
+        "questions": [
+            {
+                "id": 1,
+                "text": "Ваш номер телефона",
+                "type": "phone",
+                "answers": []
+            },
+            {
+                "id": 2,
+                "text": "Ваше ФИО",
+                "type": "text",
+                "answers": []
+            },
+            {
+                "id": 3,
+                "text": "Сколько вам лет?",
+                "type": "age",
+                "answers": []
+            }
+        ]
+    }
 }

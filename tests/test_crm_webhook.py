@@ -4,7 +4,7 @@
 
 import pytest
 import asyncio
-from unittest.mock import AsyncMock, patch, MagicMock
+from unittest.mock import AsyncMock, patch, MagicMock, PropertyMock
 import sys
 import os
 
@@ -62,20 +62,30 @@ class TestSendSurveyToCRM:
         mock_config.misc.crm_webhook_url = "https://test-crm.com/webhook"
         
         # Мокаем HTTP сессию
-        mock_response = AsyncMock()
-        mock_response.status = 200
+        class MockResponse:
+            def __init__(self):
+                self.status = 200
+                self._text = "OK"
+            
+            async def text(self):
+                return self._text
+        
+        mock_response = MockResponse()
         
         mock_session = AsyncMock()
         mock_session.__aenter__.return_value.post.return_value.__aenter__.return_value = mock_response
         
         with patch('misc.load_config', return_value=mock_config), \
-             patch('aiohttp.ClientSession', return_value=mock_session):
+             patch('aiohttp.ClientSession', return_value=mock_session), \
+             patch('misc.logger') as mock_logger:
             
             await send_survey_to_crm(test_user, test_survey_data, test_level)
             
             # Проверяем, что POST запрос был вызван с правильными параметрами
             mock_session.__aenter__.return_value.post.assert_called_once()
             call_args = mock_session.__aenter__.return_value.post.call_args
+            
+
             
             assert call_args[0][0] == "https://test-crm.com/webhook"
             assert call_args[1]["headers"]["Content-Type"] == "application/json"
@@ -90,6 +100,13 @@ class TestSendSurveyToCRM:
             assert "name" in payload
             assert "age" in payload
             assert "phone" in payload
+            
+            # Проверяем базовое логирование
+            info_calls = [call[0][0] for call in mock_logger.info.call_args_list]
+            
+            # Проверяем, что логируются исходные данные и payload
+            assert any("Исходные данные опроса:" in call for call in info_calls)
+            assert any("Отправляем в CRM payload:" in call for call in info_calls)
     
     @pytest.mark.asyncio
     async def test_send_survey_to_crm_no_webhook_url(self, test_user, test_survey_data, test_level):

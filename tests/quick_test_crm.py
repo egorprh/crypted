@@ -26,8 +26,16 @@ async def quick_test():
     
     test_survey_data = [
         {
+            "question": "Как вас зовут?",
+            "answer": "Иван Иванов"
+        },
+        {
             "question": "Ваш возраст?",
             "answer": "25"
+        },
+        {
+            "question": "Ваш номер телефона?",
+            "answer": "+7 (999) 123-45-67"
         },
         {
             "question": "Ваш опыт в трейдинге?",

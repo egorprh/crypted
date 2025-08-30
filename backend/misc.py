@@ -27,6 +27,9 @@ async def send_survey_to_crm(user: Dict, survey_data: list, level: Dict):
             logger.warning("CRM webhook URL не настроен, пропускаем отправку в CRM")
             return
         
+        # Логируем исходные данные опроса
+        logger.info(f"Исходные данные опроса: {survey_data}")
+        
         # Извлекаем значения имени, возраста и телефона из survey_data
         def extract_answer(keywords):
             for item in survey_data:
@@ -50,6 +53,9 @@ async def send_survey_to_crm(user: Dict, survey_data: list, level: Dict):
             "phone": phone_value
         }
         
+        # Логируем payload для отладки
+        logger.info(f"Отправляем в CRM payload: {payload}")
+        
         # Отправляем POST запрос в CRM
         async with aiohttp.ClientSession() as session:
             response = await session.post(
@@ -59,7 +65,9 @@ async def send_survey_to_crm(user: Dict, survey_data: list, level: Dict):
                 timeout=aiohttp.ClientTimeout(total=30)
             )
             if response.status == 200:
+                response_text = await response.text()
                 logger.info(f"Данные опроса успешно отправлены в CRM для пользователя {user['telegram_id']}")
+                logger.info(f"Ответ сервера CRM: {response_text}")
             else:
                 logger.error(f"Ошибка отправки в CRM: статус {response.status}, ответ: {await response.text()}")
                     
