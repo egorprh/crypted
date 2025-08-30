@@ -90,3 +90,26 @@
   display: flex;
   justify-content: space-between;
 }
+
+/* Стили для заблокированных уроков */
+.lesson-block--blocked {
+  opacity: 0.6;
+}
+
+.lesson-badge--blocked {
+  opacity: 0.7;
+}
+
+.lesson-card--blocked {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.lesson-card--blocked:hover {
+  opacity: 0.6;
+}
+
+.lesson-title--blocked {
+  color: #ffffff;
+  font-weight: 500;
+}

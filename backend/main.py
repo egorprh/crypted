@@ -19,7 +19,7 @@ from logger import logger  # Импортируем логгер
 # Импортируем функции для работы с записями пользователей на курсы
 from enrollment import create_user_enrollment, get_course_access_info
 # Импортируем вспомогательные функции
-from misc import send_survey_to_crm, remove_timestamps
+from misc import send_survey_to_crm, remove_timestamps, check_lesson_blocked
 
 # Импорт для настройки админки
 from admin.admin_setup import setup_admin
@@ -276,6 +276,38 @@ async def course_viewed(request: Request):
     return {"status": "success", "message": "Course viewed event triggered."}
 
 
+# Cобытие просмотра урока
+@app.post("/api/lesson_viewed")
+async def lesson_viewed(request: Request):
+    """
+    Записывает событие просмотра урока пользователем.
+    
+    Создает запись в user_actions_log с action='lesson_viewed'
+    и instance_id равным ID урока.
+    """
+    if not check_db_connection():
+        return {"status": "error", "message": "Database not connected"}
+    
+    try:
+        request_data = await request.json()
+        user_id = request_data["userId"]
+        lesson_id = request_data["lessonId"]
+        
+        user = await db.get_record("users", {"telegram_id": user_id})
+        if not user:
+            return {"status": "error", "message": "User not found"}
+        
+        # Записываем событие просмотра урока
+        asyncio.create_task(trigger_event('lesson_viewed', user["id"], lesson_id))
+        
+        logger.info(f"Lesson viewed event triggered for user {user_id}, lesson {lesson_id}")
+        return {"status": "success", "message": "Lesson viewed event triggered."}
+        
+    except Exception as e:
+        logger.error(f"Error in lesson_viewed endpoint: {e}")
+        return {"status": "error", "message": "Failed to record lesson viewed event"}
+
+
 # Сохранение уровня пользовтеля 
 @app.post("/api/save_level")
 async def save_level(request: Request):
@@ -440,6 +472,9 @@ async def get_app_data(user_id: int):
                     AND qq.quiz_id = $1 AND q.visible = $2 ORDER BY id""", quiz["id"], True)
                 for question in quiz["questions"]:
                     question["answers"] = await db.get_records("answers", {"question_id": question["id"]})
+            
+            # Проверяем блокировку урока
+            lesson["blocked"] = await check_lesson_blocked(user["id"], lesson, course, db)
 
         # Добавляем количество уроков в курсе
         course["lesson_count"] = len(lessons)

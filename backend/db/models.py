@@ -40,6 +40,7 @@ class Course(BaseModel):
     access_time: int = -1
     visible: bool = True
     sort_order: int = 0
+    completion_on: bool = False
     time_modified: Optional[datetime] = None
     time_created: Optional[datetime] = None
 

@@ -31,6 +31,14 @@ export default function Lesson() {
 
                 <div className="lesson-description" dangerouslySetInnerHTML={{ __html: lesson.description }} />
             </div>
+            
+            <div className="lesson-footer">
+                <Button 
+                    type="btn-white btn-full-width" 
+                    text="Далее" 
+                    onClick={clickNextBtn}
+                />
+            </div>
         </div>
     );
 }

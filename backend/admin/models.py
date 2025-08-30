@@ -76,6 +76,7 @@ class Course(Base):
     access_time = Column(Integer, default=-1, comment="Время доступа")
     visible = Column(Boolean, default=True, comment="Видимость курса")
     sort_order = Column(BigInteger, default=0, comment="Порядок сортировки")
+    completion_on = Column(Boolean, default=False, comment="Отслеживание выполнения уроков")
     time_modified = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     time_created = Column(DateTime(timezone=True), server_default=func.now())
     

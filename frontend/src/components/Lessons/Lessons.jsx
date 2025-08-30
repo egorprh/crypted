@@ -7,6 +7,7 @@ import { useAppData } from "../../contexts/AppDataContext.jsx";
 import handleImageError from "../helpers/handleImageError.js";
 import ContentNotFound from "../ContentNotFound/ContentNotFound.jsx";
 import ArrowBtnIcon from "../../assets/images/ArrowBtnIcon.jsx";
+import LockIcon from "../../assets/images/LockIcon.jsx";
 import Header from "../Header/Header.jsx";
 import Logo from "../../assets/images/Logo.jsx";
 import TimerIcon from "../../assets/images/TImerIcon.jsx";
@@ -20,6 +21,23 @@ export default function Lessons({ user }) {
     const [courseTitle, setCourseTitle] = useState('');
     const [courseDescr, setCourseDescr] = useState('');
     const [courseTimer, setCourseTimer] = useState([]);
+
+    const userId = user?.id || 0;
+
+    const goToLesson = (lesson) => {
+        fetch('/api/lesson_viewed', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                lessonId: lesson.id, 
+                userId: userId 
+            })
+        }).catch(error => {
+            console.error('Ошибка при отправке события просмотра урока:', error);
+        });
+
+        navigate(`/lessons/${courseId}/${lesson.id}/content`);
+    };
 
     useEffect(() => {
         if (!loading && data) {
@@ -77,11 +95,13 @@ export default function Lessons({ user }) {
             </div>
 
             {lessons?.length ? lessons?.map((lesson, index) => (
-                <div className="lesson-block" key={lesson.id}>
-                    <div className="badge lesson-badge">Урок {index + 1}</div>
+                <div className={`lesson-block ${lesson.blocked ? 'lesson-block--blocked' : ''}`} key={lesson.id}>
+                    <div className={`badge lesson-badge ${lesson.blocked ? 'lesson-badge--blocked' : ''}`}>
+                        Урок {index + 1}
+                    </div>
                     <div
-                        className="lesson-card"
-                        onClick={() => navigate(`/lessons/${courseId}/${lesson.id}/content`)}
+                        className={`lesson-card ${lesson.blocked ? 'lesson-card--blocked' : ''}`}
+                        onClick={() => !lesson.blocked && goToLesson(lesson)}
                     >
                         <div className="info">
                             <img
@@ -89,10 +109,12 @@ export default function Lessons({ user }) {
                                 alt=""
                                 onError={handleImageError()}
                             />
-                            <span>{lesson.title}</span>
+                            <span className={lesson.blocked ? 'lesson-title--blocked' : ''}>
+                                {lesson.blocked ? 'Доступно после прохождения предыдущего урока' : lesson.title}
+                            </span>
                         </div>
                         <div className="arrow">
-                            <ArrowBtnIcon />
+                            {lesson.blocked ? <LockIcon /> : <ArrowBtnIcon />}
                         </div>
                     </div>
                 </div>

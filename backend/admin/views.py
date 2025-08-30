@@ -150,7 +150,7 @@ class CourseAdmin(ModelView, model=Course):
     page_size = 30
     
     # Отображаемые колонки
-    column_list = [Course.id, Course.title, Course.type, Course.level, Course.visible, Course.sort_order, Course.time_created]
+    column_list = [Course.id, Course.title, Course.type, Course.level, Course.visible, Course.sort_order, Course.completion_on, Course.time_created]
     column_searchable_list = [Course.title, Course.description]
     column_sortable_list = [Course.id, Course.title, Course.level, Course.sort_order, Course.time_created]
     
@@ -173,6 +173,7 @@ class CourseAdmin(ModelView, model=Course):
         'access_time': 'Время доступа',
         'visible': 'Видимый',
         'sort_order': 'Порядок сортировки',
+        'completion_on': 'Отслеживание выполнения',
         'time_modified': 'Дата изменения',
         'time_created': 'Дата создания'
     }
