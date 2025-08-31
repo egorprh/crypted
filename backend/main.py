@@ -19,7 +19,7 @@ from logger import logger  # Импортируем логгер
 # Импортируем функции для работы с записями пользователей на курсы
 from enrollment import create_user_enrollment, get_course_access_info
 # Импортируем вспомогательные функции
-from misc import send_survey_to_crm, remove_timestamps, check_lesson_blocked, mark_lesson_completed
+from misc import send_survey_to_crm, remove_timestamps, check_lesson_blocked, mark_lesson_completed, check_enter_survey_completion
 
 # Импорт для настройки админки
 from admin.admin_setup import setup_admin
@@ -574,8 +574,8 @@ async def get_app_data(user_id: int):
 
     # Если пользователь не прошел входное тестирование, добавляем его
     enter_survey = await db.get_records_sql(f"""SELECT * FROM surveys WHERE visible = $1 LIMIT 1""", True)
-    user_actions = await db.get_records("user_actions_log", {"user_id": user["id"], "action": "enter_survey"})
-    if len(enter_survey) > 0 and len(user_actions) == 0:
+    has_completed_survey = await check_enter_survey_completion(user["id"], db)
+    if len(enter_survey) > 0 and not has_completed_survey:
         enter_survey = enter_survey[0]
         enter_survey["questions"] = await db.get_records_sql(
                         """SELECT sq.id, q.text, q.type FROM survey_questions sq

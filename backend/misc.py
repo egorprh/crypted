@@ -256,3 +256,47 @@ async def is_lesson_completed_by_user(user_id: int, lesson_id: int, db) -> bool:
     except Exception as e:
         logger.error(f"Ошибка при проверке завершения урока {lesson_id} для пользователя {user_id}: {e}")
         return False
+
+
+async def check_enter_survey_completion(user_id: int, db) -> bool:
+    """
+    Проверяет, прошел ли пользователь входное тестирование.
+    
+    Проверяет наличие реальных ответов пользователя на вопросы входного опроса
+    в таблице user_answers, а не логи в user_actions_log.
+    
+    Args:
+        user_id: ID пользователя
+        db: Объект базы данных
+    
+    Returns:
+        bool: True если пользователь прошел входное тестирование, False в противном случае
+    """
+    try:
+        # Получаем активный входной опрос
+        enter_survey = await db.get_records_sql(
+            "SELECT id FROM surveys WHERE visible = $1 LIMIT 1", 
+            True
+        )
+        
+        if not enter_survey:
+            # Если нет активного опроса, считаем что тестирование пройдено
+            return True
+        
+        survey_id = enter_survey[0]["id"]
+        
+        # Проверяем, есть ли у пользователя ответы на вопросы входного опроса
+        user_survey_answers = await db.get_records_sql("""
+            SELECT COUNT(*) as answer_count 
+            FROM user_answers ua
+            JOIN survey_questions sq ON ua.instance_qid = sq.id
+            WHERE ua.user_id = $1 AND ua.type = 'survey' AND sq.survey_id = $2
+        """, user_id, survey_id)
+        
+        # Если есть хотя бы один ответ на вопросы опроса, считаем тестирование пройденным
+        return user_survey_answers[0]["answer_count"] > 0
+        
+    except Exception as e:
+        logger.error(f"Ошибка при проверке прохождения входного тестирования для пользователя {user_id}: {e}")
+        # В случае ошибки считаем что тестирование не пройдено
+        return False
