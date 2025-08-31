@@ -19,7 +19,7 @@ from logger import logger  # Импортируем логгер
 # Импортируем функции для работы с записями пользователей на курсы
 from enrollment import create_user_enrollment, get_course_access_info
 # Импортируем вспомогательные функции
-from misc import send_survey_to_crm, remove_timestamps, check_lesson_blocked
+from misc import send_survey_to_crm, remove_timestamps, check_lesson_blocked, mark_lesson_completed
 
 # Импорт для настройки админки
 from admin.admin_setup import setup_admin
@@ -297,8 +297,21 @@ async def lesson_viewed(request: Request):
         if not user:
             return {"status": "error", "message": "User not found"}
         
-        # Записываем событие просмотра урока
+        # Записываем событие просмотра урока в user_actions_log (для совместимости)
         asyncio.create_task(trigger_event('lesson_viewed', user["id"], lesson_id))
+        
+        # Проверяем, есть ли у урока задания
+        quizzes = await db.get_records_sql(
+            "SELECT id FROM quizzes WHERE lesson_id = $1 AND visible = $2", 
+            lesson_id, True
+        )
+        
+        # Отмечаем урок как завершенный только если у него нет заданий
+        if not quizzes:
+            asyncio.create_task(mark_lesson_completed(user["id"], lesson_id, db))
+            logger.info(f"Lesson {lesson_id} marked as completed (no quizzes) for user {user_id}")
+        else:
+            logger.info(f"Lesson {lesson_id} viewed but not marked as completed (has quizzes) for user {user_id}")
         
         logger.info(f"Lesson viewed event triggered for user {user_id}, lesson {lesson_id}")
         return {"status": "success", "message": "Lesson viewed event triggered."}
@@ -400,6 +413,16 @@ async def save_attempt(request: Request):
             # Вызов метода insert_record
             await db.insert_record('user_answers', params)
 
+        # Получаем урок для этого теста
+        lesson = await db.get_records_sql(
+            "SELECT l.id FROM lessons l JOIN quizzes q ON l.id = q.lesson_id WHERE q.id = $1",
+            request["quizId"]
+        )
+        
+        if lesson:
+            # Отмечаем урок как завершенный
+            asyncio.create_task(mark_lesson_completed(user["id"], lesson[0]["id"], db))
+        
         # Получаем количество ДЗ в курсе
         count_homeworks = await db.get_records_sql(
             f"SELECT q.id FROM quizzes q LEFT JOIN lessons l ON q.lesson_id = l.id WHERE l.course_id = {request['courseId']} AND q.visible = True")

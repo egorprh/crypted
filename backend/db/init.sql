@@ -238,6 +238,17 @@ CREATE TABLE IF NOT EXISTS user_enrollment (
     time_created TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Создание таблицы lesson_completions
+CREATE TABLE IF NOT EXISTS lesson_completions (
+    id BIGSERIAL PRIMARY KEY,
+    user_id BIGINT REFERENCES users(id) ON DELETE CASCADE,
+    lesson_id BIGINT REFERENCES lessons(id) ON DELETE CASCADE,
+    completed_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    time_modified TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    time_created TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(user_id, lesson_id)
+);
+
 -- Добавление данных
 
 -- Вставка 7 вопросов в таблицу faq

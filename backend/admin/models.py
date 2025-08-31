@@ -387,6 +387,34 @@ class UserEnrolment(Base):
     
     @property
     def formatted_status(self):
+        """Форматированный статус записи"""
+        if self.status == ENROLLMENT_STATUS_NOT_ENROLLED:
+            return "Не записан"
+        elif self.status == ENROLLMENT_STATUS_ENROLLED:
+            return "Записан"
+        else:
+            return f"Неизвестный статус ({self.status})"
+
+
+class LessonCompletion(Base):
+    """
+    Модель завершения уроков пользователями.
+    """
+    __tablename__ = "lesson_completions"
+    
+    id = Column(BigInteger, primary_key=True, autoincrement=True)
+    user_id = Column(BigInteger, ForeignKey("users.id", ondelete="CASCADE"), comment="ID пользователя")
+    lesson_id = Column(BigInteger, ForeignKey("lessons.id", ondelete="CASCADE"), comment="ID урока")
+    completed_at = Column(DateTime(timezone=True), server_default=func.now(), comment="Время завершения")
+    time_modified = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), comment="Время изменения")
+    time_created = Column(DateTime(timezone=True), server_default=func.now(), comment="Время создания")
+    
+    # Связи с другими таблицами
+    user = relationship("User", backref="lesson_completions")
+    lesson = relationship("Lesson", backref="completions")
+    
+    def __str__(self):
+        return f"Завершение {self.id}: пользователь {self.user_id}, урок {self.lesson_id}"
         """Форматированный статус"""
         if self.status == 0:
             return "Незаписан"

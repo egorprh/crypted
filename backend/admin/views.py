@@ -9,7 +9,7 @@ from sqlalchemy.orm import joinedload
 from admin.models import (
     File, User, Course, UserActionsLog, Lesson, Materials, Quiz, Survey, 
     Question, SurveyQuestion, QuizQuestion, Answer, UserAnswer, 
-    QuizAttempt, Event, Level, Faq, Config, UserEnrolment
+    QuizAttempt, Event, Level, Faq, Config, UserEnrolment, LessonCompletion
 )
 from admin.custom_fields import FileUploadField, HexColorField
 from logger import logger
@@ -761,5 +761,51 @@ class UserActionsLogAdmin(ModelView, model=UserActionsLog):
     # Права доступа
     can_create = False
     can_edit = False
+    can_delete = True
+    can_view_details = True
+
+
+class LessonCompletionAdmin(ModelView, model=LessonCompletion):
+    """
+    Админ представление для управления завершениями уроков.
+    """
+    name = "Завершение урока"
+    name_plural = "Завершения уроков"
+    icon = "fa-solid fa-check-circle"
+    page_size = 50
+    
+    # Отображаемые колонки
+    column_list = [LessonCompletion.id, LessonCompletion.user, LessonCompletion.lesson, LessonCompletion.completed_at]
+    column_searchable_list = []
+    column_sortable_list = [LessonCompletion.id, LessonCompletion.user_id, LessonCompletion.lesson_id, LessonCompletion.completed_at]
+    
+    # Русские названия колонки
+    column_labels = {
+        'id': 'ID',
+        'user_id': 'ID пользователя',
+        'user': 'Пользователь',
+        'lesson_id': 'ID урока',
+        'lesson': 'Урок',
+        'completed_at': 'Время завершения'
+    }
+    
+    # Исключаем автоматические поля
+    form_excluded_columns = ["completed_at"]
+    
+    # Настройка отображения связанных объектов
+    form_ajax_refs = {
+        'user': {
+            'fields': ['telegram_id', 'username'],
+            'page_size': 10
+        },
+        'lesson': {
+            'fields': ['title', 'id'],
+            'page_size': 10
+        }
+    }
+    
+    # Права доступа
+    can_create = False  # Завершения создаются автоматически
+    can_edit = False    # Завершения не редактируются
     can_delete = True
     can_view_details = True

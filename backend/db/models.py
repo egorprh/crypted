@@ -186,3 +186,11 @@ class UserEnrolment(BaseModel):
     status: int = 0  # 0 - незаписан, 1 - записан
     time_modified: Optional[datetime] = None
     time_created: Optional[datetime] = None
+
+class LessonCompletion(BaseModel):
+    id: int
+    user_id: int
+    lesson_id: int
+    completed_at: Optional[datetime] = None
+    time_modified: Optional[datetime] = None
+    time_created: Optional[datetime] = None
