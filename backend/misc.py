@@ -76,6 +76,131 @@ async def send_survey_to_crm(user: Dict, survey_data: list, level: Dict):
         # Не прерываем выполнение основной логики при ошибке CRM
 
 
+async def send_homework_notification(user: dict, quiz_id: int, course_id: int, answers: list, db):
+    """
+    Отправляет уведомление о выполнении домашнего задания.
+    
+    Функция формирует и отправляет уведомление в Telegram канал с информацией о том,
+    что пользователь выполнил задание, включая все его ответы (тестовые и текстовые).
+    
+    Args:
+        user: Данные пользователя (содержит id, name, telegram_id)
+        quiz_id: ID теста/задания
+        course_id: ID курса
+        answers: Список ответов пользователя (может содержать answerId и/или answerText)
+        db: Объект базы данных для выполнения SQL-запросов
+    
+    Returns:
+        None (функция логирует результат выполнения)
+    
+    Raises:
+        Exception: Логирует ошибки, но не прерывает выполнение
+    """
+    try:
+        # Шаг 1: Получаем информацию о курсе и уроке для формирования контекста уведомления
+        # Используем JOIN для получения названий курса и урока по ID теста
+        course_info = await db.get_records_sql("""
+            SELECT c.title FROM courses c 
+            JOIN lessons l ON c.id = l.course_id 
+            JOIN quizzes q ON l.id = q.lesson_id 
+            WHERE q.id = $1
+        """, quiz_id)
+        
+        lesson_info = await db.get_records_sql("""
+            SELECT l.title FROM lessons l 
+            JOIN quizzes q ON l.id = q.lesson_id 
+            WHERE q.id = $1
+        """, quiz_id)
+        
+        # Проверяем, что получили информацию о курсе и уроке
+        if not course_info or not lesson_info:
+            logger.error(f"Не удалось получить информацию о курсе/уроке для quiz_id {quiz_id}")
+            return
+        
+        course_title = course_info[0]["title"]
+        lesson_title = lesson_info[0]["title"]
+        
+        # Шаг 2: Получаем тексты вопросов и информацию о правильности ответов
+        # Кэшируем тексты вопросов, чтобы избежать повторных запросов к БД
+        question_texts = {}
+        correct_answers_count = 0
+        
+        for answer in answers:
+            # Получаем текст вопроса и тип вопроса
+            question = await db.get_records_sql("""
+                SELECT q.text, q.type FROM questions q 
+                JOIN quiz_questions qq ON q.id = qq.question_id 
+                WHERE qq.id = $1
+            """, answer["questionId"])
+            if question:
+                question_texts[answer["questionId"]] = {
+                    'text': question[0]["text"],
+                    'type': question[0]["type"]
+                }
+        
+        # Шаг 3: Формируем структурированное сообщение для уведомления
+        message = f"📚 Пользователь @{user.get('username', user.get('id'))} выполнил задание в курсе \"{course_title}\"\n"
+        message += f"Урок: {lesson_title}\n\n"
+        message += "✍️ Ответы пользователя:\n\n"
+        
+        # Шаг 4: Добавляем каждый ответ пользователя в сообщение
+        for i, answer in enumerate(answers, 1):
+            # Получаем текст вопроса или используем заглушку
+            question_info = question_texts.get(answer["questionId"], {'text': f"Вопрос {answer['questionId']}", 'type': 'quiz'})
+            question_text = question_info['text']
+            question_type = question_info['type']
+            
+            message += f"{i}. {question_text}\n"
+            
+            # Проверяем тип ответа и формируем соответствующую информацию
+            if "answerText" in answer and answer["answerText"]:
+                # Это текстовый ответ (произвольный ответ пользователя)
+                message += f"   Ответ: {answer['answerText']}\n"
+                # Текстовые ответы всегда считаем правильными
+                message += "   Правильно: ✅\n"
+                correct_answers_count += 1
+            else:
+                # Это тестовый ответ - получаем текст варианта ответа и проверяем правильность
+                answer_text = await db.get_records_sql("""
+                    SELECT a.text, a.correct FROM answers a WHERE a.id = $1
+                """, answer.get("answerId", 0))
+                if answer_text:
+                    message += f"   Ответ: {answer_text[0]['text']}\n"
+                    is_correct = answer_text[0].get('correct', False)
+                    message += f"   Правильно: {'✅' if is_correct else '❌'}\n"
+                    if is_correct:
+                        correct_answers_count += 1
+            
+            message += "\n"
+        
+        # Шаг 5: Добавляем статистику
+        total_questions = len(answers)
+        progress_percent = (correct_answers_count / total_questions) * 100 if total_questions > 0 else 0
+        
+        message += f"📊 Статистика:\n"
+        message += f"Правильных ответов: {correct_answers_count}/{total_questions}\n"
+        message += f"Прогресс: {progress_percent:.1f}%"
+        
+        # Шаг 6: Отправляем сформированное уведомление в Telegram канал
+        # Используем сервис уведомлений для отправки
+        from notification_service import send_service_message
+        
+        # Очищаем сообщение от опасных символов перед отправкой в Telegram
+        # Telegram имеет ограничение в 4096 символов и не поддерживает HTML теги
+        from db.pgapi import sanitize_input
+        cleaned_message = sanitize_input(message, max_length=4096)
+        
+        await send_service_message(cleaned_message)
+        
+        # Логируем успешную отправку уведомления
+        logger.info(f"Уведомление о выполнении задания отправлено для пользователя {user['id']}")
+        
+    except Exception as e:
+        # Логируем ошибки, но не прерываем выполнение основной логики
+        # Это важно для стабильности системы
+        logger.error(f"Ошибка отправки уведомления о выполнении задания: {e}")
+
+
 def remove_timestamps(data):
     """
     Удаляет временные метки из данных для очистки.

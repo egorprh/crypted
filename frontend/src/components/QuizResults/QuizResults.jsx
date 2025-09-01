@@ -71,28 +71,42 @@ export default function QuizResults({ user }) {
                     questions.map((question, index) => (
                         <div key={question.id} className="quiz-question">
                             <h2>{index + 1}. {question.text}</h2>
-                            <div className="quiz-answers">
-                                {question.answers.map(answer => {
-                                    const isCorrect = answer.correct;
-                                    const isChosen = answer.user_answer;
+                            {/* Условное отображение в зависимости от типа вопроса */}
+                            {question.type === "text" ? (
+                                // Блок для отображения текстовых ответов (произвольных)
+                                <div className="quiz-text-answer">
+                                    <div className="text-answer-display">
+                                        <strong>Ваш ответ:</strong>
+                                        {/* Отображаем текстовый ответ пользователя или заглушку */}
+                                        <p>{question.answers[0]?.text || "Ответ не найден"}</p>
+                                    </div>
+                                </div>
+                            ) : (
+                                // Блок для отображения тестовых вопросов с вариантами ответов
+                                <div className="quiz-answers">
+                                    {question.answers.map(answer => {
+                                        const isCorrect = answer.correct;      // Правильный ли это ответ
+                                        const isChosen = answer.user_answer;  // Выбрал ли его пользователь
 
-                                    let highlight = '';
-                                    if (isCorrect) highlight = 'correct';
-                                    else if (isChosen) highlight = 'incorrect';
+                                        // Определяем стиль подсветки для варианта ответа
+                                        let highlight = '';
+                                        if (isCorrect) highlight = 'correct';        // Правильный ответ
+                                        else if (isChosen) highlight = 'incorrect';   // Неправильно выбранный
 
-                                    return (
-                                        <label key={answer.id} className={`quiz-answer ${highlight}`}>
-                                            <input
-                                                type="radio"
-                                                checked={isChosen}
-                                                disabled
-                                                readOnly
-                                            />
-                                            {answer.text}
-                                        </label>
-                                    );
-                                })}
-                            </div>
+                                        return (
+                                            <label key={answer.id} className={`quiz-answer ${highlight}`}>
+                                                <input
+                                                    type="radio"
+                                                    checked={isChosen}  // Отмечаем выбранный пользователем вариант
+                                                    disabled           // Блокируем изменение
+                                                    readOnly          // Только для чтения
+                                                />
+                                                {answer.text}
+                                            </label>
+                                        );
+                                    })}
+                                </div>
+                            )}
                         </div>
                     ))
                     :

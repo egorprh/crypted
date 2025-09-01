@@ -138,6 +138,7 @@
                     "visible": true,
                     "source_url": "https://rutube.ru/video/3620513b2c2ca332018cdb61d421efce",
                     "sort_order": 0,
+                    "blocked": true,
                     "materials": [
                         {
                             "id": 2,

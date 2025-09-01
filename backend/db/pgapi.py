@@ -1,5 +1,6 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 import os
+import re
 from typing import Any, Dict, Optional, Type, Union
 from pydantic import BaseModel
 import asyncpg
@@ -11,6 +12,76 @@ import gzip
 import shutil
 
 from config import load_config
+
+
+def sanitize_input(text: str, max_length: int = 512) -> str:
+    """
+    Очищает пользовательский ввод от опасных символов и тегов.
+    
+    Args:
+        text: Исходный текст для очистки
+        max_length: Максимальная длина текста
+    
+    Returns:
+        Очищенный и обрезанный текст
+    """
+    if not text:
+        return ""
+    
+    # Приводим к строке
+    text = str(text)
+    
+    # Убираем HTML теги (включая script, style, iframe и др.)
+    text = re.sub(r'<[^>]+>', '', text)
+    
+    # Убираем потенциально опасные символы
+    dangerous_chars = ['<', '>', '"', "'", '&', ';', '{', '}', '[', ']', '(', ')', '=']
+    for char in dangerous_chars:
+        text = text.replace(char, '')
+    
+    # Убираем опасные SQL последовательности
+    sql_dangerous = ['--', '/*', '*/', 'xp_', 'sp_', 'exec', 'execute']
+    for pattern in sql_dangerous:
+        text = text.replace(pattern, '')
+    
+    # Убираем множественные пробелы, но сохраняем переносы строк
+    text = re.sub(r'[ \t]+', ' ', text)
+    
+    # Обрезаем до максимальной длины
+    if len(text) > max_length:
+        text = text[:max_length].rstrip()
+    
+    return text.strip()
+
+
+def sanitize_data(data: dict, max_length: int = 512) -> dict:
+    """
+    Очищает все строковые значения в словаре от опасных символов.
+    
+    Args:
+        data: Словарь с данными для очистки
+        max_length: Максимальная длина для строковых полей
+    
+    Returns:
+        Словарь с очищенными данными
+    """
+    if not isinstance(data, dict):
+        return data
+    
+    cleaned_data = {}
+    for key, value in data.items():
+        if isinstance(value, str):
+            cleaned_data[key] = sanitize_input(value, max_length)
+        elif isinstance(value, dict):
+            cleaned_data[key] = sanitize_data(value, max_length)
+        elif isinstance(value, list):
+            cleaned_data[key] = [sanitize_data(item, max_length) if isinstance(item, dict) else 
+                                (sanitize_input(item, max_length) if isinstance(item, str) else item) 
+                                for item in value]
+        else:
+            cleaned_data[key] = value
+    
+    return cleaned_data
 
 class PGApi:
     def __init__(self):
@@ -85,29 +156,35 @@ class PGApi:
         return await self.execute(sql, *params, fetch=True)
 
     async def insert_record(self, table_name: str, params: dict):
+        # Автоматически очищаем все строковые данные перед вставкой
+        cleaned_params = sanitize_data(params)
+        
         keys = ', '.join(
-            f"{item}" for item in params.keys()
+            f"{item}" for item in cleaned_params.keys()
         )
         params_mask = ''
         sqlparams = []
-        for num, val in enumerate(params.values(), start=1):
+        for num, val in enumerate(cleaned_params.values(), start=1):
             params_mask += f"${num}"
-            if num != len(params.values()):
+            if num != len(cleaned_params.values()):
                 params_mask += ','
             sqlparams.append(val)
         sql = f"INSERT INTO {table_name} ({keys}) VALUES ({params_mask}) RETURNING id;"
         try:
             return await self.execute(sql, *sqlparams, fetchval=True)
         except asyncpg.exceptions.UniqueViolationError:
-            return await self.get_field(table_name, 'id', params)
+            return await self.get_field(table_name, 'id', cleaned_params)
 
     async def update_record(self, table_name: str, recordid: int, params: dict):
+        # Автоматически очищаем все строковые данные перед обновлением
+        cleaned_params = sanitize_data(params)
+        
         now = datetime.now()
         local_now = now.astimezone()
         local_tz = local_now.tzinfo
-        params['time_modified'] = datetime.now(local_tz)
+        cleaned_params['time_modified'] = datetime.now(local_tz)
         sql = f"UPDATE {table_name} SET "
-        sql, sqlparams = self.format_args(sql, params, ", ")
+        sql, sqlparams = self.format_args(sql, cleaned_params, ", ")
         sql += f" WHERE id = ${len(sqlparams) + 1};"
         sqlparams.append(recordid)
         await self.execute(sql, *sqlparams, execute=True)
@@ -266,11 +343,9 @@ class PGApi:
                 return
             
             current_time = datetime.now()
-            cutoff_time = current_time.replace(hour=0, minute=0, second=0, microsecond=0)
-            
-            # Вычисляем время, старше которого файлы нужно удалить
-            for _ in range(keep_days):
-                cutoff_time = cutoff_time.replace(day=cutoff_time.day - 1)
+            # Используем timedelta для корректного вычитания дней
+            cutoff_time = current_time - timedelta(days=keep_days)
+            cutoff_time = cutoff_time.replace(hour=0, minute=0, second=0, microsecond=0)
             
             deleted_count = 0
             for filename in os.listdir(dump_dir):

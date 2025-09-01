@@ -191,7 +191,7 @@ class Question(Base):
     
     id = Column(BigInteger, primary_key=True, autoincrement=True)
     text = Column(Text, comment="Текст вопроса")
-    type = Column(String(255), comment="Тип вопроса (quiz, text, phone, age)")
+    type = Column(String(255), comment="Тип вопроса: quiz (тест), text (произвольный ответ), phone (телефон), age (возраст)")
     visible = Column(Boolean, default=True, comment="Видимость вопроса")
     time_modified = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     time_created = Column(DateTime(timezone=True), server_default=func.now())

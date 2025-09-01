@@ -372,7 +372,8 @@
                                 }
                             ]
                         }
-                    ]
+                    ],
+                    "blocked": false
                 },
                 {
                     "id": 2,
@@ -561,10 +562,25 @@
                                             "question_id": 18
                                         }
                                     ]
+                                },
+                                {
+                                    "id": 69,
+                                    "text": "Каким трейдером вы себя видите через пару месяцев?",
+                                    "type": "text",
+                                    "visible": true,
+                                    "answers": []
+                                },
+                                {
+                                    "id": 70,
+                                    "text": "Каким трейдером вы себя видите через несколько лет?",
+                                    "type": "text",
+                                    "visible": true,
+                                    "answers": []
                                 }
                             ]
                         }
-                    ]
+                    ],
+                    "blocked": false
                 },
                 {
                     "id": 3,
@@ -747,7 +763,8 @@
                                 }
                             ]
                         }
-                    ]
+                    ],
+                    "blocked": false
                 },
                 {
                     "id": 4,
@@ -1099,7 +1116,8 @@
                                 }
                             ]
                         }
-                    ]
+                    ],
+                    "blocked": false
                 },
                 {
                     "id": 5,
@@ -1451,7 +1469,8 @@
                                 }
                             ]
                         }
-                    ]
+                    ],
+                    "blocked": false
                 },
                 {
                     "id": 6,
@@ -1643,7 +1662,8 @@
                                 }
                             ]
                         }
-                    ]
+                    ],
+                    "blocked": false
                 },
                 {
                     "id": 7,
@@ -1995,7 +2015,8 @@
                                 }
                             ]
                         }
-                    ]
+                    ],
+                    "blocked": false
                 },
                 {
                     "id": 8,
@@ -2187,7 +2208,8 @@
                                 }
                             ]
                         }
-                    ]
+                    ],
+                    "blocked": false
                 },
                 {
                     "id": 9,
@@ -2379,7 +2401,8 @@
                                 }
                             ]
                         }
-                    ]
+                    ],
+                    "blocked": false
                 },
                 {
                     "id": 10,
@@ -2443,13 +2466,237 @@
                                 }
                             ]
                         }
-                    ]
+                    ],
+                    "blocked": false
                 }
             ]
         }
     ],
     "events": [],
     "homework": [
+        {
+            "id": 8,
+            "quiz_id": 2,
+            "user_id": 1,
+            "progress": 43.0,
+            "course_title": "Старт в торговле криптовалютой",
+            "lesson_title": "Урок 2: Как выбрать биржу и пополнить счёт?",
+            "lesson_order": 0,
+            "course_id": 1,
+            "lesson_count": 10,
+            "questions": [
+                {
+                    "id": 11,
+                    "qid": 14,
+                    "text": "Какой из следующих факторов прямо влияет на безопасность хранения средств на бирже?",
+                    "type": "quiz",
+                    "answers": [
+                        {
+                            "id": 41,
+                            "text": "Количество доступных валют",
+                            "correct": false,
+                            "question_id": 14,
+                            "user_answer": true
+                        },
+                        {
+                            "id": 42,
+                            "text": "Наличие мобильного приложения",
+                            "correct": false,
+                            "question_id": 14,
+                            "user_answer": false
+                        },
+                        {
+                            "id": 43,
+                            "text": "Использование 2FA и холодного хранения",
+                            "correct": true,
+                            "question_id": 14,
+                            "user_answer": false
+                        },
+                        {
+                            "id": 44,
+                            "text": "Скорость регистрации",
+                            "correct": false,
+                            "question_id": 14,
+                            "user_answer": false
+                        }
+                    ]
+                },
+                {
+                    "id": 12,
+                    "qid": 15,
+                    "text": "Почему важно учитывать комиссии при выборе биржи?",
+                    "type": "quiz",
+                    "answers": [
+                        {
+                            "id": 45,
+                            "text": "Потому что это влияет на анонимность",
+                            "correct": false,
+                            "question_id": 15,
+                            "user_answer": false
+                        },
+                        {
+                            "id": 46,
+                            "text": "Чем ниже комиссии, тем меньше вы теряете при каждой сделке",
+                            "correct": true,
+                            "question_id": 15,
+                            "user_answer": false
+                        },
+                        {
+                            "id": 47,
+                            "text": "Комиссии влияют только на курс",
+                            "correct": false,
+                            "question_id": 15,
+                            "user_answer": true
+                        },
+                        {
+                            "id": 48,
+                            "text": "Это важно только для институциональных инвесторов",
+                            "correct": false,
+                            "question_id": 15,
+                            "user_answer": false
+                        }
+                    ]
+                },
+                {
+                    "id": 13,
+                    "qid": 16,
+                    "text": "Что особенно важно в интерфейсе биржи для новичков?",
+                    "type": "quiz",
+                    "answers": [
+                        {
+                            "id": 49,
+                            "text": "Поддержка тёмной темы",
+                            "correct": false,
+                            "question_id": 16,
+                            "user_answer": false
+                        },
+                        {
+                            "id": 50,
+                            "text": "Возможность изменять код платформы",
+                            "correct": false,
+                            "question_id": 16,
+                            "user_answer": false
+                        },
+                        {
+                            "id": 51,
+                            "text": "Простой и понятный интерфейс без перегрузки функциями",
+                            "correct": true,
+                            "question_id": 16,
+                            "user_answer": true
+                        },
+                        {
+                            "id": 52,
+                            "text": "Максимальное количество графиков на экране",
+                            "correct": false,
+                            "question_id": 16,
+                            "user_answer": false
+                        }
+                    ]
+                },
+                {
+                    "id": 14,
+                    "qid": 17,
+                    "text": "Как репутация биржи может повлиять на ваше решение?",
+                    "type": "quiz",
+                    "answers": [
+                        {
+                            "id": 53,
+                            "text": "Репутация не имеет значения, если биржа новая",
+                            "correct": false,
+                            "question_id": 17,
+                            "user_answer": false
+                        },
+                        {
+                            "id": 54,
+                            "text": "Отзывы пользователей и рейтинги помогают избежать мошенников",
+                            "correct": true,
+                            "question_id": 17,
+                            "user_answer": false
+                        },
+                        {
+                            "id": 55,
+                            "text": "Репутация важна только для крупных трейдеров",
+                            "correct": false,
+                            "question_id": 17,
+                            "user_answer": false
+                        },
+                        {
+                            "id": 56,
+                            "text": "Все биржи с одинаковым интерфейсом имеют одинаковую репутацию",
+                            "correct": false,
+                            "question_id": 17,
+                            "user_answer": true
+                        }
+                    ]
+                },
+                {
+                    "id": 15,
+                    "qid": 18,
+                    "text": "Зачем обращать внимание на регулирование биржи?",
+                    "type": "quiz",
+                    "answers": [
+                        {
+                            "id": 57,
+                            "text": "Это влияет на скорость вывода средств",
+                            "correct": false,
+                            "question_id": 18,
+                            "user_answer": true
+                        },
+                        {
+                            "id": 58,
+                            "text": "Регулируемые биржи работают быстрее",
+                            "correct": false,
+                            "question_id": 18,
+                            "user_answer": false
+                        },
+                        {
+                            "id": 59,
+                            "text": "Это добавляет доверия и снижает риски",
+                            "correct": true,
+                            "question_id": 18,
+                            "user_answer": false
+                        },
+                        {
+                            "id": 60,
+                            "text": "Регулируемые биржи запрещают торговать мемкоинами",
+                            "correct": false,
+                            "question_id": 18,
+                            "user_answer": false
+                        }
+                    ]
+                },
+                {
+                    "id": 68,
+                    "qid": 69,
+                    "text": "Каким трейдером вы себя видите через пару месяцев?",
+                    "type": "text",
+                    "answers": [
+                        {
+                            "id": 0,
+                            "text": "123",
+                            "correct": true,
+                            "question_id": 69,
+                            "user_answer": true
+                        }
+                    ]
+                },
+                {
+                    "id": 69,
+                    "qid": 70,
+                    "text": "Каким трейдером вы себя видите через несколько лет?",
+                    "type": "text",
+                    "answers": [
+                        {
+                            "id": 0,
+                            "text": "одлаы\n123",
+                            "correct": true,
+                            "question_id": 70,
+                            "user_answer": true
+                        }
+                    ]
+                }
+            ]
+        },
         {
             "id": 1,
             "quiz_id": 10,
@@ -2597,31 +2844,5 @@
             "value": "1"
         }
     ],
-    "events_count": 0,
-    "enter_survey": {
-        "id": 1,
-        "title": "Входное тестирование",
-        "description": "Пройди входное тестирование для доступа к курсам",
-        "visible": true,
-        "questions": [
-            {
-                "id": 1,
-                "text": "Ваш номер телефона",
-                "type": "phone",
-                "answers": []
-            },
-            {
-                "id": 2,
-                "text": "Ваше ФИО",
-                "type": "text",
-                "answers": []
-            },
-            {
-                "id": 3,
-                "text": "Сколько вам лет?",
-                "type": "age",
-                "answers": []
-            }
-        ]
-    }
+    "events_count": 0
 }

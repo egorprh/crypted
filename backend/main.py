@@ -19,7 +19,7 @@ from logger import logger  # Импортируем логгер
 # Импортируем функции для работы с записями пользователей на курсы
 from enrollment import create_user_enrollment, get_course_access_info
 # Импортируем вспомогательные функции
-from misc import send_survey_to_crm, remove_timestamps, check_lesson_blocked, mark_lesson_completed, check_enter_survey_completion
+from misc import send_survey_to_crm, remove_timestamps, check_lesson_blocked, mark_lesson_completed, check_enter_survey_completion, send_homework_notification
 
 # Импорт для настройки админки
 from admin.admin_setup import setup_admin
@@ -382,6 +382,7 @@ async def submit_enter_survey(request: Request):
 async def save_attempt(request: Request):
     """
     Сохраняет прогресс пользователя в таблицу UserProgress.
+    Поддерживает как тестовые вопросы (quiz), так и произвольные ответы (text).
     """
     if not check_db_connection():
         return {"status": "error", "message": "Database not connected"}
@@ -400,17 +401,22 @@ async def save_attempt(request: Request):
         }
         record_id = await db.insert_record('quiz_attempts', params)
 
-        # Записывем ответы пользователей
+        # Записываем ответы пользователей
         for request_answer in request["answers"]:
+            # Подготавливаем параметры для сохранения ответа
+            # answerId: ID выбранного варианта ответа (для тестовых вопросов)
+            # answerText: текстовый ответ пользователя (для вопросов типа "text")
+            # Если answerText отсутствует, то это обычный тестовый вопрос
+            # Если answerId отсутствует, устанавливаем 0 (для текстовых ответов)
             params = {
                 "user_id": user["id"],
                 "attempt_id": record_id,
                 "instance_qid": request_answer["questionId"],
                 "type": 'quiz',
-                "answer_id": request_answer["answerId"],
-                # "text": request_answer["answer"],
+                "answer_id": request_answer.get("answerId", 0),  # 0 для текстовых ответов
+                "text": request_answer.get("answerText", None),  # None для тестовых ответов
             }
-            # Вызов метода insert_record
+            # Сохраняем ответ в базу данных
             await db.insert_record('user_answers', params)
 
         # Получаем урок для этого теста
@@ -430,6 +436,13 @@ async def save_attempt(request: Request):
         
         if len(count_homeworks) == len(user_homeworks):
             asyncio.create_task(trigger_event('course_completed', int(user["id"]), int(request["courseId"])))
+
+        # Асинхронно отправляем уведомление о выполнении задания
+        # Уведомление отправляется независимо от типа ответов (тестовые или текстовые)
+        # Используем asyncio.create_task для неблокирующего выполнения
+        asyncio.create_task(send_homework_notification(
+            user, request["quizId"], request["courseId"], request["answers"], db
+        ))
 
         logger.info(f"User {user['id']} completed the quiz {request['quizId']}.")
 
@@ -545,21 +558,41 @@ async def get_app_data(user_id: int):
         )
         homework["lesson_count"] = lesson_count[0]["count"] if lesson_count else 0
         
+        # Получаем все вопросы для данного теста
         homework["questions"] = await db.get_records_sql("""
                     SELECT qq.id, q.id AS qid, q.text, q.type FROM quiz_questions qq
                     JOIN questions q ON qq.question_id = q.id
                     AND qq.quiz_id = $1 AND q.visible = $2 ORDER BY qq.id""", homework["quiz_id"], True)
+        
         for question in homework["questions"]:
-            question["answers"] = await db.get_records("answers", {"question_id": question["qid"]})
-            for answer in question["answers"]:
-                # Берем последний ответ пользователя на вопрос
-                user_answer = await db.get_records_sql("""
-                    SELECT * FROM user_answers 
-                    WHERE type = 'quiz' AND user_id = $1 AND instance_qid = $2 AND answer_id = $3 AND attempt_id = $4
+            if question["type"] == "text":
+                # Для текстовых вопросов ищем ответы в user_answers с type='quiz' и заполненным text
+                user_text_answer = await db.get_records_sql("""
+                    SELECT text FROM user_answers 
+                    WHERE type = 'quiz' AND user_id = $1 AND instance_qid = $2 AND attempt_id = $3
                     ORDER BY id DESC LIMIT 1""",
-                    user["id"], question["qid"], answer["id"], homework["id"])
-
-                answer["user_answer"] = len(user_answer) != 0
+                    user["id"], question["qid"], homework["id"])
+                
+                # Создаем виртуальный ответ для текстовых вопросов
+                question["answers"] = [{
+                    "id": 0,  # Виртуальный ID для текстовых ответов
+                    "text": user_text_answer[0]["text"] if user_text_answer else "",  # Текст ответа пользователя
+                    "correct": True,  # Текстовые ответы всегда правильные
+                    "question_id": question["qid"],
+                    "user_answer": True  # Пользователь всегда отвечает на текстовые вопросы
+                }]
+            else:
+                # Для тестовых вопросов получаем варианты ответов
+                question["answers"] = await db.get_records("answers", {"question_id": question["qid"]})
+                for answer in question["answers"]:
+                    # Ищем выбор пользователя в user_answers с type='quiz'
+                    user_answer = await db.get_records_sql("""
+                        SELECT * FROM user_answers 
+                        WHERE type = 'quiz' AND user_id = $1 AND instance_qid = $2 AND answer_id = $3 AND attempt_id = $4
+                        ORDER BY id DESC LIMIT 1""",
+                        user["id"], question["qid"], answer["id"], homework["id"])
+                    
+                    answer["user_answer"] = len(user_answer) != 0
 
     # Формируем данные для возврата
     data = {

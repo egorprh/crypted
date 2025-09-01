@@ -11,6 +11,7 @@ uvicorn==0.34.1
 yarl==1.20.0
 python-dotenv==1.1.0
 # Админка зависимости
+sqlalchemy==2.0.27
 sqladmin==0.21.0
 python-multipart==0.0.20
 wtforms==3.1.2

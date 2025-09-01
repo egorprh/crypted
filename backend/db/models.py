@@ -95,7 +95,7 @@ class Survey(BaseModel):
 class Question(BaseModel):
     id: int
     text: Optional[str] = None
-    type: Optional[str] = None  # quiz, text, phone, age
+    type: Optional[str] = None  # quiz (тест), text (произвольный ответ), phone (телефон), age (возраст)
     visible: bool = True
     time_modified: Optional[datetime] = None
     time_created: Optional[datetime] = None

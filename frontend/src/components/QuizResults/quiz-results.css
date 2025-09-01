@@ -37,3 +37,28 @@
     background-color: var(--gray-100);
     border-radius: var(--brs-sm);
 }
+
+/* Стили для отображения текстовых ответов в результатах */
+.text-answer-display {
+    background-color: var(--gray-100);  /* Светло-серый фон для выделения */
+    padding: 16px;                      /* Внутренние отступы */
+    border-radius: 8px;                 /* Скругленные углы */
+    border-left: 4px solid var(--success); /* Зеленая левая граница для индикации правильного ответа */
+}
+
+/* Заголовок "Ваш ответ:" */
+.text-answer-display strong {
+    color: var(--text);                 /* Цвет текста из CSS переменных */
+    font-size: var(--fs-s);             /* Размер шрифта */
+    margin-bottom: 8px;                 /* Отступ снизу */
+    display: block;                     /* Блочный элемент для отступа */
+}
+
+/* Текст ответа пользователя */
+.text-answer-display p {
+    margin: 0;                          /* Убираем стандартные отступы */
+    color: var(--text);                 /* Цвет текста */
+    font-size: var(--fs-s);             /* Размер шрифта */
+    line-height: 1.5;                   /* Межстрочный интервал для читаемости */
+    white-space: pre-wrap;              /* Сохраняем переносы строк из ввода пользователя */
+}

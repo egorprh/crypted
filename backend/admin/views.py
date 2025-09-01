@@ -6,6 +6,7 @@
 from sqladmin import ModelView
 import os
 from sqlalchemy.orm import joinedload
+from wtforms import SelectField
 from admin.models import (
     File, User, Course, UserActionsLog, Lesson, Materials, Quiz, Survey, 
     Question, SurveyQuestion, QuizQuestion, Answer, UserAnswer, 
@@ -382,14 +383,32 @@ class QuestionAdmin(ModelView, model=Question):
     column_labels = {
         'id': 'ID',
         'text': 'Текст вопроса',
-        'type': 'Тип',
+        'type': 'Тип вопроса',
         'visible': 'Видимый',
         'time_modified': 'Дата изменения',
         'time_created': 'Дата создания'
     }
     
-    # Исключаем автоматические поля
-    form_excluded_columns = ["time_modified", "time_created"]
+    # Исключаем автоматические поля и связанные объекты
+    form_excluded_columns = ["time_modified", "time_created", "quiz_questions", "answers"]
+    
+    # Настройка поля типа как селекта
+    form_overrides = {
+        'type': SelectField
+    }
+    
+    # Подсказки для типов вопросов в админке
+    form_args = {
+        'type': {
+            'choices': [
+                ('quiz', 'Тест - вопрос с вариантами ответов'),
+                ('text', 'Произвольный ответ - до 512 символов'),
+                ('phone', 'Телефон'),
+                ('age', 'Возраст')
+            ],
+            'description': 'Выберите тип вопроса. Для типа "text" пользователи смогут вводить произвольный ответ.'
+        }
+    }
     
     # Права доступа
     can_create = True
