@@ -4,7 +4,7 @@
 # Восстанавливает только данные, не изменяя структуру таблиц
 
 # Конфигурация
-DUMP_FILE="backend/db_dumps/init copy.sql"
+DUMP_FILE="backend/db_dumps/dump010925.sql"
 CONTAINER_NAME="free-dept-space-db"
 DB_NAME="crypted"
 DB_USER="postgres"

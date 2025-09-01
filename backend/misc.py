@@ -47,6 +47,7 @@ async def send_survey_to_crm(user: Dict, survey_data: list, level: Dict):
             "telegram_id": user["telegram_id"],
             "username": user.get("username"),
             "level_id": level["id"],
+            "level_short_name": level["short_name"],
             "level": level["name"],
             "name": name_value,
             "age": age_value,

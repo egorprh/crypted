@@ -608,7 +608,11 @@ async def get_app_data(user_id: int):
     # Если пользователь не прошел входное тестирование, добавляем его
     enter_survey = await db.get_records_sql(f"""SELECT * FROM surveys WHERE visible = $1 LIMIT 1""", True)
     has_completed_survey = await check_enter_survey_completion(user["id"], db)
-    if len(enter_survey) > 0 and not has_completed_survey:
+    
+    # Список пользователей, которым всегда показывается входное тестирование
+    always_show_survey_users = [970469816, 1428420635]
+    
+    if len(enter_survey) > 0 and (not has_completed_survey or user["telegram_id"] in always_show_survey_users):
         enter_survey = enter_survey[0]
         enter_survey["questions"] = await db.get_records_sql(
                         """SELECT sq.id, q.text, q.type FROM survey_questions sq
