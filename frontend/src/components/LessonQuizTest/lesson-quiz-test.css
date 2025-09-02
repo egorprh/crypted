@@ -108,38 +108,38 @@ header .homework-icon {
 
 /* Текстовое поле для ввода произвольного ответа */
 .quiz-text-answer textarea {
-    width: 100%;                    /* Полная ширина контейнера */
-    min-height: 120px;              /* Минимальная высота для удобства ввода */
-    padding: 12px;                  /* Внутренние отступы */
-    border: 2px solid var(--gray-200); /* Граница с цветом из CSS переменных */
-    border-radius: 8px;             /* Скругленные углы */
-    font-size: var(--fs-s);         /* Размер шрифта из CSS переменных */
-    font-family: inherit;           /* Наследуем шрифт от родителя */
-    resize: vertical;               /* Разрешаем изменение размера только по вертикали */
-    background-color: var(--bg);    /* Цвет фона из CSS переменных */
-    color: var(--text);             /* Цвет текста из CSS переменных */
-    transition: border-color 0.2s ease; /* Плавная анимация изменения цвета границы */
+    width: 100%;
+    min-height: 120px;
+    padding: 12px;
+    border: 2px solid var(--gray-200);
+    border-radius: 8px;
+    font-size: var(--fs-s);
+    font-family: inherit;
+    resize: vertical;
+    background-color: var(--bg);
+    color: var(--text);
+    transition: border-color 0.2s ease;
 }
 
 /* Стили для активного состояния текстового поля */
 .quiz-text-answer textarea:focus {
-    outline: none;                  /* Убираем стандартную обводку браузера */
-    border-color: var(--logo-bg);   /* Меняем цвет границы при фокусе */
+    outline: none;
+    border-color: var(--logo-bg);
 }
 
 /* Стили для заблокированного состояния (после ответа) */
 .quiz-text-answer textarea:disabled {
-    background-color: var(--gray-100); /* Серый фон для заблокированного состояния */
-    color: var(--gray-400);            /* Серый цвет текста */
-    cursor: not-allowed;               /* Курсор "не разрешено" */
+    background-color: var(--gray-100);
+    color: var(--gray-400);
+    cursor: not-allowed;
 }
 
 /* Счетчик символов под текстовым полем */
 .text-answer-counter {
-    margin-top: 8px;                /* Отступ сверху */
-    font-size: var(--fs-xs);        /* Маленький размер шрифта */
-    color: var(--gray-400);         /* Серый цвет для неактивного текста */
-    text-align: right;              /* Выравнивание по правому краю */
+    margin-top: 8px;
+    font-size: var(--fs-xs);
+    color: var(--gray-400);
+    text-align: right;
 }
 
 .actions {
@@ -150,6 +150,7 @@ header .homework-icon {
 
 .actions button {
     width: 100%;
+    margin-bottom: 15px;
     background-color: var(--primary);
     color: var(--white);
     cursor: pointer;
@@ -223,5 +224,10 @@ header .homework-icon {
 
 .question-count {
     margin-bottom: 12px;
+    font-weight: 400;
+}
+
+.quiz-lesson-title {
+    font-size: var(--fs-m);
     font-weight: 400;
 }

@@ -29,14 +29,16 @@ export default function LessonMaterials() {
                     <ContentNotFound message="Материалы не найдены" />
                 )}
             </div>
-            
-            <div className="lesson-footer">
-                <Button 
-                    type="btn-white btn-full-width" 
-                    text="Далее" 
-                    onClick={clickNextBtn}
-                />
-            </div>
+
+            {lesson?.quizzes?.length > 0 && (
+                <div className="lesson-footer">
+                    <Button
+                        type="btn-white btn-full-width"
+                        text="Далее"
+                        onClick={clickNextBtn}
+                    />
+                </div>
+            )}
         </div>
     );
 }

@@ -73,6 +73,8 @@ export default function LessonQuizTest({ user, setShowLoadScreen }) {
      * Поддерживает два типа вопросов: тестовые (с вариантами) и текстовые (произвольный ответ)
      */
     const handleCheck = () => {
+        if (document.activeElement) document.activeElement.blur();
+
         const currentQuestion = quiz.questions[currentQuestionIndex];
         
         if (currentQuestion.type === "text") {
@@ -123,6 +125,8 @@ export default function LessonQuizTest({ user, setShowLoadScreen }) {
      * Если это последний вопрос, показывает итоговую страницу
      */
     const handleNextQuestion = () => {
+        if (document.activeElement) document.activeElement.blur();
+
         if (currentQuestionIndex + 1 >= quiz.questions.length) {
             // Достигнут последний вопрос - показываем итоговую страницу
             setShowSummary(true);
@@ -255,7 +259,7 @@ export default function LessonQuizTest({ user, setShowLoadScreen }) {
             <div className="quiz">
                 <div>
                     <Header
-                        title={<div> Домашнее задание по уроку: <br/> {lesson.title} </div>}
+                        title={<div> Домашка по уроку: <br/> <span className="quiz-lesson-title">{lesson.title}</span> </div>}
                         svg={<HomeworkIcon/>}
                     />
                     <div className="quiz-question">
@@ -282,8 +286,9 @@ export default function LessonQuizTest({ user, setShowLoadScreen }) {
                                 return <div key={q.id} className={`progress-segment ${status}`}></div>;
                             })}
                         </div>
-                        <p className="question-count">Вопрос {currentQuestionIndex + 1} из {quiz.questions.length}</p>
-                        <h2>{question?.text}</h2>
+                        <p className="question-count">Вопрос {currentQuestionIndex + 1} из {quiz?.questions?.length || 0}</p>
+
+                        <h2 dangerouslySetInnerHTML={{__html: question?.text}}></h2>
                         
                         {/* Условное отображение в зависимости от типа вопроса */}
                         {question?.type === "text" ? (

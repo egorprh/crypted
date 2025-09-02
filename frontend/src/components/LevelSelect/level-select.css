@@ -7,14 +7,14 @@
     overflow: auto;
 
     .card-header {
-        padding: 20px 26px 17px 26px;
+        padding: 12px 18px 10px 18px;
         display: flex;
         flex-direction: column;
         align-items: start;
     }
 
     .card-body {
-        padding: 28px 18px;
+        padding: 10px 12px;
         border-bottom-left-radius: var(--brs-md);
         border-bottom-right-radius: var(--brs-md);
         border: 1px solid transparent;
@@ -56,13 +56,13 @@
 
     .level-description:not(:empty) {
         font-size: var(--fs-s);
-        margin-top: 12px;
+        margin-top: 8px;
         color: var(--gray-200);
         font-weight: 400;
     }
 
     .levels:not(:last-child) {
-        margin-bottom: 16px;
+        margin-bottom: 8px;
     }
 }
 

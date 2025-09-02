@@ -50,6 +50,19 @@ export default function LessonLayout() {
         navigate(`/lessons/${courseId}/${lessonId}/${tab}`);
     };
 
+    const getVisibleTabs = (lesson, buttons) => {
+        return buttons.filter((btn) => {
+            switch (btn.value) {
+                case "materials":
+                    return lesson.materials?.length > 0;
+                case "quiz":
+                    return lesson.quizzes?.length > 0;
+                default:
+                    return true;
+            }
+        });
+    };
+
     return (
         <div className="content">
             <div onClick={() => navigate(`/lessons/${courseId}`)} className="back-link">
@@ -58,7 +71,7 @@ export default function LessonLayout() {
             </div>
 
             <TabButtons
-                buttons={tabButtons.btns}
+                buttons={getVisibleTabs(lesson, tabButtons.btns)}
                 activeTab={currentTab}
                 onTabChange={handleTabChange}
             />

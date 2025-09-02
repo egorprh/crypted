@@ -10,7 +10,7 @@ export default function LessonQuiz() {
     const {lesson, courseId, lessonId} = useOutletContext();
 
     if (!lesson || !lesson.quizzes || lesson.quizzes.length === 0) {
-        return <ContentNotFound message="Тест не найден" />;
+        return <ContentNotFound message="Домашки нет" />;
     }
 
     const quiz = lesson.quizzes[0];

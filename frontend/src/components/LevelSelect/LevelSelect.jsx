@@ -23,7 +23,6 @@ export default function LevelSelect({ onContinue }) {
             return;
         }
 
-        setValidation("Выберите уровень");
         setLoading(true);
 
         try {

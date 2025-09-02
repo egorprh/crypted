@@ -9,6 +9,7 @@ import { useLocation } from "react-router-dom";
 import { useAppData } from "../../contexts/AppDataContext.jsx";
 import { useSurvey } from "../../contexts/SurveyContext.jsx";
 import LockIcon from "../../assets/images/LockIcon.jsx";
+import { createPortal } from "react-dom";
 
 export default function Footer() {
     const location = useLocation();
@@ -78,7 +79,10 @@ export default function Footer() {
                         </NavItem>
                     ))}
             </nav>
-            <div className="bottom-gradient-overlay"></div>
+            {createPortal(
+                <div className="bottom-gradient-overlay"></div>,
+                document.getElementById("portal-root")
+            )}
         </footer>
     );
 }
