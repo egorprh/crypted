@@ -523,7 +523,6 @@ async def get_app_data(user_id: int):
     faq = await db.get_records_sql("SELECT * FROM faq WHERE visible = $1 ORDER BY id", True)
 
     config = await db.get_records("config")
-    config.append({'name': 'user_level', 'value': str(user["level"])})
 
     levels = await db.get_records("levels")
 
@@ -610,7 +609,11 @@ async def get_app_data(user_id: int):
     has_completed_survey = await check_enter_survey_completion(user["id"], db)
     
     # Список пользователей, которым всегда показывается входное тестирование
-    always_show_survey_users = [970469816, 1428420635]
+    always_show_survey_users = [970469816, 1428420635, 0]
+    if user["telegram_id"] in always_show_survey_users:
+        config.append({'name': 'user_level', 'value': str(0)})
+    else:
+        config.append({'name': 'user_level', 'value': str(user["level"])})
     
     if len(enter_survey) > 0 and (not has_completed_survey or user["telegram_id"] in always_show_survey_users):
         enter_survey = enter_survey[0]
