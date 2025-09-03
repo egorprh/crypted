@@ -485,7 +485,7 @@ async def get_app_data(user_id: int):
         logger.info(f"--> Пользователь не найден, берем служебного гостя")
         user = await db.get_record("users", {"telegram_id": 0})
 
-    courses = await db.get_records_sql("SELECT * FROM courses WHERE visible = $1 AND level <= $2 ORDER BY sort_order", True, user["level"])
+    courses = await db.get_records_sql("SELECT * FROM courses WHERE visible = $1 AND level <= $2 ORDER BY level DESC, sort_order ASC", True, user["level"])
     for course in courses:
         # Получаем информацию о времени доступа и статусе записи пользователя на курс
         access_info = await get_course_access_info(db, user["id"], course["id"])
@@ -546,7 +546,7 @@ async def get_app_data(user_id: int):
             WHERE up_inner.user_id = {user["id"]}
             GROUP BY up_inner.quiz_id
         )
-        AND up.user_id = {user["id"]} ORDER BY q.id ASC;
+        AND up.user_id = {user["id"]} AND c.visible = True ORDER BY q.id ASC;
     """
     homeworks = await db.get_records_sql(homeworks_sql)
     for homework in homeworks:
@@ -620,7 +620,7 @@ async def get_app_data(user_id: int):
         enter_survey["questions"] = await db.get_records_sql(
                         """SELECT sq.id, q.text, q.type FROM survey_questions sq
                         JOIN questions q ON sq.question_id = q.id
-                        AND sq.survey_id = $1 AND q.visible = $2""",
+                        AND sq.survey_id = $1 AND q.visible = $2 ORDER BY q.id""",
                         enter_survey["id"], True)
         for question in enter_survey["questions"]:
                 question["answers"] = await db.get_records("answers", {"question_id": question["id"]})
