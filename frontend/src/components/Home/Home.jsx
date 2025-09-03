@@ -78,6 +78,15 @@ export default function Home() {
         setPopupData(null);
     };
 
+    const getLevelText = (level) => {
+        const levels = {
+            "1": <div className="badge-level badge-level-base">Базовый</div>,
+            "2": <div className="badge-level badge-level-middle">Средний</div>,
+            "3": <div className="badge-level badge-level-pro">Профи</div>,
+        };
+        return levels[level] || level;
+    };
+
     if (error) return <div className="error">Ошибка: {error}</div>;
 
     return (
@@ -165,11 +174,17 @@ export default function Home() {
                                             <h3>Доступ к курсу закрыт</h3>
                                         </div>
                                     )}
+
+                                    {course.level && (
+                                        <div className="badge-levels">
+                                            {getLevelText(course.level)}
+                                        </div>
+                                    )}
                                 </div>
 
                                 <div className="course-body">
                                     <div className="d-flex course-title-wrapper card-title-wrapper">
-                                        <p className="course-title">{course.title}</p>
+                                    <p className="course-title">{course.title}</p>
                                         {course.access_time === -1 || course.user_enrolment === 0
                                             ?
                                             (<div className="tag">

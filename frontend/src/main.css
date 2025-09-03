@@ -84,6 +84,10 @@
     --gray-200-05: rgba(103, 103, 103, 0.5);
     --gray-100: rgba(174, 174, 174, 0.6);
 
+    --badge-level-base-bg: var(--success);
+    --badge-level-middle-bg: var(--logo-bg);
+    --badge-level-pro-bg: #e18f40;
+
     --brs-lg: 40px;
     --brs-md: 24px;
     --brs-sm: 12px;
