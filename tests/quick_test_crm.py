@@ -34,7 +34,7 @@ async def quick_test():
             "answer": "25"
         },
         {
-            "question": "Ваш номер телефона?",
+            "question": "Телефон?",
             "answer": "+7 (999) 123-45-67"
         },
         {

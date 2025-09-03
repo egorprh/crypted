@@ -314,8 +314,8 @@ INSERT INTO config (name, value) VALUES
 ('bot_link', '');
 
 -- 4. Добавляем вопросы и ответы для опросов
-INSERT INTO questions (text, type) VALUES ('Ваш номер телефона', 'phone') RETURNING id;
-INSERT INTO questions (text, type) VALUES ('Ваше ФИО', 'text') RETURNING id;
+INSERT INTO questions (text, type) VALUES ('Телефон', 'phone') RETURNING id;
+INSERT INTO questions (text, type) VALUES ('Имя', 'text') RETURNING id;
 INSERT INTO questions (text, type) VALUES ('Сколько вам лет?', 'age') RETURNING id;
 
 
@@ -326,8 +326,8 @@ SELECT
     id
 FROM questions
 WHERE text IN (
-    'Ваш номер телефона',
-    'Ваше ФИО',
+    'Телефон',
+    'Имя',
     'Сколько вам лет?'
 );
 

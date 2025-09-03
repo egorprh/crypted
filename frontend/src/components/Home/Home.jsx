@@ -28,7 +28,7 @@ export default function Home() {
     const userId = user?.id || 0;
 
     const config = data && data.config || [];
-    const curatorLink = getConfigValue(config, "curator_btn_link");
+    const curatorLink = getConfigValue(config, "prolong_manager");
 
     const handleCourseClick = (course) => {
         if (course.access_time === 0 && course.user_enrolment === 0) {
@@ -186,7 +186,6 @@ export default function Home() {
                                             :
                                             (course.access_time !== undefined && course.access_time !== null && course.access_time !== -1 && (
                                                     <div className="access-timer">
-                                                        <span className="text-gray-300 access-timer-text">Осталось на прохождение</span>
                                                         <div className="access-timer-count">
                                                             <TimerIcon/>
                                                             {(() => {
