@@ -55,6 +55,29 @@
   fill: var(--white);
 }
 
+.badge-level {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  z-index: 99;
+  border-radius: var(--brs-lg);
+  padding: 4px 8px;
+  font-size: var(--fs-xs);
+  color: var(--white);
+}
+
+.badge-level-base {
+  background-color: var(--badge-level-base-bg);
+}
+
+.badge-level-middle {
+  background-color: var(--badge-level-middle-bg);
+}
+
+.badge-level-pro {
+  background-color: var(--badge-level-pro-bg);
+}
+
 .course-card {
   margin-bottom: 20px;
 
@@ -102,7 +125,7 @@
   display: flex;
   gap: 16px;
   flex-wrap: wrap;
-  font-size: var(--fs-s);
+  font-size: var(--fs-xs);
 }
 
 .start-btn {

@@ -48,6 +48,11 @@ export default function EnterSurvey({ user }) {
             } else if (question.type === 'age' && !/^\d{1,3}$/.test(answer)) {
                 newErrors[question.id] = 'Введите корректный возраст';
                 if (!firstInvalidQuestionId) firstInvalidQuestionId = question.id;
+            } else if (question.type === 'phone' && answer) {
+                if (answer.length < 7 || answer.length > 15) {
+                    newErrors[question.id] = 'Введите корректный номер телефона';
+                    if (!firstInvalidQuestionId) firstInvalidQuestionId = question.id;
+                }
             }
         });
 
@@ -57,6 +62,11 @@ export default function EnterSurvey({ user }) {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+
+        if (document.activeElement) {
+            document.activeElement.blur();
+        }
+
         const { isValid, firstInvalidQuestionId } = validate();
 
         if (!isValid) {
@@ -174,7 +184,7 @@ export default function EnterSurvey({ user }) {
                             {(question.type === 'phone' || question.type === 'text' || question.type === 'age') && (
                                 <input
                                     className="survey-input"
-                                    type="text"
+                                    type={question.type === 'phone' ? 'tel' : 'text'}
                                     name={`q-${question.id}`}
                                     placeholder={question.type === 'phone'
                                         ? "Введите номер телефона"
@@ -189,7 +199,7 @@ export default function EnterSurvey({ user }) {
                     }
                 </div>
 
-                <button className="btn btn-accent" type="submit" disabled={isSubmitting}>
+                <button className="btn btn-accent" type="submit" onTouchStart={handleSubmit} onClick={handleSubmit} disabled={isSubmitting}>
                     Отправить
                 </button>
 

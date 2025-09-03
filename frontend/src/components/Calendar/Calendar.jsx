@@ -45,12 +45,14 @@ export default function Calendar() {
                                             </div>
                                             <span className="new-price">{event.price}</span>
                                         </div>
-                                        <Button
-                                            type={isExpanded ? "btn-dropdown btn-p12 expanded" : "btn-dropdown btn-p12"}
-                                            onClick={() => setExpandedId(isExpanded ? null : event.id)}
-                                            hasArrow
-                                            text="Подробнее"
-                                        />
+                                        {event.description && (
+                                            <Button
+                                                type={isExpanded ? "btn-dropdown btn-p12 expanded" : "btn-dropdown btn-p12"}
+                                                onClick={() => setExpandedId(isExpanded ? null : event.id)}
+                                                hasArrow
+                                                text="Подробнее"
+                                            />
+                                        )}
                                     </div>
 
                                     {isExpanded && (

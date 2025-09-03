@@ -8,7 +8,11 @@ export default function Lesson() {
     const navigate = useNavigate();
 
     const clickNextBtn = () => {
-        navigate(`/lessons/${courseId}/${lessonId}/materials`);
+        if (lesson.materials?.length > 0) {
+            navigate(`/lessons/${courseId}/${lessonId}/materials`);
+        } else if (lesson.quizzes?.length > 0) {
+            navigate(`/lessons/${courseId}/${lessonId}/quiz`);
+        }
     };
 
     return (
@@ -31,14 +35,16 @@ export default function Lesson() {
 
                 <div className="lesson-description" dangerouslySetInnerHTML={{ __html: lesson.description }} />
             </div>
-            
-            <div className="lesson-footer">
-                <Button 
-                    type="btn-white btn-full-width" 
-                    text="Далее" 
-                    onClick={clickNextBtn}
-                />
-            </div>
+
+            {(lesson.materials?.length > 0 || lesson.quizzes?.length > 0) && (
+                <div className="lesson-footer">
+                    <Button
+                        type="btn-white btn-full-width"
+                        text="Далее"
+                        onClick={clickNextBtn}
+                    />
+                </div>
+            )}
         </div>
     );
 }
