@@ -47,7 +47,8 @@ class TestAppStartup:
             ),
             misc=Miscellaneous(
                 other_params=None,
-                crm_webhook_url=None
+                crm_survey_webhook_url=None,
+                crm_homework_webhook_url=None
             )
         )
         

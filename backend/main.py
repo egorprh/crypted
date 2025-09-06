@@ -172,6 +172,9 @@ async def trigger_event(event_name: str, user_id: int, instance_id: int, data: A
     user = await db.get_record("users", {"id": user_id})
     level = await db.get_record("levels", {"id": user["level"]})
 
+    # Инициализируем переменную text
+    text = None
+
     if event_name == 'course_viewed':
         course = await db.get_record("courses", {"id": instance_id})
         text = f"""
@@ -193,7 +196,7 @@ async def trigger_event(event_name: str, user_id: int, instance_id: int, data: A
     elif event_name == 'course_completed':
         course = await db.get_record("courses", {"id": instance_id})
         text = f"""
-        🎓 Переход в курс DSpace!
+        🎓 Пользователь выполнил курс!
 
 Пользователь @{user["username"]} ({user["telegram_id"]}) {user["first_name"]} {user["last_name"]} прошел все тесты в курсе "{course['title']}"
         """

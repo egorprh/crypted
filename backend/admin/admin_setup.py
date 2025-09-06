@@ -11,7 +11,7 @@ from admin.models import Base
 from admin.views import (
     FileAdmin, UserAdmin, CourseAdmin, LessonAdmin, MaterialsAdmin, 
     QuizAdmin, SurveyAdmin, QuestionAdmin, AnswerAdmin, QuizQuestionAdmin, EventAdmin, 
-    FaqAdmin, ConfigAdmin, UserEnrolmentAdmin, LevelAdmin, UserActionsLogAdmin, LessonCompletionAdmin
+    FaqAdmin, ConfigAdmin, UserEnrolmentAdmin, LevelAdmin, UserActionsLogAdmin, UserAnswerAdmin, LessonCompletionAdmin
 )
 from admin.auth import AdminAuth
 from logger import logger
@@ -83,6 +83,7 @@ def setup_admin(app):
             UserEnrolmentAdmin,
             LevelAdmin,
             UserActionsLogAdmin,
+            UserAnswerAdmin,
             LessonCompletionAdmin
         ]
         

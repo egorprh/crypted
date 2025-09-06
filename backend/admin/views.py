@@ -685,6 +685,16 @@ class UserEnrolmentAdmin(ModelView, model=UserEnrolment):
     # Исключаем автоматические поля
     form_excluded_columns = ["time_modified", "time_created", "user", "course"]
     
+    # Описания полей формы
+    form_args = {
+        'time_end': {
+            'description': 'Укажите дату окончания или 0. 0 или пустота - значит подписка неограничена по времени.'
+        },
+        'status': {
+            'description': '0 - не записан, курс будет недоступен. 1 - записан, курс будет доступен'
+        }
+    }
+    
     # Настройка отображения связанных объектов
     form_ajax_refs = {
         'user': {
@@ -782,6 +792,104 @@ class UserActionsLogAdmin(ModelView, model=UserActionsLog):
     can_edit = False
     can_delete = True
     can_view_details = True
+
+
+class UserAnswerAdmin(ModelView, model=UserAnswer):
+    """
+    Админ представление для управления ответами пользователей.
+    """
+    name = "Ответ пользователя"
+    name_plural = "Ответы пользователей"
+    icon = "fa-solid fa-comment-dots"
+    page_size = 50
+    
+    # Отображаемые колонки
+    column_list = [
+        UserAnswer.id, 
+        UserAnswer.user_id, 
+        UserAnswer.user,  # Связанный объект пользователя для отображения username
+        UserAnswer.answer_id, 
+        UserAnswer.type, 
+        UserAnswer.text,
+        UserAnswer.instance_qid,  # ID экземпляра вопроса
+        "lesson_id_display"     # ID урока (будет вычисляться)
+    ]
+    column_searchable_list = [UserAnswer.text, UserAnswer.type, UserAnswer.user_id]
+    column_sortable_list = [
+        UserAnswer.id, 
+        UserAnswer.user_id, 
+        UserAnswer.answer_id,
+        UserAnswer.type
+    ]
+    
+    # Русские названия колонок
+    column_labels = {
+        'id': 'ID',
+        'user_id': 'ID пользователя',
+        'user': 'Пользователь',
+        'answer_id': 'ID ответа',
+        'text': 'Текст ответа',
+        'type': 'Тип',
+        'instance_qid': 'ID вопроса',
+        'lesson_id_display': 'ID урока',
+        'time_modified': 'Дата изменения',
+        'time_created': 'Дата создания'
+    }
+    
+    # Исключаем автоматические поля
+    form_excluded_columns = ["time_modified", "time_created"]
+    
+    # Настройка поля типа как селекта
+    form_overrides = {
+        'type': SelectField
+    }
+    
+    # Подсказки для типов ответов в админке
+    form_args = {
+        'type': {
+            'choices': [
+                ('quiz', 'Тест - ответ на вопрос теста'),
+                ('survey', 'Опрос - ответ на вопрос опроса')
+            ],
+            'description': 'Выберите тип ответа пользователя.'
+        }
+    }
+    
+    # Права доступа
+    can_create = False  # Ответы создаются автоматически через API
+    can_edit = False    # Ответы не редактируются
+    can_delete = True
+    can_view_details = True
+    
+    # Кастомный метод для отображения ID урока
+    def get_lesson_id_display(self, obj):
+        """Получает ID урока из instance_qid"""
+        try:
+            if obj.instance_qid:
+                if obj.type == 'quiz':
+                    # Для quiz: instance_qid -> quiz_questions.id -> quiz_id -> lesson_id
+                    quiz_question = self.session.query(QuizQuestion).filter_by(id=obj.instance_qid).first()
+                    if quiz_question:
+                        quiz = self.session.query(Quiz).filter_by(id=quiz_question.quiz_id).first()
+                        return quiz.lesson_id if quiz else None
+                elif obj.type == 'survey':
+                    # Для survey: instance_qid -> survey_questions.id -> survey_id
+                    # У опросов нет прямой связи с уроками
+                    return None
+        except Exception as e:
+            # В случае ошибки возвращаем None
+            return None
+        return None
+    
+    # Кастомный запрос с eager loading для получения связанных данных
+    def get_list_query(self, request):
+        """Кастомный запрос с eager loading для получения связанных данных пользователя"""
+        return (
+            self.session.query(UserAnswer)
+            .options(
+                joinedload(UserAnswer.user)
+            )
+        )
 
 
 class LessonCompletionAdmin(ModelView, model=LessonCompletion):

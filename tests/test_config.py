@@ -40,7 +40,8 @@ def create_test_config():
             database=temp_db.name
         ),
         misc=Miscellaneous(
-            crm_webhook_url="http://test.example.com/webhook"
+            crm_survey_webhook_url="http://test.example.com/survey-webhook",
+            crm_homework_webhook_url="http://test.example.com/homework-webhook"
         )
     )
 
@@ -90,7 +91,9 @@ class TestLoadConfig:
         'BOT_TOKEN': 'test_token',
         'ADMINS': '1,2,3',
         'USE_REDIS': 'true',
-        'PRIVATE_CHANNEL_ID': 'test_channel'
+        'PRIVATE_CHANNEL_ID': 'test_channel',
+        'CRM_SURVEY_WEBHOOK_URL': 'https://test-crm.com/survey-webhook',
+        'CRM_HOMEWORK_WEBHOOK_URL': 'https://test-crm.com/homework-webhook'
     })
     def test_load_config_with_all_variables(self):
         """Тест загрузки конфигурации со всеми переменными."""
@@ -106,6 +109,10 @@ class TestLoadConfig:
         assert config.tg_bot.admin_ids == [1, 2, 3]
         assert config.tg_bot.use_redis is True
         assert config.tg_bot.private_channel_id == 'test_channel'
+        
+        # Проверяем CRM webhook URLs
+        assert config.misc.crm_survey_webhook_url == 'https://test-crm.com/survey-webhook'
+        assert config.misc.crm_homework_webhook_url == 'https://test-crm.com/homework-webhook'
     
     @patch.dict(os.environ, {
         'DB_HOST': 'localhost',
@@ -133,7 +140,8 @@ class TestLoadConfig:
             ),
             misc=Miscellaneous(
                 other_params=None,
-                crm_webhook_url=None
+                crm_survey_webhook_url=None,
+                crm_homework_webhook_url=None
             )
         )
         

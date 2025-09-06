@@ -23,7 +23,8 @@ class TgBot:
 @dataclass
 class Miscellaneous:
     other_params: str = None
-    crm_webhook_url: Optional[str] = None
+    crm_survey_webhook_url: Optional[str] = None
+    crm_homework_webhook_url: Optional[str] = None
 
 
 @dataclass
@@ -51,6 +52,7 @@ def load_config(path: str = None):
             database=env.str('DB_NAME')
         ),
         misc=Miscellaneous(
-            crm_webhook_url=env.str("CRM_WEBHOOK_URL", default=None)
+            crm_survey_webhook_url=env.str("CRM_SURVEY_WEBHOOK_URL", default=None),
+            crm_homework_webhook_url=env.str("CRM_HOMEWORK_WEBHOOK_URL", default=None)
         )
     )

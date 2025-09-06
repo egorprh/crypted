@@ -23,8 +23,8 @@ async def send_survey_to_crm(user: Dict, survey_data: list, level: Dict):
         # Загружаем конфигурацию
         config = load_config("../.env")
         
-        if not config.misc.crm_webhook_url:
-            logger.warning("CRM webhook URL не настроен, пропускаем отправку в CRM")
+        if not config.misc.crm_survey_webhook_url:
+            logger.warning("CRM survey webhook URL не настроен, пропускаем отправку в CRM")
             return
         
         # Логируем исходные данные опроса
@@ -61,7 +61,7 @@ async def send_survey_to_crm(user: Dict, survey_data: list, level: Dict):
         # Отправляем POST запрос в CRM
         async with aiohttp.ClientSession() as session:
             response = await session.post(
-                config.misc.crm_webhook_url,
+                config.misc.crm_survey_webhook_url,
                 json=payload,
                 headers={"Content-Type": "application/json"},
                 timeout=aiohttp.ClientTimeout(total=30)
@@ -89,8 +89,8 @@ async def send_homework_to_crm(payload: dict):
         # Загружаем конфигурацию
         config = load_config("../.env")
         
-        if not config.misc.crm_webhook_url:
-            logger.warning("CRM webhook URL не настроен, пропускаем отправку данных о задании в CRM")
+        if not config.misc.crm_homework_webhook_url:
+            logger.warning("CRM homework webhook URL не настроен, пропускаем отправку данных о задании в CRM")
             return
         
         # Логируем payload для отладки
@@ -99,7 +99,7 @@ async def send_homework_to_crm(payload: dict):
         # Отправляем POST запрос в CRM
         async with aiohttp.ClientSession() as session:
             response = await session.post(
-                config.misc.crm_webhook_url,
+                config.misc.crm_homework_webhook_url,
                 json=payload,
                 headers={"Content-Type": "application/json"},
                 timeout=aiohttp.ClientTimeout(total=30)

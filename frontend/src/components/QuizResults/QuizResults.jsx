@@ -70,7 +70,7 @@ export default function QuizResults({ user }) {
                     ?
                     questions.map((question, index) => (
                         <div key={question.id} className="quiz-question">
-                            <h2>{index + 1}. {question.text}</h2>
+                            <h2 dangerouslySetInnerHTML={{__html: `${index + 1}. ${question.text}`}} />
                             {/* Условное отображение в зависимости от типа вопроса */}
                             {question.type === "text" ? (
                                 // Блок для отображения текстовых ответов (произвольных)

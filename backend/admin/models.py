@@ -7,6 +7,7 @@ from sqlalchemy import Column, Integer, String, Text, Boolean, DateTime, Float, 
 from sqlalchemy.orm import declarative_base, relationship
 from sqlalchemy.sql import func
 from datetime import datetime
+from enrollment import ENROLLMENT_STATUS_NOT_ENROLLED, ENROLLMENT_STATUS_ENROLLED
 
 Base = declarative_base()
 
@@ -271,6 +272,56 @@ class UserAnswer(Base):
     instance_qid = Column(BigInteger, comment="ID из quiz_questions или survey_questions")
     time_modified = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     time_created = Column(DateTime(timezone=True), server_default=func.now())
+    
+    # Связь с пользователем для удобного отображения в админке
+    user = relationship("User", backref="user_answers")
+    
+    @property
+    def question_id(self):
+        """Получает ID вопроса из instance_qid"""
+        # Возвращаем None, так как это свойство будет вычисляться в представлении
+        return None
+    
+    @property
+    def lesson_id(self):
+        """Получает ID урока из instance_qid"""
+        # Это свойство будет переопределено в представлении
+        return None
+    
+    @property
+    def lesson_id_display(self):
+        """Получает ID урока из instance_qid для отображения в админке"""
+        try:
+            if self.instance_qid and self.type == 'quiz':
+                # Используем raw SQL для получения lesson_id
+                from sqlalchemy import text
+                from sqlalchemy.orm import sessionmaker
+                from sqlalchemy import create_engine
+                import os
+                
+                # Получаем DATABASE_URL из переменных окружения
+                DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://deptmaster:VgPZGd1B2rkDW!@localhost:5432/deptspace")
+                
+                engine = create_engine(DATABASE_URL)
+                SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+                session = SessionLocal()
+                
+                try:
+                    # SQL запрос для получения lesson_id через цепочку связей
+                    query = text("""
+                        SELECT q.lesson_id 
+                        FROM quiz_questions qq
+                        JOIN quizzes q ON qq.quiz_id = q.id
+                        WHERE qq.id = :instance_qid
+                    """)
+                    
+                    result = session.execute(query, {"instance_qid": self.instance_qid}).fetchone()
+                    return result[0] if result else None
+                finally:
+                    session.close()
+        except Exception:
+            return None
+        return None
 
 
 class QuizAttempt(Base):

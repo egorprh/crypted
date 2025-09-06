@@ -11,7 +11,7 @@ import os
 # Добавляем путь к модулям backend
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'backend'))
 
-from misc import send_survey_to_crm, remove_timestamps
+from misc import send_survey_to_crm, send_homework_to_crm, remove_timestamps
 
 
 class TestSendSurveyToCRM:
@@ -50,7 +50,8 @@ class TestSendSurveyToCRM:
         """Фикстура с тестовыми данными уровня"""
         return {
             "id": 1,
-            "name": "Начинающий"
+            "name": "Начинающий",
+            "short_name": "beginner"
         }
     
     @pytest.mark.asyncio
@@ -59,7 +60,7 @@ class TestSendSurveyToCRM:
         
         # Мокаем конфигурацию
         mock_config = MagicMock()
-        mock_config.misc.crm_webhook_url = "https://test-crm.com/webhook"
+        mock_config.misc.crm_survey_webhook_url = "https://test-crm.com/webhook"
         
         # Мокаем HTTP сессию
         class MockResponse:
@@ -74,6 +75,7 @@ class TestSendSurveyToCRM:
         
         mock_session = AsyncMock()
         mock_session.__aenter__.return_value.post.return_value.__aenter__.return_value = mock_response
+        mock_session.__aenter__.return_value.post.return_value.__aexit__.return_value = None
         
         with patch('misc.load_config', return_value=mock_config), \
              patch('aiohttp.ClientSession', return_value=mock_session), \
@@ -114,7 +116,7 @@ class TestSendSurveyToCRM:
         
         # Мокаем конфигурацию без webhook URL
         mock_config = MagicMock()
-        mock_config.misc.crm_webhook_url = None
+        mock_config.misc.crm_survey_webhook_url = None
         
         with patch('misc.load_config', return_value=mock_config), \
              patch('misc.logger') as mock_logger:
@@ -122,7 +124,7 @@ class TestSendSurveyToCRM:
             await send_survey_to_crm(test_user, test_survey_data, test_level)
             
             # Проверяем, что было записано предупреждение
-            mock_logger.warning.assert_called_once_with("CRM webhook URL не настроен, пропускаем отправку в CRM")
+            mock_logger.warning.assert_called_once_with("CRM survey webhook URL не настроен, пропускаем отправку в CRM")
     
     @pytest.mark.asyncio
     async def test_send_survey_to_crm_http_error(self, test_user, test_survey_data, test_level):
@@ -130,7 +132,7 @@ class TestSendSurveyToCRM:
         
         # Мокаем конфигурацию
         mock_config = MagicMock()
-        mock_config.misc.crm_webhook_url = "https://test-crm.com/webhook"
+        mock_config.misc.crm_survey_webhook_url = "https://test-crm.com/webhook"
         
         # Мокаем исключение при HTTP запросе
         with patch('misc.load_config', return_value=mock_config), \
@@ -150,7 +152,7 @@ class TestSendSurveyToCRM:
         
         # Мокаем конфигурацию
         mock_config = MagicMock()
-        mock_config.misc.crm_webhook_url = "https://test-crm.com/webhook"
+        mock_config.misc.crm_survey_webhook_url = "https://test-crm.com/webhook"
         
         # Мокаем исключение при создании сессии
         with patch('misc.load_config', return_value=mock_config), \
@@ -163,6 +165,119 @@ class TestSendSurveyToCRM:
             mock_logger.error.assert_called_once()
             error_call = mock_logger.error.call_args[0][0]
             assert "Ошибка при отправке данных в CRM" in error_call
+
+
+class TestSendHomeworkToCRM:
+    """Тесты для функции send_homework_to_crm"""
+    
+    @pytest.fixture
+    def test_homework_payload(self):
+        """Фикстура с тестовыми данными домашнего задания"""
+        return {
+            "type": "homework",
+            "telegram_id": 123456789,
+            "username": "test_user",
+            "phone": "+7 (999) 123-45-67",
+            "course_id": 1,
+            "course_name": "Тестовый курс",
+            "lesson_id": 1,
+            "lesson_name": "Тестовый урок",
+            "progress": 75.0,
+            "question_1": "Какой язык программирования вы изучаете?",
+            "answer_1": "Python",
+            "correct_1": True
+        }
+    
+    @pytest.mark.asyncio
+    async def test_send_homework_to_crm_success(self, test_homework_payload):
+        """Тест успешной отправки данных о домашнем задании в CRM"""
+        
+        # Мокаем конфигурацию
+        mock_config = MagicMock()
+        mock_config.misc.crm_homework_webhook_url = "https://test-crm.com/homework-webhook"
+        
+        # Мокаем HTTP сессию
+        class MockResponse:
+            def __init__(self):
+                self.status = 200
+                self._text = "OK"
+            
+            async def text(self):
+                return self._text
+        
+        mock_response = MockResponse()
+        
+        mock_session = AsyncMock()
+        mock_session.__aenter__.return_value.post.return_value.__aenter__.return_value = mock_response
+        mock_session.__aenter__.return_value.post.return_value.__aexit__.return_value = None
+        
+        with patch('misc.load_config', return_value=mock_config), \
+             patch('aiohttp.ClientSession', return_value=mock_session), \
+             patch('misc.logger') as mock_logger:
+            
+            await send_homework_to_crm(test_homework_payload)
+            
+            # Проверяем, что POST запрос был вызван с правильными параметрами
+            mock_session.__aenter__.return_value.post.assert_called_once()
+            call_args = mock_session.__aenter__.return_value.post.call_args
+            
+            assert call_args[0][0] == "https://test-crm.com/homework-webhook"
+            assert call_args[1]["headers"]["Content-Type"] == "application/json"
+            
+            # Проверяем структуру payload
+            payload = call_args[1]["json"]
+            assert payload["type"] == "homework"
+            assert payload["telegram_id"] == 123456789
+            assert payload["username"] == "test_user"
+            assert payload["phone"] == "+7 (999) 123-45-67"
+            assert payload["course_id"] == 1
+            assert payload["course_name"] == "Тестовый курс"
+            assert payload["lesson_id"] == 1
+            assert payload["lesson_name"] == "Тестовый урок"
+            assert payload["progress"] == 75.0
+            assert payload["question_1"] == "Какой язык программирования вы изучаете?"
+            assert payload["answer_1"] == "Python"
+            assert payload["correct_1"] == True
+            
+            # Проверяем базовое логирование
+            info_calls = [call[0][0] for call in mock_logger.info.call_args_list]
+            assert any("Отправляем данные о задании в CRM:" in call for call in info_calls)
+    
+    @pytest.mark.asyncio
+    async def test_send_homework_to_crm_no_webhook_url(self, test_homework_payload):
+        """Тест поведения при отсутствии homework webhook URL"""
+        
+        # Мокаем конфигурацию без webhook URL
+        mock_config = MagicMock()
+        mock_config.misc.crm_homework_webhook_url = None
+        
+        with patch('misc.load_config', return_value=mock_config), \
+             patch('misc.logger') as mock_logger:
+            
+            await send_homework_to_crm(test_homework_payload)
+            
+            # Проверяем, что было записано предупреждение
+            mock_logger.warning.assert_called_once_with("CRM homework webhook URL не настроен, пропускаем отправку данных о задании в CRM")
+    
+    @pytest.mark.asyncio
+    async def test_send_homework_to_crm_http_error(self, test_homework_payload):
+        """Тест обработки HTTP ошибки"""
+        
+        # Мокаем конфигурацию
+        mock_config = MagicMock()
+        mock_config.misc.crm_homework_webhook_url = "https://test-crm.com/homework-webhook"
+        
+        # Мокаем исключение при HTTP запросе
+        with patch('misc.load_config', return_value=mock_config), \
+             patch('aiohttp.ClientSession', side_effect=Exception("HTTP Error")), \
+             patch('misc.logger') as mock_logger:
+            
+            await send_homework_to_crm(test_homework_payload)
+            
+            # Проверяем, что была записана ошибка
+            mock_logger.error.assert_called_once()
+            error_call = mock_logger.error.call_args[0][0]
+            assert "Ошибка при отправке данных о задании в CRM" in error_call
 
 
 class TestRemoveTimestamps:
