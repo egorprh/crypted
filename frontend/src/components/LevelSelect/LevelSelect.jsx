@@ -7,7 +7,7 @@ import ArrowBtnIcon from "../../assets/images/ArrowBtnIcon.jsx";
 import Button from "../ui/Button/Button.jsx";
 
 export default function LevelSelect({ onContinue }) {
-    const { data, user } = useAppData();
+    const { data, user, setData } = useAppData();
     const [selected, setSelected] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(false);
@@ -39,6 +39,16 @@ export default function LevelSelect({ onContinue }) {
         } catch (err) {
             console.warn("save_level error, skipping:", err);
         } finally {
+            const res = await fetch(`/api/get_app_data?user_id=${userId}`);
+            if (!res.ok) throw new Error("Основной API недоступен");
+
+            const apiData = await res.json();
+            if (!apiData || Object.keys(apiData).length === 0) {
+                throw new Error("API вернул пустой объект");
+            } else {
+                setData(apiData);
+            }
+            
             setLoading(false);
             onContinue();
         }

@@ -19,7 +19,7 @@ from logger import logger  # Импортируем логгер
 # Импортируем функции для работы с записями пользователей на курсы
 from enrollment import create_user_enrollment, get_course_access_info
 # Импортируем вспомогательные функции
-from misc import send_survey_to_crm, remove_timestamps, check_lesson_blocked, mark_lesson_completed, check_enter_survey_completion, send_homework_notification
+from misc import send_survey_to_crm, remove_timestamps, check_lesson_blocked, mark_lesson_completed, check_enter_survey_completion, send_homework_notification, send_homework_to_crm
 
 # Импорт для настройки админки
 from admin.admin_setup import setup_admin
@@ -609,7 +609,7 @@ async def get_app_data(user_id: int):
     has_completed_survey = await check_enter_survey_completion(user["id"], db)
     
     # Список пользователей, которым всегда показывается входное тестирование
-    always_show_survey_users = [970469816, 1428420635, 0]
+    always_show_survey_users = []
     if user["telegram_id"] in always_show_survey_users:
         config.append({'name': 'user_level', 'value': str(0)})
     else:

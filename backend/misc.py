@@ -44,6 +44,7 @@ async def send_survey_to_crm(user: Dict, survey_data: list, level: Dict):
 
         # Формируем плоский payload с требуемыми ключами
         payload = {
+            "type": "enter_survey",
             "telegram_id": user["telegram_id"],
             "username": user.get("username"),
             "level_id": level["id"],
@@ -74,6 +75,44 @@ async def send_survey_to_crm(user: Dict, survey_data: list, level: Dict):
                     
     except Exception as e:
         logger.error(f"Ошибка при отправке данных в CRM: {e}")
+        # Не прерываем выполнение основной логики при ошибке CRM
+
+
+async def send_homework_to_crm(payload: dict):
+    """
+    Отправляет данные о выполненном домашнем задании в CRM через webhook.
+    
+    Args:
+        payload: Словарь с данными о задании для отправки в CRM
+    """
+    try:
+        # Загружаем конфигурацию
+        config = load_config("../.env")
+        
+        if not config.misc.crm_webhook_url:
+            logger.warning("CRM webhook URL не настроен, пропускаем отправку данных о задании в CRM")
+            return
+        
+        # Логируем payload для отладки
+        logger.info(f"Отправляем данные о задании в CRM: {payload}")
+        
+        # Отправляем POST запрос в CRM
+        async with aiohttp.ClientSession() as session:
+            response = await session.post(
+                config.misc.crm_webhook_url,
+                json=payload,
+                headers={"Content-Type": "application/json"},
+                timeout=aiohttp.ClientTimeout(total=30)
+            )
+            if response.status == 200:
+                response_text = await response.text()
+                logger.info(f"Данные о задании успешно отправлены в CRM для пользователя {payload.get('telegram_id')}")
+                logger.info(f"Ответ сервера CRM: {response_text}")
+            else:
+                logger.error(f"Ошибка отправки данных о задании в CRM: статус {response.status}, ответ: {await response.text()}")
+                    
+    except Exception as e:
+        logger.error(f"Ошибка при отправке данных о задании в CRM: {e}")
         # Не прерываем выполнение основной логики при ошибке CRM
 
 
@@ -195,6 +234,69 @@ async def send_homework_notification(user: dict, quiz_id: int, course_id: int, a
         
         # Логируем успешную отправку уведомления
         logger.info(f"Уведомление о выполнении задания отправлено для пользователя {user['id']}")
+        
+        # Шаг 7: Отправляем данные о задании в CRM
+        try:
+            # Получаем номер телефона пользователя
+            phone = await get_user_phone_number(user["id"], db)
+            
+            # Получаем ID урока для CRM payload
+            lesson_info_for_crm = await db.get_records_sql("""
+                SELECT l.id FROM lessons l 
+                JOIN quizzes q ON l.id = q.lesson_id 
+                WHERE q.id = $1
+            """, quiz_id)
+            
+            lesson_id = lesson_info_for_crm[0]["id"] if lesson_info_for_crm else None
+            
+            # Вычисляем процент правильных ответов
+            total_questions = len(answers)
+            progress_percent = (correct_answers_count / total_questions) * 100 if total_questions > 0 else 0
+            
+            # Формируем базовый payload для CRM
+            crm_payload = {
+                "type": "homework",
+                "telegram_id": user["telegram_id"],
+                "username": user.get("username"),
+                "phone": phone,
+                "course_id": course_id,
+                "course_name": course_title,
+                "lesson_id": lesson_id,
+                "lesson_name": lesson_title,
+                "progress": round(progress_percent, 1)
+            }
+            
+            # Добавляем вопросы и ответы в payload
+            for i, answer in enumerate(answers, 1):
+                # Получаем текст вопроса
+                question_info = question_texts.get(answer["questionId"], {'text': f"Вопрос {answer['questionId']}", 'type': 'quiz'})
+                question_text = question_info['text']
+                
+                crm_payload[f"question_{i}"] = question_text
+                
+                # Определяем ответ и его правильность
+                if "answerText" in answer and answer["answerText"]:
+                    # Текстовый ответ
+                    crm_payload[f"answer_{i}"] = answer["answerText"]
+                    crm_payload[f"correct_{i}"] = True  # Текстовые ответы всегда правильные
+                else:
+                    # Тестовый ответ
+                    answer_text = await db.get_records_sql("""
+                        SELECT a.text, a.correct FROM answers a WHERE a.id = $1
+                    """, answer.get("answerId", 0))
+                    if answer_text:
+                        crm_payload[f"answer_{i}"] = answer_text[0]["text"]
+                        crm_payload[f"correct_{i}"] = answer_text[0].get("correct", False)
+                    else:
+                        crm_payload[f"answer_{i}"] = ""
+                        crm_payload[f"correct_{i}"] = False
+            
+            # Отправляем данные в CRM
+            await send_homework_to_crm(crm_payload)
+            
+        except Exception as crm_error:
+            # Логируем ошибку CRM, но не прерываем выполнение
+            logger.error(f"Ошибка при отправке данных о задании в CRM: {crm_error}")
         
     except Exception as e:
         # Логируем ошибки, но не прерываем выполнение основной логики
@@ -426,3 +528,46 @@ async def check_enter_survey_completion(user_id: int, db) -> bool:
         logger.error(f"Ошибка при проверке прохождения входного тестирования для пользователя {user_id}: {e}")
         # В случае ошибки считаем что тестирование не пройдено
         return False
+
+
+async def get_user_phone_number(user_id: int, db) -> str:
+    """
+    Получает номер телефона пользователя из таблицы user_answers.
+    
+    Ищет ответ пользователя на вопрос типа 'phone' в опросах (surveys).
+    Возвращает последний найденный номер телефона.
+    
+    Args:
+        user_id: ID пользователя
+        db: Объект базы данных
+    
+    Returns:
+        str: Номер телефона пользователя или пустую строку, если не найден
+    """
+    try:
+        # Получаем номер телефона пользователя из ответов на вопросы типа 'phone'
+        phone_answers = await db.get_records_sql("""
+            SELECT ua.text 
+            FROM user_answers ua
+            JOIN survey_questions sq ON ua.instance_qid = sq.id
+            JOIN questions q ON sq.question_id = q.id
+            WHERE ua.user_id = $1 
+            AND ua.type = 'survey' 
+            AND q.type = 'phone'
+            AND ua.text IS NOT NULL 
+            AND ua.text != ''
+            ORDER BY ua.time_created DESC
+            LIMIT 1
+        """, user_id)
+        
+        if phone_answers and phone_answers[0]["text"]:
+            phone_number = phone_answers[0]["text"].strip()
+            # logger.info(f"Найден номер телефона для пользователя {user_id}: {phone_number}")
+            return phone_number
+        else:
+            # logger.info(f"Номер телефона для пользователя {user_id} не найден")
+            return ""
+        
+    except Exception as e:
+        logger.error(f"Ошибка при получении номера телефона для пользователя {user_id}: {e}")
+        return ""

@@ -318,13 +318,6 @@ export default function Home() {
                                 <div className="btn-wrapper">
                                     <Button
                                         onClick={() => {
-                                            setAccessPopup(null);
-                                        }}
-                                        type="btn-p9"
-                                        text="Назад"
-                                    />
-                                    <Button
-                                        onClick={() => {
                                             goToCourse(accessPopup.course);
                                             setAccessPopup(null);
                                         }}
