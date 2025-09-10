@@ -167,10 +167,9 @@ async def send_homework_notification(user: dict, quiz_id: int, course_id: int, a
         
         for answer in answers:
             # Получаем текст вопроса и тип вопроса
+            # answer["questionId"] - это ID из таблицы questions
             question = await db.get_records_sql("""
-                SELECT q.text, q.type FROM questions q 
-                JOIN quiz_questions qq ON q.id = qq.question_id 
-                WHERE qq.id = $1
+                SELECT text, type FROM questions WHERE id = $1
             """, answer["questionId"])
             if question:
                 question_texts[answer["questionId"]] = {
