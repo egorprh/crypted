@@ -507,6 +507,101 @@ class QuizQuestionAdmin(ModelView, model=QuizQuestion):
     can_view_details = True
 
 
+class SurveyQuestionAdmin(ModelView, model=SurveyQuestion):
+    """
+    Админ представление для управления связями опросов и вопросов.
+    """
+    name = "Вопрос опроса"
+    name_plural = "Вопросы опросов"
+    icon = "fa-solid fa-poll-h"
+    page_size = 30
+    
+    # Отображаемые колонки
+    column_list = [SurveyQuestion.id, SurveyQuestion.survey, SurveyQuestion.question, SurveyQuestion.time_created]
+    column_searchable_list = []
+    column_sortable_list = [SurveyQuestion.id, SurveyQuestion.survey_id, SurveyQuestion.question_id, SurveyQuestion.time_created]
+    
+    # Русские названия колонок
+    column_labels = {
+        'id': 'ID',
+        'survey_id': 'ID опроса',
+        'survey': 'Опрос',
+        'question_id': 'ID вопроса',
+        'question': 'Вопрос',
+        'time_modified': 'Дата изменения',
+        'time_created': 'Дата создания'
+    }
+    
+    # Исключаем автоматические поля
+    form_excluded_columns = ["time_modified", "time_created"]
+    
+    # Настройка отображения связанных объектов
+    form_ajax_refs = {
+        'survey': {
+            'fields': ['title', 'id'],
+            'page_size': 10
+        },
+        'question': {
+            'fields': ['text', 'id'],
+            'page_size': 10
+        }
+    }
+    
+    # Права доступа
+    can_create = True
+    can_edit = True
+    can_delete = True
+    can_view_details = True
+
+
+class QuizAttemptAdmin(ModelView, model=QuizAttempt):
+    """
+    Админ представление для управления попытками прохождения тестов.
+    """
+    name = "Попытка теста"
+    name_plural = "Попытки тестов"
+    icon = "fa-solid fa-play-circle"
+    page_size = 50
+    
+    # Отображаемые колонки
+    column_list = [QuizAttempt.id, QuizAttempt.user, QuizAttempt.quiz, QuizAttempt.progress, QuizAttempt.time_created]
+    column_searchable_list = [QuizAttempt.user_id, QuizAttempt.quiz_id]
+    column_sortable_list = [QuizAttempt.id, QuizAttempt.user_id, QuizAttempt.quiz_id, QuizAttempt.progress, QuizAttempt.time_created]
+    
+    # Русские названия колонок
+    column_labels = {
+        'id': 'ID',
+        'user_id': 'ID пользователя',
+        'user': 'Пользователь',
+        'quiz_id': 'ID теста',
+        'quiz': 'Тест',
+        'progress': 'Прогресс (%)',
+        'time_modified': 'Дата изменения',
+        'time_created': 'Дата создания'
+    }
+    
+    # Исключаем автоматические поля
+    form_excluded_columns = ["time_modified", "time_created"]
+    
+    # Настройка отображения связанных объектов
+    form_ajax_refs = {
+        'user': {
+            'fields': ['username', 'first_name', 'last_name', 'id'],
+            'page_size': 10
+        },
+        'quiz': {
+            'fields': ['title', 'id'],
+            'page_size': 10
+        }
+    }
+    
+    # Права доступа
+    can_create = False  # Попытки создаются автоматически
+    can_edit = True     # Можно редактировать прогресс
+    can_delete = True
+    can_view_details = True
+
+
 class EventAdmin(ModelView, model=Event):
     """
     Админ представление для управления событиями.

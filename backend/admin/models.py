@@ -213,6 +213,14 @@ class SurveyQuestion(Base):
     question_id = Column(BigInteger, ForeignKey("questions.id", ondelete="CASCADE"), comment="ID вопроса")
     time_modified = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     time_created = Column(DateTime(timezone=True), server_default=func.now())
+    
+    # Связи с опросом и вопросом для удобного отображения в админке
+    survey = relationship("Survey", backref="survey_questions")
+    question = relationship("Question", backref="survey_questions")
+    
+    def __str__(self):
+        # Безопасное отображение без обращения к связанным объектам
+        return f"Вопрос опроса {self.id}: опрос {self.survey_id}, вопрос {self.question_id}"
 
 
 class QuizQuestion(Base):
@@ -331,11 +339,19 @@ class QuizAttempt(Base):
     __tablename__ = "quiz_attempts"
     
     id = Column(BigInteger, primary_key=True, autoincrement=True)
-    user_id = Column(BigInteger, comment="ID пользователя")
+    user_id = Column(BigInteger, ForeignKey("users.id", ondelete="CASCADE"), comment="ID пользователя")
     quiz_id = Column(BigInteger, ForeignKey("quizzes.id", ondelete="CASCADE"), comment="ID теста")
     progress = Column(Float, comment="Прогресс прохождения")
     time_modified = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     time_created = Column(DateTime(timezone=True), server_default=func.now())
+    
+    # Связи с пользователем и тестом для удобного отображения в админке
+    user = relationship("User", backref="quiz_attempts")
+    quiz = relationship("Quiz", backref="attempts")
+    
+    def __str__(self):
+        # Безопасное отображение без обращения к связанным объектам
+        return f"Попытка {self.id}: пользователь {self.user_id}, тест {self.quiz_id}"
 
 
 class Event(Base):

@@ -10,7 +10,7 @@ from sqladmin import Admin
 from admin.models import Base
 from admin.views import (
     FileAdmin, UserAdmin, CourseAdmin, LessonAdmin, MaterialsAdmin, 
-    QuizAdmin, SurveyAdmin, QuestionAdmin, AnswerAdmin, QuizQuestionAdmin, EventAdmin, 
+    QuizAdmin, SurveyAdmin, QuestionAdmin, AnswerAdmin, QuizQuestionAdmin, SurveyQuestionAdmin, QuizAttemptAdmin, EventAdmin, 
     FaqAdmin, ConfigAdmin, UserEnrolmentAdmin, LevelAdmin, UserActionsLogAdmin, UserAnswerAdmin, LessonCompletionAdmin
 )
 from admin.auth import AdminAuth
@@ -77,6 +77,8 @@ def setup_admin(app):
             QuestionAdmin,
             AnswerAdmin,
             QuizQuestionAdmin,
+            SurveyQuestionAdmin,
+            QuizAttemptAdmin,
             EventAdmin,
             FaqAdmin,
             ConfigAdmin,
