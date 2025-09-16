@@ -6,6 +6,7 @@
 from sqladmin import ModelView
 import os
 from sqlalchemy.orm import joinedload
+from sqlalchemy import or_, cast, String
 from wtforms import SelectField
 from admin.models import (
     File, User, Course, UserActionsLog, Lesson, Materials, Quiz, Survey, 
@@ -148,7 +149,7 @@ class CourseAdmin(ModelView, model=Course):
     name = "Курс"
     name_plural = "Курсы"
     icon = "fa-solid fa-graduation-cap"
-    page_size = 30
+    page_size = 100
     
     # Отображаемые колонки
     column_list = [Course.id, Course.title, Course.type, Course.level, Course.visible, Course.sort_order, Course.completion_on, Course.time_created]
@@ -201,7 +202,7 @@ class LessonAdmin(ModelView, model=Lesson):
     name = "Урок"
     name_plural = "Уроки"
     icon = "fa-solid fa-book"
-    page_size = 30
+    page_size = 100
     
     # Отображаемые колонки
     column_list = [Lesson.id, Lesson.title, Lesson.course, Lesson.visible, Lesson.sort_order, Lesson.time_created]
@@ -249,7 +250,7 @@ class MaterialsAdmin(ModelView, model=Materials):
     name = "Материал"
     name_plural = "Материалы"
     icon = "fa-solid fa-file-alt"
-    page_size = 30
+    page_size = 100
     
     # Отображаемые колонки
     column_list = [Materials.id, Materials.title, Materials.lesson, Materials.visible, Materials.time_created]
@@ -294,7 +295,7 @@ class QuizAdmin(ModelView, model=Quiz):
     name = "Тест"
     name_plural = "Тесты"
     icon = "fa-solid fa-question-circle"
-    page_size = 30
+    page_size = 100
     
     # Отображаемые колонки
     column_list = [Quiz.id, Quiz.title, Quiz.lesson, Quiz.visible, Quiz.time_created]
@@ -338,7 +339,7 @@ class SurveyAdmin(ModelView, model=Survey):
     name = "Опрос"
     name_plural = "Опросы"
     icon = "fa-solid fa-poll"
-    page_size = 30
+    page_size = 100
     
     # Отображаемые колонки
     column_list = [Survey.id, Survey.title, Survey.visible, Survey.time_created]
@@ -372,7 +373,7 @@ class QuestionAdmin(ModelView, model=Question):
     name = "Вопрос"
     name_plural = "Вопросы"
     icon = "fa-solid fa-question"
-    page_size = 30
+    page_size = 100
     
     # Отображаемые колонки
     column_list = [Question.id, Question.text, Question.type, Question.visible, Question.time_created]
@@ -424,7 +425,7 @@ class AnswerAdmin(ModelView, model=Answer):
     name = "Ответ"
     name_plural = "Ответы"
     icon = "fa-solid fa-check"
-    page_size = 30
+    page_size = 100
     
     # Отображаемые колонки
     column_list = [Answer.id, Answer.text, Answer.correct, Answer.question, Answer.time_created]
@@ -467,7 +468,7 @@ class QuizQuestionAdmin(ModelView, model=QuizQuestion):
     name = "Вопрос теста"
     name_plural = "Вопросы тестов"
     icon = "fa-solid fa-link"
-    page_size = 30
+    page_size = 100
     
     # Отображаемые колонки
     column_list = [QuizQuestion.id, QuizQuestion.quiz, QuizQuestion.question, QuizQuestion.time_created]
@@ -514,7 +515,7 @@ class SurveyQuestionAdmin(ModelView, model=SurveyQuestion):
     name = "Вопрос опроса"
     name_plural = "Вопросы опросов"
     icon = "fa-solid fa-poll-h"
-    page_size = 30
+    page_size = 100
     
     # Отображаемые колонки
     column_list = [SurveyQuestion.id, SurveyQuestion.survey, SurveyQuestion.question, SurveyQuestion.time_created]
@@ -609,7 +610,7 @@ class EventAdmin(ModelView, model=Event):
     name = "Материалы (для вкладки Курсы)"
     name_plural = "Материалы (для вкладки Курсы)"
     icon = "fa-solid fa-calendar"
-    page_size = 30
+    page_size = 100
     
     # Отображаемые колонки
     column_list = [Event.id, Event.title, Event.author, Event.date, Event.sort_order, Event.visible, Event.time_created]
@@ -649,7 +650,7 @@ class FaqAdmin(ModelView, model=Faq):
     name = "FAQ"
     name_plural = "FAQ"
     icon = "fa-solid fa-question-circle"
-    page_size = 30
+    page_size = 100
     
     # Отображаемые колонки
     column_list = [Faq.id, Faq.question, Faq.visible, Faq.time_created]
@@ -683,7 +684,7 @@ class ConfigAdmin(ModelView, model=Config):
     name = "Конфигурация"
     name_plural = "Конфигурация"
     icon = "fa-solid fa-cog"
-    page_size = 30
+    page_size = 100
     
     # Отображаемые колонки
     column_list = [Config.id, Config.name, Config.value, Config.time_modified]
@@ -716,13 +717,14 @@ class UserEnrolmentAdmin(ModelView, model=UserEnrolment):
     name = "Запись на курс"
     name_plural = "Записи на курсы"
     icon = "fa-solid fa-user-plus"
-    page_size = 30
+    page_size = 100
     
     # Отображаемые колонки
     column_list = [
         UserEnrolment.id, 
         UserEnrolment.user_id, 
         UserEnrolment.user,  # Связанный объект пользователя
+        "user_telegram_id",  # Telegram ID пользователя (вычисляемое свойство)
         UserEnrolment.course_id, 
         UserEnrolment.course,  # Связанный объект курса
         "formatted_time_start",  # Форматированное время начала
@@ -744,29 +746,62 @@ class UserEnrolmentAdmin(ModelView, model=UserEnrolment):
         UserEnrolment.time_created
     ]
     column_sortable_list = [UserEnrolment.id, UserEnrolment.user_id, UserEnrolment.course_id, UserEnrolment.time_end, UserEnrolment.status, UserEnrolment.time_created]
-    column_searchable_list = [UserEnrolment.user_id, UserEnrolment.course_id, UserEnrolment.status]
+    # Включаем отображение поля поиска (UI) минимальным безопасным списком;
+    # фактическую фильтрацию выполняет кастомный search_query
+    column_searchable_list = [UserEnrolment.id]
     
-    def get_search_query(self, request, search_term):
-        """Кастомный поиск с поддержкой username и названия курса"""
-        query = self.get_list_query(request)
-        
-        if search_term:
-            # Поиск по ID пользователя, ID курса, статусу, username и названию курса
-            search_filter = (
-                UserEnrolment.user_id.contains(search_term) |
-                UserEnrolment.course_id.contains(search_term) |
-                UserEnrolment.status.contains(search_term) |
-                User.username.contains(search_term) |
-                Course.title.contains(search_term)
-            )
-            query = query.filter(search_filter)
-        
-        return query
+    def search_query(self, stmt, term):
+        """Кастомный поиск по базовой таблице и колонке Пользователь (User)."""
+        if not term:
+            return stmt
+
+        term_str = str(term).strip()
+
+        # Добавляем JOIN с пользователями и курсами для поиска по связанным колонкам
+        try:
+            stmt = stmt.join(User, UserEnrolment.user_id == User.id)
+        except Exception:
+            # JOIN уже мог быть добавлен ранее движком
+            pass
+        try:
+            stmt = stmt.join(Course, UserEnrolment.course_id == Course.id)
+        except Exception:
+            pass
+
+        conditions = []
+
+        # Текстовый поиск по колонке Пользователь: username, first_name, last_name
+        conditions.extend([
+            User.username.contains(term_str),
+            User.first_name.contains(term_str),
+            User.last_name.contains(term_str),
+        ])
+
+        # Если терм — число, добавим точные сравнения по числовым полям базовой таблицы
+        # и по telegram_id пользователя. Для частичных совпадений по telegram_id используем CAST -> contains
+        if term_str.isdigit():
+            num = int(term_str)
+            conditions.extend([
+                UserEnrolment.id == num,
+                UserEnrolment.user_id == num,
+                UserEnrolment.course_id == num,
+                UserEnrolment.status == num,
+                User.telegram_id == num,
+            ])
+        else:
+            # Частичный поиск по telegram_id и названию курса как по строке
+            conditions.append(cast(User.telegram_id, String).contains(term_str))
+            conditions.append(Course.title.contains(term_str))
+
+        stmt = stmt.filter(or_(*conditions))
+        logger.info(f"SQL запрос: {stmt}")
+        return stmt
     
     # Русские названия колонок
     column_labels = {
         'id': 'ID',
         'user_id': 'ID пользователя',
+        'user_telegram_id': 'Telegram ID',
         'course_id': 'ID курса',
         'user': 'Пользователь',
         'course': 'Курс',
@@ -829,7 +864,7 @@ class LevelAdmin(ModelView, model=Level):
     name = "Уровень"
     name_plural = "Уровни"
     icon = "fa-solid fa-layer-group"
-    page_size = 30
+    page_size = 100
     
     # Отображаемые колонки
     column_list = [Level.id, Level.name, Level.description, Level.time_created]

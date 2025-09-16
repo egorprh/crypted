@@ -439,6 +439,14 @@ class UserEnrolment(Base):
         return f"Запись {self.id}: user_id={self.user_id}, course_id={self.course_id}"
     
     @property
+    def user_telegram_id(self):
+        """Возвращает Telegram ID связанного пользователя для отображения в админке."""
+        try:
+            return self.user.telegram_id if getattr(self, 'user', None) else None
+        except Exception:
+            return None
+    
+    @property
     def formatted_time_end(self):
         """Форматированное время окончания"""
         if self.time_end is None:
