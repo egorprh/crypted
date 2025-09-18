@@ -269,7 +269,12 @@ export default function Home() {
             )}
 
             {accessPopup && (
-                <Modal className="access-modal" onClose={() => setAccessPopup(null)}>
+                <Modal className="access-modal" onClose={() => {
+                    if (accessPopup.type === "limited") {
+                        goToCourse(accessPopup.course);
+                    }
+                    setAccessPopup(null);
+                }}>
                     <div className="popup-content">
                         {accessPopup.type === "noaccess" ? (
                             <>
