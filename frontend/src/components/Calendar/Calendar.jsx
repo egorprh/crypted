@@ -17,6 +17,24 @@ export default function Calendar() {
 
     const [expandedId, setExpandedId] = useState(null);
 
+    function getContrastColor(hexColor) {
+        if (!hexColor) return "#fff";
+
+        let color = hexColor.replace("#", "");
+        if (color.length === 3) {
+
+            color = color.split("").map((c) => c + c).join("");
+        }
+
+        const r = parseInt(color.substring(0, 2), 16);
+        const g = parseInt(color.substring(2, 4), 16);
+        const b = parseInt(color.substring(4, 6), 16);
+
+        const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+
+        return brightness > 128 ? "#000" : "#fff";
+    }
+
     return (
         <div className="content main-content">
             <Header title="Остальные курсы" svg={<CalendarHeaderIcon />} />
@@ -63,9 +81,13 @@ export default function Calendar() {
                                         href={event.link}
                                         target="_blank"
                                         rel="noreferrer"
-                                        className="btn btn-green btn-full-width btn-p12"
+                                        className="btn btn-full-width btn-p12"
+                                        style={{
+                                            backgroundColor: event.button_color || '#246AFF',
+                                            color: getContrastColor(event.button_color),
+                                        }}
                                     >
-                                        Открыть
+                                        {event.button_text || "Открыть"}
                                     </a>
                                 </div>
 

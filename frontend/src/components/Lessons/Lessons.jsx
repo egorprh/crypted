@@ -104,11 +104,16 @@ export default function Lessons({ user }) {
                         onClick={() => !lesson.blocked && goToLesson(lesson)}
                     >
                         <div className="info">
-                            <img
-                                src={lesson.image || "/images/default-event.png"}
-                                alt=""
-                                onError={handleImageError()}
-                            />
+                            <div className={lesson.duration ? "info-wrapper" : ""}>
+                                <img
+                                    src={lesson.image || "/images/default-event.png"}
+                                    alt=""
+                                    onError={handleImageError()}
+                                />
+                                {lesson.duration && (
+                                    <span className="lesson-duration">{lesson.duration}</span>
+                                )}
+                            </div>
                             <span className={lesson.blocked ? 'lesson-title--blocked' : ''}>
                                 {lesson.blocked ? 'Доступно после прохождения предыдущего урока' : lesson.title}
                             </span>
