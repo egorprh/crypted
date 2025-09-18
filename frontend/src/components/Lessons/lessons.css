@@ -45,6 +45,21 @@
   cursor: pointer;
 }
 
+.info-wrapper {
+  position: relative;
+
+  .lesson-duration {
+    font-size: var(--fs-xxs);
+    color: var(--white);
+    background-color: var(--gray-700);
+    border-radius: var(--brs-lg);
+    padding: 2px 6px;
+    position: absolute;
+    bottom: 8px;
+    right: 6px;
+  }
+}
+
 .lesson-card:hover {
   opacity: 0.9;
 }

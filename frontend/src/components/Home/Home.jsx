@@ -31,29 +31,27 @@ export default function Home() {
     const curatorLink = getConfigValue(config, "prolong_manager");
 
     const handleCourseClick = (course) => {
-        if (course.access_time === 0 && course.user_enrolment === 0) {
-            setAccessPopup({ type: "noaccess", course });
-            return;
-        }
-
-        if (course.access_time !== -1 && course.user_enrolment === 0) {
-            const days = Math.ceil(course.access_time / 24);
-            setAccessPopup({ type: "limited", course, days });
-            return;
-        }
-
-        goToCourse(course);
-    };
-
-    const goToCourse = (course) => {
         fetch('/api/course_viewed', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ courseId: course.id, userId }),
-        }).catch(console.error);
+        })
+            .catch(console.error)
+            .finally(() => {
+                if (course.access_time === 0 && course.user_enrolment === 0) {
+                    setAccessPopup({ type: "noaccess", course });
+                    return;
+                }
 
-        course.user_enrolment = 1;
+                if (course.access_time !== -1 && course.user_enrolment === 0) {
+                    const days = Math.ceil(course.access_time / 24);
+                    setAccessPopup({ type: "limited", course, days });
+                    return;
+                }
+            })
+    };
 
+    const goToCourse = (course) => {
         if (course.direct_link) {
             window.open(course.direct_link, '_blank');
         } else {
@@ -322,7 +320,7 @@ export default function Home() {
                                             setAccessPopup(null);
                                         }}
                                         type="btn-accent btn-p9"
-                                        text="Начать"
+                                        text="Понятно"
                                     />
                                 </div>
                             </>

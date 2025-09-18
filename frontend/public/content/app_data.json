@@ -15,11 +15,11 @@
             "direct_link": null,
             "type": null,
             "level": 1,
-            "access_time": 37.15,
+            "access_time": 3,
             "visible": true,
             "sort_order": 1,
             "completion_on": true,
-            "user_enrolment": 1,
+            "user_enrolment": 0,
             "lesson_count": 5,
             "has_home_work": true,
             "lessons": [
@@ -33,6 +33,7 @@
                     "image": "/uploads/0c89f22f70e545e79e9d9ceb6f07f741.png",
                     "visible": true,
                     "sort_order": 1,
+                    "duration": "5:02",
                     "materials": [
                         {
                             "id": 14,
@@ -1130,7 +1131,7 @@
             "popup_img": null,
             "direct_link": null,
             "type": "main",
-            "level": 3,
+            "level": 2,
             "access_time": -1,
             "visible": true,
             "sort_order": 2,
@@ -1176,7 +1177,9 @@
             "price": "Бесплатно",
             "link": "https://disk.yandex.ru/d/NG1uAD75blLIMg",
             "sort_order": 1,
-            "visible": true
+            "visible": true,
+            "button_color": "#00ffde",
+            "button_text": "Скачать"
         },
         {
             "id": 17,
@@ -1188,7 +1191,9 @@
             "price": "Бесплатно",
             "link": "https://disk.yandex.ru/i/VQl2VM-5WuIpHw",
             "sort_order": 2,
-            "visible": true
+            "visible": true,
+            "button_color": "red",
+            "button_text": "Кастомный текст"
         },
         {
             "id": 18,
