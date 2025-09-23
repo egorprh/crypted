@@ -4,6 +4,7 @@ import asyncio
 import os
 import random
 from aiogram import Bot, Dispatcher, types, F
+from aiogram.filters import CommandStart, CommandObject
 from aiogram.enums import ParseMode, ChatAction
 from aiogram.types import Message, CallbackQuery, ChatJoinRequest, FSInputFile, KeyboardButton, ReplyKeyboardMarkup
 from aiogram.fsm.context import FSMContext
@@ -49,14 +50,22 @@ async def welcome_user(user_id):
 
 <b>Доступно всем по кнопке ниже:</b>
         """
-    await bot.send_photo(user_id, photo_path, caption=welcome_message)
+    # Инлайн-кнопка для открытия веб‑приложения, прикрепленного к боту
+    kb = InlineKeyboardBuilder()
+    kb.button(text="Открыть приложение", url="https://t.me/dept_mainbot/dspace")
+    kb.adjust(1)
+
+    await bot.send_photo(user_id, photo_path, caption=welcome_message, reply_markup=kb.as_markup())
 
 
 # === Старт ===
-@dp.message(F.chat.type == "private", F.text == "/start")
-async def start_handler(message: Message, state: FSMContext):
+@dp.message(F.chat.type == "private", CommandStart())
+async def start_handler(message: Message, state: FSMContext, command: CommandObject):
     logger.info(f"{message.from_user.full_name} нажал start")
     user = message.from_user
+    # Обработка диплинков (/start <payload>)
+    if command and command.args:
+        logger.info(f"Получен диплинк payload: {command.args}")
     await welcome_user(user.id)
     await send_service_message(bot, f"👤 Пользователь @{user.username} {user.first_name} {user.last_name} нажал /start в боте")
 
