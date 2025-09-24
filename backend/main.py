@@ -17,7 +17,7 @@ from config import load_config
 import json
 from logger import logger  # Импортируем логгер
 # Импортируем функции для работы с записями пользователей на курсы
-from enrollment import create_user_enrollment, get_course_access_info
+from enrollment import ENROLLMENT_STATUS_NOT_ENROLLED, create_user_enrollment, get_course_access_info
 # Импортируем вспомогательные функции
 from misc import send_survey_to_crm, remove_timestamps, check_lesson_blocked, mark_lesson_completed, check_enter_survey_completion, send_homework_notification, send_homework_to_crm
 
@@ -177,11 +177,24 @@ async def trigger_event(event_name: str, user_id: int, instance_id: int, data: A
 
     if event_name == 'course_viewed':
         course = await db.get_record("courses", {"id": instance_id})
-        text = f"""
-        📚 Переход в курс DSpace!
+        
+        # Получаем запись пользователя на курс
+        enrollment = await db.get_record('user_enrollment', {
+            'user_id': user_id,
+            'course_id': instance_id
+        })
+        if enrollment and enrollment.get("status") == ENROLLMENT_STATUS_NOT_ENROLLED:
+            text = f"""
+            🔁 Попытка продления курса
 
-Пользователь @{user["username"]} ({user["telegram_id"]}) {user["first_name"]} {user["last_name"]} зашел в курс "{course['title']}"
-        """
+Пользователь @{user["username"]} ({user["telegram_id"]}) {user["first_name"]} {user["last_name"]} нажал \"Продлить курс\" для курса \"{course['title']}\"
+            """
+        else:
+            text = f"""
+            📚 Переход в курс DSpace!
+
+    Пользователь @{user["username"]} ({user["telegram_id"]}) {user["first_name"]} {user["last_name"]} зашел в курс "{course['title']}"
+            """
     elif event_name == 'enter_survey':
         formatted_answers = "\n".join([f"<b>{question['question']}</b>: {question['answer']}" for question in data])
         text = f"""
