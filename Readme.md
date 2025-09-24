@@ -25,3 +25,5 @@ https://qna.habr.com/q/325368
 https://askubuntu.com/questions/650518/ssh-connect-to-host-hostname-port-22-connection-timed-out
 
 
+Подключение к БД из контейнера:
+docker exec -it free-dept-space-db psql -U postgres -d crypted

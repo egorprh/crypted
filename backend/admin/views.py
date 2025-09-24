@@ -205,7 +205,7 @@ class LessonAdmin(ModelView, model=Lesson):
     page_size = 100
     
     # Отображаемые колонки
-    column_list = [Lesson.id, Lesson.title, Lesson.course, Lesson.visible, Lesson.sort_order, Lesson.time_created]
+    column_list = [Lesson.id, Lesson.title, Lesson.course, Lesson.duration, Lesson.visible, Lesson.sort_order, Lesson.time_created]
     column_searchable_list = [Lesson.title, Lesson.description]
     column_sortable_list = [Lesson.id, Lesson.title, Lesson.course_id, Lesson.sort_order, Lesson.time_created]
     
@@ -216,6 +216,7 @@ class LessonAdmin(ModelView, model=Lesson):
         'description': 'Описание',
         'video_url': 'URL видео',
         'source_url': 'Исходный URL',
+        'duration': 'Длительность',
         'course_id': 'ID курса',
         'course': 'Курс',
         'image': 'Изображение',
@@ -613,7 +614,7 @@ class EventAdmin(ModelView, model=Event):
     page_size = 100
     
     # Отображаемые колонки
-    column_list = [Event.id, Event.title, Event.author, Event.date, Event.sort_order, Event.visible, Event.time_created]
+    column_list = [Event.id, Event.title, Event.author, Event.date, Event.button_color, Event.button_text, Event.sort_order, Event.visible, Event.time_created]
     column_searchable_list = [Event.title, Event.description, Event.author]
     column_sortable_list = [Event.id, Event.title, Event.date, Event.sort_order, Event.visible, Event.time_created]
     
@@ -627,6 +628,8 @@ class EventAdmin(ModelView, model=Event):
         'date': 'Дата',
         'price': 'Цена',
         'link': 'Ссылка',
+        'button_color': 'Цвет кнопки',
+        'button_text': 'Текст кнопки',
         'sort_order': 'Порядок сортировки',
         'visible': 'Видимое',
         'time_modified': 'Дата изменения',
@@ -635,6 +638,11 @@ class EventAdmin(ModelView, model=Event):
     
     # Исключаем автоматические поля
     form_excluded_columns = ["time_modified", "time_created"]
+
+    # Настройка полей формы
+    form_overrides = {
+        'button_color': HexColorField
+    }
     
     # Права доступа
     can_create = True
