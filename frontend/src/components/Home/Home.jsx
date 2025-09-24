@@ -48,6 +48,8 @@ export default function Home() {
                     setAccessPopup({ type: "limited", course, days });
                     return;
                 }
+
+                goToCourse(course);
             })
     };
 
