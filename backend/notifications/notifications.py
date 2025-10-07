@@ -115,7 +115,7 @@ async def schedule_on_user_created(
     """Ставит все базовые слоты при создании пользователя.
 
     Варианты:
-    - Новичок/Средний: 2 приветственных (T0+3м, T0+4м) и три «прогресс-слота»
+    - Новичок/Средний: 2 приветственных (T0+3м, T0+3.5м) и три «прогресс-слота»
       на D+1 19:34, D+2 20:22, D+3 08:28 (по ТЗ из notify_tz.md). В текст кладём
       маркеры `{progress_slot_*}`, чтобы воркер выбрал подходящую развилку.
     - Профи: привет через 12 минут и напоминание через сутки.
@@ -140,7 +140,7 @@ async def schedule_on_user_created(
             user_id=user_id,
             telegram_id=telegram_id,
             message="{welcome_2}",
-            when=enrolled_at + timedelta(minutes=4),
+            when=enrolled_at + timedelta(minutes=3.5),
             kind="welcome+4m",
             metadata={"track": "newbie"},
         )
@@ -209,7 +209,7 @@ async def schedule_access_end_notifications(
     user: Dict,
     access_end_at: datetime,
 ) -> None:
-    """Ставит два слота при окончании доступа: сразу и «сразу следом» (+1 мин).
+    """Ставит два слота при окончании доступа: сразу и «сразу следом» (+5 секунд).
 
     Тексты — маркеры `{access_ended_1}` и `{access_ended_2}`. Их можно
     заменить на финальные тексты или разрешать в воркере.
@@ -218,7 +218,7 @@ async def schedule_access_end_notifications(
     telegram_id = int(user.get("telegram_id", 0))
 
     when1 = access_end_at
-    when2 = access_end_at + timedelta(minutes=1)
+    when2 = access_end_at + timedelta(seconds=5)
 
     await enqueue_notification(
         db,

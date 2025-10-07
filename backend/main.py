@@ -18,7 +18,7 @@ from config import load_config
 import json
 from logger import logger  # Импортируем логгер
 # Импортируем функции для работы с записями пользователей на курсы
-from enrollment import ENROLLMENT_STATUS_NOT_ENROLLED, create_user_enrollment, get_course_access_info
+from enrollment import ENROLLMENT_STATUS_NOT_ENROLLED, create_user_enrollment, get_course_access_info, expire_overdue_enrollments
 # Импортируем вспомогательные функции
 from misc import send_survey_to_crm, remove_timestamps, check_lesson_blocked, mark_lesson_completed, check_enter_survey_completion, send_homework_notification, send_homework_to_crm
 from notifications.notifications import schedule_on_user_created
@@ -107,6 +107,24 @@ async def daily_db_backup():
         await asyncio.sleep(24*60*60)
 
 
+async def expire_enrollments_worker():
+    """
+    Фоновая задача: каждые 2 часа завершает просроченные подписки и ставит уведомления
+    об окончании доступа пользователям (две записи на каждого).
+    """
+    while True:
+        try:
+            if check_db_connection():
+                count = await expire_overdue_enrollments(db)
+                logger.info(f"Фоновая задача завершения подписок отработала, обработано: {count}")
+            else:
+                logger.warning("БД недоступна, пропускаем expire_overdue_enrollments")
+        except Exception as e:
+            logger.error(f"Ошибка в expire_enrollments_worker: {e}")
+        # Спим 2 часа
+        await asyncio.sleep(2*60*60)
+
+
 # https://medium.com/@marcnealer/fastapi-after-the-getting-started-867ecaa99de9
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -123,6 +141,7 @@ async def lifespan(app: FastAPI):
             db_connected = True
             # Запуск фоновой задачи только если БД подключена
             asyncio.create_task(daily_db_backup())
+            asyncio.create_task(expire_enrollments_worker())
             logger.info("Приложение запущено с подключением к БД")
             break  # Если подключение успешно, выходим из цикла
         except Exception as e:

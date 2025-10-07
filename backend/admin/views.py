@@ -1100,7 +1100,7 @@ class NotificationAdmin(ModelView, model=Notification):
         Notification.max_attempts,
         Notification.time_created
     ]
-    column_searchable_list = [Notification.telegram_id]
+    column_searchable_list = [Notification.telegram_id, Notification.status]
     column_sortable_list = [
         Notification.id,
         Notification.telegram_id,
