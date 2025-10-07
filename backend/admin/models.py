@@ -520,7 +520,7 @@ class Notification(Base):
     attempts = Column(Integer, nullable=False, default=0, comment="Количество попыток отправки")
     max_attempts = Column(Integer, nullable=False, default=5, comment="Максимум попыток")
     dedup_key = Column(String(128), comment="Ключ идемпотентности")
-    metadata = Column(Text, comment="Произвольные метаданные в JSON")
+    ext_data = Column(Text, comment="Произвольные метаданные в JSON")
     time_modified = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), comment="Время изменения")
     time_created = Column(DateTime(timezone=True), server_default=func.now(), comment="Время создания")
 

@@ -54,7 +54,7 @@ async def enqueue_notification(
     when: datetime,
     kind: str,
     channel: str = "telegram",
-    metadata: Optional[Dict] = None,
+    ext_data: Optional[Dict] = None,
     max_attempts: int = 5,
 ) -> int:
     """Ставит одно уведомление в очередь `notifications` с защитой от дублей.
@@ -64,7 +64,7 @@ async def enqueue_notification(
     - message: может быть финальным текстом или маркером (например, `{progress_slot_day1_1934}`).
     - when: локальное или UTC время — всегда конвертируем и храним как UTC.
     - kind: семантическое имя слота (например, `day1_19:34`, `welcome+3m`), влияет на dedup.
-    - metadata: произвольные данные (dict) — попадут в JSONB; удобно хранить тип/слот.
+    - ext_data: произвольные данные (dict) — попадут в JSONB; удобно хранить тип/слот.
 
     Возврат: ID записи в таблице `notifications` (существующей или новой).
     """
@@ -82,7 +82,7 @@ async def enqueue_notification(
         "attempts": 0,
         "max_attempts": int(max_attempts),
         "dedup_key": dedup_key,
-        "metadata": metadata or {},
+        "ext_data": ext_data or {},
     }
 
     try:
@@ -130,19 +130,19 @@ async def schedule_on_user_created(
             db,
             user_id=user_id,
             telegram_id=telegram_id,
-            message="{welcome_1}",
+            message="welcome_1",
             when=enrolled_at + timedelta(minutes=3),
             kind="welcome+3m",
-            metadata={"track": "newbie"},
+            ext_data={"track": "newbie"},
         )
         await enqueue_notification(
             db,
             user_id=user_id,
             telegram_id=telegram_id,
-            message="{welcome_2}",
+            message="welcome_2",
             when=enrolled_at + timedelta(minutes=3.5),
             kind="welcome+4m",
-            metadata={"track": "newbie"},
+            ext_data={"track": "newbie"},
         )
 
         # D+1 19:34 — прогресс-слот (текст определяется при отправке)
@@ -150,10 +150,10 @@ async def schedule_on_user_created(
             db,
             user_id=user_id,
             telegram_id=telegram_id,
-            message="{progress_slot_day1_1934}",
+            message="progress_slot_day1_1934",
             when=_at_next_day_time(enrolled_at, 19, 34, day_offset=1),
             kind="day1_19:34",
-            metadata={"slot": "day1_19:34"},
+            ext_data={"slot": "day1_19:34"},
         )
 
         # D+2 20:22 — прогресс-слот
@@ -161,10 +161,10 @@ async def schedule_on_user_created(
             db,
             user_id=user_id,
             telegram_id=telegram_id,
-            message="{progress_slot_day2_2022}",
+            message="progress_slot_day2_2022",
             when=_at_next_day_time(enrolled_at, 20, 22, day_offset=2),
             kind="day2_20:22",
-            metadata={"slot": "day2_20:22"},
+            ext_data={"slot": "day2_20:22"},
         )
 
         # D+3 08:28 — прогресс-слот
@@ -172,10 +172,10 @@ async def schedule_on_user_created(
             db,
             user_id=user_id,
             telegram_id=telegram_id,
-            message="{progress_slot_day3_0828}",
+            message="progress_slot_day3_0828",
             when=_at_next_day_time(enrolled_at, 8, 28, day_offset=3),
             kind="day3_08:28",
-            metadata={"slot": "day3_08:28"},
+            ext_data={"slot": "day3_08:28"},
         )
 
     # Профи
@@ -185,10 +185,10 @@ async def schedule_on_user_created(
             db,
             user_id=user_id,
             telegram_id=telegram_id,
-            message="{pro_welcome_12m}",
+            message="pro_welcome_12m",
             when=enrolled_at + timedelta(minutes=12),
             kind="pro+12m",
-            metadata={"track": "pro"},
+            ext_data={"track": "pro"},
         )
 
         # На следующий день (через сутки после приветствия)
@@ -196,10 +196,10 @@ async def schedule_on_user_created(
             db,
             user_id=user_id,
             telegram_id=telegram_id,
-            message="{pro_next_day}",
+            message="pro_next_day",
             when=(enrolled_at + timedelta(minutes=12)) + timedelta(days=1),
             kind="pro+1d",
-            metadata={"track": "pro"},
+            ext_data={"track": "pro"},
         )
 
 
@@ -224,20 +224,20 @@ async def schedule_access_end_notifications(
         db,
         user_id=user_id,
         telegram_id=telegram_id,
-        message="{access_ended_1}",
+        message="access_ended_1",
         when=when1,
         kind="access_end_1",
-        metadata={"type": "access_end"},
+        ext_data={"type": "access_end"},
     )
 
     await enqueue_notification(
         db,
         user_id=user_id,
         telegram_id=telegram_id,
-        message="{access_ended_2}",
+        message="access_ended_2",
         when=when2,
         kind="access_end_2",
-        metadata={"type": "access_end"},
+        ext_data={"type": "access_end"},
     )
 
 

@@ -208,6 +208,6 @@ class Notification(BaseModel):
     attempts: int = 0
     max_attempts: int = 5
     dedup_key: Optional[str] = None
-    metadata: Optional[Dict[str, Any]] = None
+    ext_data: Optional[Dict[str, Any]] = None
     time_modified: Optional[datetime] = None
     time_created: Optional[datetime] = None

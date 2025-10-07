@@ -267,7 +267,7 @@ CREATE TABLE IF NOT EXISTS notifications (
     attempts INT NOT NULL DEFAULT 0,
     max_attempts INT NOT NULL DEFAULT 5,
     dedup_key VARCHAR(128),
-    metadata JSONB DEFAULT '{}'::jsonb,
+    ext_data JSONB DEFAULT '{}'::jsonb,
     time_modified TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     time_created TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );

@@ -1125,7 +1125,7 @@ class NotificationAdmin(ModelView, model=Notification):
         'attempts': 'Попытки',
         'max_attempts': 'Макс. попыток',
         'dedup_key': 'Dedup ключ',
-        'metadata': 'Метаданные',
+        'ext_data': 'Метаданные',
         'time_modified': 'Дата изменения',
         'time_created': 'Дата создания'
     }
