@@ -11,7 +11,7 @@ from wtforms import SelectField
 from admin.models import (
     File, User, Course, UserActionsLog, Lesson, Materials, Quiz, Survey, 
     Question, SurveyQuestion, QuizQuestion, Answer, UserAnswer, 
-    QuizAttempt, Event, Level, Faq, Config, UserEnrolment, LessonCompletion
+    QuizAttempt, Event, Level, Faq, Config, UserEnrolment, LessonCompletion, Notification
 )
 from admin.custom_fields import FileUploadField, HexColorField
 from logger import logger
@@ -1072,5 +1072,81 @@ class LessonCompletionAdmin(ModelView, model=LessonCompletion):
     # Права доступа
     can_create = False  # Завершения создаются автоматически
     can_edit = False    # Завершения не редактируются
+    can_delete = True
+    can_view_details = True
+
+
+class NotificationAdmin(ModelView, model=Notification):
+    """
+    Админ представление для управления очередью уведомлений.
+    Без поиска. Полный CRUD.
+    """
+    name = "Уведомление"
+    name_plural = "Уведомления"
+    icon = "fa-solid fa-bell"
+    page_size = 50
+
+    # Колонки списка
+    column_list = [
+        Notification.id,
+        Notification.user,
+        Notification.telegram_id,
+        Notification.channel,
+        Notification.message,
+        Notification.status,
+        Notification.scheduled_at,
+        Notification.sent_at,
+        Notification.attempts,
+        Notification.max_attempts,
+        Notification.time_created
+    ]
+    column_searchable_list = [Notification.telegram_id]
+    column_sortable_list = [
+        Notification.id,
+        Notification.telegram_id,
+        Notification.status,
+        Notification.scheduled_at,
+        Notification.sent_at,
+        Notification.attempts,
+        Notification.time_created
+    ]
+
+    column_labels = {
+        'id': 'ID',
+        'user': 'Пользователь',
+        'user_id': 'ID пользователя',
+        'telegram_id': 'Telegram ID',
+        'channel': 'Канал',
+        'message': 'Сообщение',
+        'scheduled_at': 'Запланировано',
+        'sent_at': 'Отправлено',
+        'status': 'Статус',
+        'error': 'Ошибка',
+        'attempts': 'Попытки',
+        'max_attempts': 'Макс. попыток',
+        'dedup_key': 'Dedup ключ',
+        'metadata': 'Метаданные',
+        'time_modified': 'Дата изменения',
+        'time_created': 'Дата создания'
+    }
+
+    # Исключаем авто-поля из формы
+    form_excluded_columns = [
+        "time_modified",
+        "time_created",
+        "user"
+    ]
+
+    # Отображение связанного пользователя (select по username/telegram_id)
+    form_ajax_refs = {
+        'user': {
+            'fields': ['username', 'telegram_id', 'id'],
+            'page_size': 10
+        }
+    }
+
+    # Права доступа
+    can_create = True
+    can_edit = True
     can_delete = True
     can_view_details = True

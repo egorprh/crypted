@@ -194,3 +194,20 @@ class LessonCompletion(BaseModel):
     completed_at: Optional[datetime] = None
     time_modified: Optional[datetime] = None
     time_created: Optional[datetime] = None
+
+class Notification(BaseModel):
+    id: int
+    user_id: int
+    telegram_id: int
+    channel: Optional[str] = "telegram"
+    message: str
+    scheduled_at: datetime
+    sent_at: Optional[datetime] = None
+    status: Optional[str] = "pending"  # pending|sent|failed|cancelled
+    error: Optional[str] = None
+    attempts: int = 0
+    max_attempts: int = 5
+    dedup_key: Optional[str] = None
+    metadata: Optional[Dict[str, Any]] = None
+    time_modified: Optional[datetime] = None
+    time_created: Optional[datetime] = None

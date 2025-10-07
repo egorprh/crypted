@@ -500,3 +500,32 @@ class LessonCompletion(Base):
             return "Записан"
         else:
             return f"Неизвестно ({self.status})"
+
+
+class Notification(Base):
+    """
+    Модель очереди персональных уведомлений.
+    """
+    __tablename__ = "notifications"
+
+    id = Column(BigInteger, primary_key=True, autoincrement=True)
+    user_id = Column(BigInteger, ForeignKey("users.id", ondelete="CASCADE"), comment="ID пользователя")
+    telegram_id = Column(BigInteger, nullable=False, comment="Telegram ID получателя")
+    channel = Column(String(32), nullable=False, default='telegram', comment="Канал доставки")
+    message = Column(Text, nullable=False, comment="Текст или маркер сообщения")
+    scheduled_at = Column(DateTime(timezone=True), nullable=False, comment="Время запланированной отправки (UTC)")
+    sent_at = Column(DateTime(timezone=True), comment="Время фактической отправки")
+    status = Column(String(16), nullable=False, default='pending', comment="Статус: pending|sent|failed|cancelled")
+    error = Column(Text, comment="Текст последней ошибки отправки")
+    attempts = Column(Integer, nullable=False, default=0, comment="Количество попыток отправки")
+    max_attempts = Column(Integer, nullable=False, default=5, comment="Максимум попыток")
+    dedup_key = Column(String(128), comment="Ключ идемпотентности")
+    metadata = Column(Text, comment="Произвольные метаданные в JSON")
+    time_modified = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), comment="Время изменения")
+    time_created = Column(DateTime(timezone=True), server_default=func.now(), comment="Время создания")
+
+    # Связь с пользователем для удобного отображения в админке
+    user = relationship("User", backref="notifications")
+
+    def __str__(self):
+        return f"Notification {self.id} -> {self.telegram_id} [{self.status}]"
