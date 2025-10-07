@@ -11,6 +11,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from contextlib import asynccontextmanager
 from typing import Any, AsyncGenerator, Dict
+from datetime import datetime, timezone
 from db.pgapi import PGApi
 from notification_service import send_service_message, send_service_document
 from config import load_config
@@ -20,6 +21,7 @@ from logger import logger  # Импортируем логгер
 from enrollment import ENROLLMENT_STATUS_NOT_ENROLLED, create_user_enrollment, get_course_access_info
 # Импортируем вспомогательные функции
 from misc import send_survey_to_crm, remove_timestamps, check_lesson_blocked, mark_lesson_completed, check_enter_survey_completion, send_homework_notification, send_homework_to_crm
+from notifications.notifications import schedule_on_user_created
 
 # Импорт для настройки админки
 from admin.admin_setup import setup_admin
@@ -358,6 +360,23 @@ async def save_level(request: Request):
         await db.update_record("users", user["id"], {"level": level})
         
         logger.info(f"User {user['id']} level updated to {level}")
+
+        # Планируем уведомления в зависимости от уровня
+        level_row = await db.get_record("levels", {"id": level})
+        is_pro = False
+        try:
+            short_name = (level_row or {}).get("short_name")
+            # pro трактуем как 'advanced' по данным из init.sql
+            is_pro = (str(short_name).lower() == "advanced")
+        except Exception:
+            is_pro = False
+
+        # Базовая точка старта слотов — текущее время
+        enrolled_at = datetime.now(timezone.utc)
+        try:
+            await schedule_on_user_created(db, user=user, enrolled_at=enrolled_at, is_pro=is_pro)
+        except Exception as e:
+            logger.error(f"Failed to schedule notifications for user {user['id']}: {e}")
         
         return {"status": "success", "message": "User level was updated"}
         
