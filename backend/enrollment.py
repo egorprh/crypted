@@ -10,6 +10,10 @@
 
 from datetime import datetime, timedelta, timezone
 from logger import logger
+from typing import List
+
+# Планировщик уведомлений об окончании доступа
+from notifications.notifications import schedule_access_end_notifications
 
 # Константы статусов подписки
 ENROLLMENT_STATUS_NOT_ENROLLED = 0  # Незаписан
@@ -211,3 +215,63 @@ async def get_course_access_info(db, user_id: int, course_id: int):
     except Exception as e:
         logger.error(f"Ошибка при вычислении времени доступа к курсу: {e}")
         return {'time_left': 0, 'user_enrolment': ENROLLMENT_STATUS_NOT_ENROLLED}
+
+
+async def expire_overdue_enrollments(db) -> int:
+    """
+    Находит все подписки, у которых time_end < NOW() и статус не равен ENROLLMENT_STATUS_NOT_ENROLLED,
+    завершает их (ставит статус ENROLLMENT_STATUS_NOT_ENROLLED) и создаёт пользователю уведомления
+    об окончании доступа (две записи через schedule_access_end_notifications).
+
+    Возвращает количество обработанных подписок.
+    """
+    try:
+        # Текущее время в UTC (timezone-aware)
+        now_utc = datetime.now(timezone.utc)
+
+        # Выбираем «просроченные» активные подписки. Не трогаем бессрочные (time_end IS NULL)
+        sql = (
+            "SELECT id, user_id, course_id, time_end, status "
+            "FROM user_enrollment "
+            "WHERE status <> $1 AND time_end IS NOT NULL AND time_end < NOW()"
+        )
+        overdue: List[dict] = await db.get_records_sql(sql, ENROLLMENT_STATUS_NOT_ENROLLED)
+
+        if not overdue:
+            logger.info("Проверка подписок: просроченных активных подписок не найдено")
+            return 0
+
+        processed = 0
+        for row in overdue:
+            enrollment_id = row["id"]
+            user_id = row["user_id"]
+            course_id = row["course_id"]
+            time_end = row.get("time_end")
+
+            # Переводим конечное время к timezone-aware UTC на всякий случай
+            if time_end is not None and getattr(time_end, 'tzinfo', None) is None:
+                time_end = time_end.replace(tzinfo=timezone.utc)
+
+            # Обновляем статус подписки единым путём (используем общую логику)
+            await update_user_enrollment(db, user_id=user_id, course_id=course_id)
+            logger.info(f"Подписка id={enrollment_id} (user={user_id}, course={course_id}) обновлена через update_user_enrollment")
+
+            # Получаем пользователя и ставим уведомления об окончании доступа
+            user = await db.get_record('users', {'id': user_id})
+            if user is None:
+                logger.warning(f"Пользователь id={user_id} не найден для подписки id={enrollment_id}")
+            else:
+                try:
+                    access_end_at = time_end or now_utc
+                    await schedule_access_end_notifications(db, user=user, access_end_at=access_end_at)
+                except Exception as notify_err:
+                    logger.error(f"Не удалось поставить уведомления об окончании доступа для user={user_id}: {notify_err}")
+
+            processed += 1
+
+        logger.info(f"Завершено просроченных подписок: {processed}")
+        return processed
+
+    except Exception as e:
+        logger.error(f"Ошибка в expire_overdue_enrollments: {e}")
+        return 0

@@ -35,7 +35,7 @@ def sanitize_input(text: str, max_length: int = 512) -> str:
     text = re.sub(r'<[^>]+>', '', text)
     
     # Убираем потенциально опасные символы
-    dangerous_chars = ['<', '>', '"', "'", '&', ';', '{', '}', '[', ']', '(', ')', '=']
+    dangerous_chars = ['<', '>', '&', ';', '[', ']', '(', ')', '=']
     for char in dangerous_chars:
         text = text.replace(char, '')
     
@@ -95,6 +95,23 @@ class PGApi:
             user=config.db.user,
             password=config.db.password
         )
+
+    async def create_with_env_path(self, env_path: str):
+        """Создает подключение к БД с указанным путем к .env файлу. ИСПОЛЬЗУЕТСЯ ТОЛЬКО ДЛЯ ТЕСТОВ"""
+        config = load_config(env_path)
+        self.pool = await asyncpg.create_pool(
+            host='localhost',
+            database=config.db.database,
+            user=config.db.user,
+            password=config.db.password,
+            port=config.db.port
+        )
+
+    async def close(self):
+        """Закрывает пул подключений к БД"""
+        if self.pool:
+            await self.pool.close()
+            self.pool = None
 
     async def execute(self, command, *args,
                       fetch: bool = False,
@@ -192,8 +209,17 @@ class PGApi:
     async def get_records_sql(self, sql: str, *args):
         return await self.execute(sql, *args, fetch=True)
 
-    async def delete_records(self, table_name: str):
-        await self.execute(f"DELETE FROM {table_name} WHERE TRUE", execute=True)
+    async def delete_records(self, table_name: str, params: dict = None):
+        if params is None:
+            await self.execute(f"DELETE FROM {table_name} WHERE TRUE", execute=True)
+        else:
+            sql = f"DELETE FROM {table_name} WHERE "
+            sql, sqlparams = self.format_args(sql, params)
+            await self.execute(sql, *sqlparams, execute=True)
+
+    async def delete_record(self, table_name: str, record_id: int):
+        """Удаляет одну запись по ID"""
+        await self.execute(f"DELETE FROM {table_name} WHERE id = $1", record_id, execute=True)
 
     async def count_records(self, table: str, params=None):
         if params is None:
