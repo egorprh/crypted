@@ -1,4 +1,5 @@
 from __future__ import annotations
+import json
 
 """
 Модуль планирования персональных уведомлений.
@@ -36,13 +37,13 @@ def _minute_bucket(dt: datetime) -> str:
     return dt_utc.strftime("%Y-%m-%dT%H:%MZ")
 
 
-def _make_dedup_key(user_id: int, kind: str, scheduled_at: datetime) -> str:
+def _make_dedup_key(telegram_id: int, kind: str, scheduled_at: datetime) -> str:
     """Строит детерминированный ключ идемпотентности для слота уведомления.
 
-    Состав: user_id + семантический «вид»/код слота (kind) + временная корзина.
+    Состав: telegram_id + семантический «вид»/код слота (kind) + временная корзина.
     Пример: `12345:day1_19:34:2025-10-07T19:34Z`.
     """
-    return f"{user_id}:{kind}:{_minute_bucket(scheduled_at)}"
+    return f"{telegram_id}:{kind}:{_minute_bucket(scheduled_at)}"
 
 
 async def enqueue_notification(
@@ -70,8 +71,8 @@ async def enqueue_notification(
     """
     cleaned_message = sanitize_input(message, max_length=4096)
     scheduled_at_utc = when.astimezone(timezone.utc)
-    dedup_key = _make_dedup_key(user_id, kind, scheduled_at_utc)
-
+    dedup_key = _make_dedup_key(telegram_id, kind, scheduled_at_utc)
+    
     params = {
         "user_id": int(user_id),
         "telegram_id": int(telegram_id),
@@ -82,15 +83,27 @@ async def enqueue_notification(
         "attempts": 0,
         "max_attempts": int(max_attempts),
         "dedup_key": dedup_key,
-        "ext_data": ext_data or {},
+        "ext_data": json.dumps(ext_data or {}),
     }
 
     try:
         notif_id = await db.insert_record("notifications", params)
-        return int(notif_id) if notif_id is not None else await db.get_field("notifications", "id", {"dedup_key": dedup_key})
+        if notif_id is not None:
+            return int(notif_id)
+        else:
+            existing_id = await db.get_field("notifications", "id", {"dedup_key": dedup_key})
+            return int(existing_id) if existing_id is not None else 0
     except Exception:
         # Нарушение уникального индекса по dedup_key — слот уже есть.
-        return int(await db.get_field("notifications", "id", {"dedup_key": dedup_key}))
+        # Небольшая задержка для избежания race conditions при одновременных запросах
+        import asyncio
+        await asyncio.sleep(0.01)  # 10ms задержка
+        
+        existing_id = await db.get_field("notifications", "id", {"dedup_key": dedup_key})
+        if existing_id is not None:
+            return int(existing_id)
+        else:
+            return 0
 
 
 def _at_next_day_time(base_dt: datetime, hh: int, mm: int, day_offset: int = 1) -> datetime:
@@ -120,7 +133,7 @@ async def schedule_on_user_created(
       маркеры `{progress_slot_*}`, чтобы воркер выбрал подходящую развилку.
     - Профи: привет через 12 минут и напоминание через сутки.
     """
-    user_id = int(user["id"]) if isinstance(user.get("id"), (int, str)) else int(user.get("id", 0))
+    user_id = int(user.get("id", 0))
     telegram_id = int(user.get("telegram_id", 0))
 
     # Новичок/Средний
@@ -214,7 +227,7 @@ async def schedule_access_end_notifications(
     Тексты — маркеры `{access_ended_1}` и `{access_ended_2}`. Их можно
     заменить на финальные тексты или разрешать в воркере.
     """
-    user_id = int(user["id"]) if isinstance(user.get("id"), (int, str)) else int(user.get("id", 0))
+    user_id = int(user.get("id", 0))
     telegram_id = int(user.get("telegram_id", 0))
 
     when1 = access_end_at

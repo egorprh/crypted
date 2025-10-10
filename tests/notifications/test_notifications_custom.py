@@ -4,7 +4,7 @@ from datetime import datetime, timezone, timedelta
 import pytest
 
 # Добавляем корень проекта в sys.path, чтобы импортировать backend/ и telegram_bot/
-PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 BACKEND_DIR = os.path.join(PROJECT_ROOT, "backend")
 if PROJECT_ROOT not in sys.path:
     sys.path.insert(0, PROJECT_ROOT)
@@ -85,7 +85,7 @@ async def test_enqueue_notification_builds_dedup_and_inserts():
     assert row["user_id"] == 1
     assert row["telegram_id"] == 111
     assert row["status"] == "pending"
-    assert row["dedup_key"].startswith("1:welcome+3m:")
+    assert row["dedup_key"].startswith("111:welcome+3m:")
 
 
 @pytest.mark.asyncio
