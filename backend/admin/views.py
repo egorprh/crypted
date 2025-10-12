@@ -152,7 +152,7 @@ class CourseAdmin(ModelView, model=Course):
     page_size = 100
     
     # Отображаемые колонки
-    column_list = [Course.id, Course.title, Course.type, Course.level, Course.visible, Course.sort_order, Course.completion_on, Course.time_created]
+    column_list = [Course.id, Course.title, Course.type, Course.level, Course.visible, Course.sort_order, Course.completion_on, Course.enable_notify, Course.time_created]
     column_searchable_list = [Course.title, Course.description]
     column_sortable_list = [Course.id, Course.title, Course.level, Course.sort_order, Course.time_created]
     
@@ -176,6 +176,7 @@ class CourseAdmin(ModelView, model=Course):
         'visible': 'Видимый',
         'sort_order': 'Порядок сортировки',
         'completion_on': 'Отслеживание выполнения',
+        'enable_notify': 'Включить уведомления',
         'time_modified': 'Дата изменения',
         'time_created': 'Дата создания'
     }
@@ -1090,6 +1091,7 @@ class NotificationAdmin(ModelView, model=Notification):
     column_list = [
         Notification.id,
         Notification.user,
+        Notification.course_id,
         Notification.telegram_id,
         Notification.channel,
         Notification.message,
@@ -1115,6 +1117,7 @@ class NotificationAdmin(ModelView, model=Notification):
         'id': 'ID',
         'user': 'Пользователь',
         'user_id': 'ID пользователя',
+        'course_id': 'ID курса',
         'telegram_id': 'Telegram ID',
         'channel': 'Канал',
         'message': 'Сообщение',

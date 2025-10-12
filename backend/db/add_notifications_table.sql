@@ -2,9 +2,13 @@
 
 BEGIN;
 
+-- Add enable_notify field to courses table
+ALTER TABLE courses ADD COLUMN IF NOT EXISTS enable_notify BOOLEAN DEFAULT FALSE;
+
 CREATE TABLE IF NOT EXISTS notifications (
     id BIGSERIAL PRIMARY KEY,
     user_id BIGINT REFERENCES users(id) ON DELETE CASCADE,
+    course_id BIGINT DEFAULT 0,
     telegram_id BIGINT NOT NULL,
     channel VARCHAR(32) NOT NULL DEFAULT 'telegram',
     message TEXT NOT NULL,
@@ -29,6 +33,9 @@ CREATE INDEX IF NOT EXISTS notifications_status_idx
 
 CREATE INDEX IF NOT EXISTS notifications_telegram_idx
   ON notifications (telegram_id);
+
+CREATE INDEX IF NOT EXISTS notifications_course_idx
+  ON notifications (course_id);
 
 CREATE UNIQUE INDEX IF NOT EXISTS notifications_dedup_idx
   ON notifications (dedup_key)

@@ -78,6 +78,7 @@ class Course(Base):
     visible = Column(Boolean, default=True, comment="Видимость курса")
     sort_order = Column(BigInteger, default=0, comment="Порядок сортировки")
     completion_on = Column(Boolean, default=False, comment="Отслеживание выполнения уроков")
+    enable_notify = Column(Boolean, default=False, comment="Включить уведомления для курса")
     time_modified = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     time_created = Column(DateTime(timezone=True), server_default=func.now())
     
@@ -510,6 +511,7 @@ class Notification(Base):
 
     id = Column(BigInteger, primary_key=True, autoincrement=True)
     user_id = Column(BigInteger, ForeignKey("users.id", ondelete="CASCADE"), comment="ID пользователя")
+    course_id = Column(BigInteger, default=0, comment="ID курса")
     telegram_id = Column(BigInteger, nullable=False, comment="Telegram ID получателя")
     channel = Column(String(32), nullable=False, default='telegram', comment="Канал доставки")
     message = Column(Text, nullable=False, comment="Текст или маркер сообщения")

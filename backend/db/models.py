@@ -41,6 +41,7 @@ class Course(BaseModel):
     visible: bool = True
     sort_order: int = 0
     completion_on: bool = False
+    enable_notify: bool = False
     time_modified: Optional[datetime] = None
     time_created: Optional[datetime] = None
 
@@ -198,6 +199,7 @@ class LessonCompletion(BaseModel):
 class Notification(BaseModel):
     id: int
     user_id: int
+    course_id: int = 0
     telegram_id: int
     channel: Optional[str] = "telegram"
     message: str

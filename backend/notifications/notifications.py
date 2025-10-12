@@ -54,6 +54,7 @@ async def enqueue_notification(
     message: str,
     when: datetime,
     kind: str,
+    course_id: int = 0,
     channel: str = "telegram",
     ext_data: Optional[Dict] = None,
     max_attempts: int = 5,
@@ -75,6 +76,7 @@ async def enqueue_notification(
     
     params = {
         "user_id": int(user_id),
+        "course_id": int(course_id),
         "telegram_id": int(telegram_id),
         "channel": channel,
         "message": cleaned_message,
@@ -124,6 +126,7 @@ async def schedule_on_user_created(
     user: Dict,
     enrolled_at: datetime,
     is_pro: bool = False,
+    course_id: int = 0,
 ) -> None:
     """Ставит все базовые слоты при создании пользователя.
 
@@ -132,13 +135,74 @@ async def schedule_on_user_created(
       на D+1 19:34, D+2 20:22, D+3 08:28 (по ТЗ из notify_tz.md). В текст кладём
       маркеры `{progress_slot_*}`, чтобы воркер выбрал подходящую развилку.
     - Профи: привет через 12 минут и напоминание через сутки.
+    
+    Примечание: прогресс-слоты создаются только для курсов с enable_notify=True.
+    Приветственные сообщения создаются всегда (course_id=0).
+    """
+    user_id = int(user.get("id", 0))
+    telegram_id = int(user.get("telegram_id", 0))
+
+    # Прогресс-слоты создаем только для курсов с enable_notify=True
+    if course_id > 0:
+        # Проверяем, включены ли уведомления для этого курса
+        course_data = await db.get_record("courses", {"id": course_id})
+        if course_data and course_data.get("enable_notify"):
+            # Новичок/Средний - создаем прогресс-слоты
+            if not is_pro:
+                # D+1 19:34 — прогресс-слот (текст определяется при отправке)
+                await enqueue_notification(
+                    db,
+                    user_id=user_id,
+                    telegram_id=telegram_id,
+                    message="progress_slot_day1_1934",
+                    when=_at_next_day_time(enrolled_at, 19, 34, day_offset=1),
+                    kind=f"day1_19:34_course_{course_id}",
+                    course_id=course_id,
+                    ext_data={"slot": "day1_19:34", "course_id": course_id},
+                )
+
+                # D+2 20:22 — прогресс-слот
+                await enqueue_notification(
+                    db,
+                    user_id=user_id,
+                    telegram_id=telegram_id,
+                    message="progress_slot_day2_2022",
+                    when=_at_next_day_time(enrolled_at, 20, 22, day_offset=2),
+                    kind=f"day2_20:22_course_{course_id}",
+                    course_id=course_id,
+                    ext_data={"slot": "day2_20:22", "course_id": course_id},
+                )
+
+                # D+3 08:28 — прогресс-слот
+                await enqueue_notification(
+                    db,
+                    user_id=user_id,
+                    telegram_id=telegram_id,
+                    message="progress_slot_day3_0828",
+                    when=_at_next_day_time(enrolled_at, 8, 28, day_offset=3),
+                    kind=f"day3_08:28_course_{course_id}",
+                    course_id=course_id,
+                    ext_data={"slot": "day3_08:28", "course_id": course_id},
+                )
+
+
+async def schedule_welcome_notifications(
+    db: PGApi,
+    *,
+    user: Dict,
+    enrolled_at: datetime,
+    is_pro: bool = False,
+) -> None:
+    """Создает приветственные уведомления (независимо от курса).
+    
+    Создает приветственные сообщения только один раз для пользователя.
     """
     user_id = int(user.get("id", 0))
     telegram_id = int(user.get("telegram_id", 0))
 
     # Новичок/Средний
     if not is_pro:
-        # 2 приветственных сообщения: ставим два коротких слота
+        # 2 приветственных сообщения: ставим два коротких слота (независимо от курса)
         await enqueue_notification(
             db,
             user_id=user_id,
@@ -146,6 +210,7 @@ async def schedule_on_user_created(
             message="welcome_1",
             when=enrolled_at + timedelta(minutes=3),
             kind="welcome+3m",
+            course_id=0,  # Приветственные сообщения не привязаны к курсу
             ext_data={"track": "newbie"},
         )
         await enqueue_notification(
@@ -155,45 +220,13 @@ async def schedule_on_user_created(
             message="welcome_2",
             when=enrolled_at + timedelta(minutes=3.5),
             kind="welcome+4m",
+            course_id=0,  # Приветственные сообщения не привязаны к курсу
             ext_data={"track": "newbie"},
-        )
-
-        # D+1 19:34 — прогресс-слот (текст определяется при отправке)
-        await enqueue_notification(
-            db,
-            user_id=user_id,
-            telegram_id=telegram_id,
-            message="progress_slot_day1_1934",
-            when=_at_next_day_time(enrolled_at, 19, 34, day_offset=1),
-            kind="day1_19:34",
-            ext_data={"slot": "day1_19:34"},
-        )
-
-        # D+2 20:22 — прогресс-слот
-        await enqueue_notification(
-            db,
-            user_id=user_id,
-            telegram_id=telegram_id,
-            message="progress_slot_day2_2022",
-            when=_at_next_day_time(enrolled_at, 20, 22, day_offset=2),
-            kind="day2_20:22",
-            ext_data={"slot": "day2_20:22"},
-        )
-
-        # D+3 08:28 — прогресс-слот
-        await enqueue_notification(
-            db,
-            user_id=user_id,
-            telegram_id=telegram_id,
-            message="progress_slot_day3_0828",
-            when=_at_next_day_time(enrolled_at, 8, 28, day_offset=3),
-            kind="day3_08:28",
-            ext_data={"slot": "day3_08:28"},
         )
 
     # Профи
     else:
-        # Привет через 12 минут
+        # Привет через 12 минут (независимо от курса)
         await enqueue_notification(
             db,
             user_id=user_id,
@@ -201,6 +234,7 @@ async def schedule_on_user_created(
             message="pro_welcome_12m",
             when=enrolled_at + timedelta(minutes=12),
             kind="pro+12m",
+            course_id=0,  # Приветственные сообщения не привязаны к курсу
             ext_data={"track": "pro"},
         )
 
@@ -212,6 +246,7 @@ async def schedule_on_user_created(
             message="pro_next_day",
             when=(enrolled_at + timedelta(minutes=12)) + timedelta(days=1),
             kind="pro+1d",
+            course_id=0,  # Приветственные сообщения не привязаны к курсу
             ext_data={"track": "pro"},
         )
 
@@ -221,6 +256,7 @@ async def schedule_access_end_notifications(
     *,
     user: Dict,
     access_end_at: datetime,
+    course_id: int = 0,
 ) -> None:
     """Ставит два слота при окончании доступа: сразу и «сразу следом» (+5 секунд).
 
@@ -240,6 +276,7 @@ async def schedule_access_end_notifications(
         message="access_ended_1",
         when=when1,
         kind="access_end_1",
+        course_id=course_id,
         ext_data={"type": "access_end"},
     )
 
@@ -250,6 +287,7 @@ async def schedule_access_end_notifications(
         message="access_ended_2",
         when=when2,
         kind="access_end_2",
+        course_id=course_id,
         ext_data={"type": "access_end"},
     )
 

@@ -26,6 +26,9 @@ sys.path.insert(0, str(backend_path))
 # Импортируем PGAPI
 from db.pgapi import PGApi
 
+# Импортируем функции для работы с уведомлениями
+from learn_notify import notification_worker, resolve_message_text
+
 # === Загрузка переменных из .env ===
 # В unified режиме используем backend/.env, иначе telegram_bot/.env
 unified_mode = os.getenv('UNIFIED_MODE', 'false').lower() == 'true'
@@ -121,11 +124,11 @@ async def start_handler(message: Message, state: FSMContext, command: CommandObj
     await send_service_message(bot, f"👤 Пользователь @{user.username} {user.first_name} {user.last_name} нажал /start в боте")
 
 
-# === Тестовая команда для проверки БД ===
-@dp.message(F.chat.type == "private", Command("check_db"))
-async def check_db_handler(message: Message):
+# === Команда для просмотра статистики уведомлений ===
+@dp.message(F.chat.type == "private", Command("notifications_stats"))
+async def notifications_stats_handler(message: Message):
     """
-    Тестовая команда для проверки доступа к базе данных.
+    Команда для просмотра статистики уведомлений.
     Доступна только для пользователя с ID 342799025.
     """
     user_id = message.from_user.id
@@ -136,46 +139,63 @@ async def check_db_handler(message: Message):
         return
     
     try:
-        # Проверяем подключение к БД
-        if not db:
-            await message.answer("❌ <b>Ошибка:</b> PGAPI не инициализирован")
+        # Получаем статистику уведомлений
+        stats = await db.get_records_sql("""
+            SELECT 
+                status,
+                COUNT(*) as count,
+                MIN(time_created) as first_created,
+                MAX(time_created) as last_created
+            FROM notifications 
+            GROUP BY status
+            ORDER BY status
+        """)
+        
+        # Получаем общую статистику
+        total_stats = await db.get_records_sql("""
+            SELECT 
+                COUNT(*) as total,
+                COUNT(CASE WHEN status = 'pending' THEN 1 END) as pending,
+                COUNT(CASE WHEN status = 'sent' THEN 1 END) as sent,
+                COUNT(CASE WHEN status = 'failed' THEN 1 END) as failed,
+                COUNT(CASE WHEN status = 'cancelled' THEN 1 END) as cancelled,
+                COUNT(CASE WHEN scheduled_at <= NOW() AT TIME ZONE 'UTC' AND status = 'pending' THEN 1 END) as ready_to_send
+            FROM notifications
+        """)
+        
+        if not total_stats:
+            await message.answer("❌ Не удалось получить статистику уведомлений.")
             return
         
-        # Выполняем простой запрос к БД для проверки подключения
-        # Получаем количество пользователей в системе
-        users_count = await db.get_records_sql("SELECT COUNT(*) as count FROM users")
+        total = total_stats[0]
         
-        if users_count and len(users_count) > 0:
-            count = users_count[0]['count']
-            
-            # Дополнительно получаем информацию о последних пользователях
-            recent_users = await db.get_records_sql(
-                "SELECT id, telegram_id, username, first_name, last_name, time_created "
-                "FROM users ORDER BY time_created DESC LIMIT 3"
-            )
-            
-            # Формируем ответ
-            response = f"✅ <b>Подключение к БД успешно!</b>\n\n"
-            response += f"📊 <b>Статистика:</b>\n"
-            response += f"• Всего пользователей: <code>{count}</code>\n\n"
-            
-            if recent_users:
-                response += f"👥 <b>Последние пользователи:</b>\n"
-                for user in recent_users:
-                    username = f"@{user['username']}" if user['username'] else "без username"
-                    name = f"{user['first_name']} {user['last_name']}".strip() or "без имени"
-                    created = user['time_created'].strftime("%d.%m.%Y %H:%M") if user['time_created'] else "неизвестно"
-                    response += f"• {name} ({username}) - {created}\n"
-            
-            response += f"\n🕐 <b>Время проверки:</b> {datetime.now().strftime('%d.%m.%Y %H:%M:%S')}"
-            
-            await message.answer(response)
-            
-        else:
-            await message.answer("❌ <b>Ошибка:</b> Не удалось получить данные из БД")
-            
+        response = f"📊 <b>Статистика уведомлений</b>\n\n"
+        response += f"📈 <b>Общая статистика:</b>\n"
+        response += f"• Всего уведомлений: <code>{total['total']}</code>\n"
+        response += f"• Ожидают отправки: <code>{total['pending']}</code>\n"
+        response += f"• Готовы к отправке: <code>{total['ready_to_send']}</code>\n"
+        response += f"• Успешно отправлены: <code>{total['sent']}</code>\n"
+        response += f"• Ошибки отправки: <code>{total['failed']}</code>\n"
+        response += f"• Отменены: <code>{total['cancelled']}</code>\n\n"
+        
+        if stats:
+            response += f"📋 <b>Детализация по статусам:</b>\n"
+            for stat in stats:
+                status_emoji = {
+                    'pending': '⏳',
+                    'sent': '✅',
+                    'failed': '❌',
+                    'cancelled': '🚫'
+                }.get(stat['status'], '❓')
+                
+                response += f"{status_emoji} <b>{stat['status']}</b>: <code>{stat['count']}</code>\n"
+        
+        response += f"\n🕐 <b>Время проверки:</b> {datetime.now().strftime('%d.%m.%Y %H:%M:%S')}"
+        
+        await message.answer(response)
+        
     except Exception as e:
-        error_msg = f"❌ <b>Ошибка подключения к БД:</b>\n<code>{str(e)}</code>"
+        error_msg = f"❌ <b>Ошибка получения статистики:</b>\n<code>{str(e)}</code>"
         await message.answer(error_msg)
 
 
@@ -191,24 +211,51 @@ async def main():
     # Инициализируем подключение к БД
     try:
         await db.create()
-    except Exception:
-        pass  # Продолжаем работу без БД
+        logger.info("Подключение к БД успешно инициализировано")
+    except Exception as e:
+        logger.error(f"Ошибка подключения к БД: {e}")
+        # Продолжаем работу без БД
     
     logger.info("Бот запущен")
-    await bot.send_message(ADMINS, text="🤖 Бот запущен")
+    
+    # Формируем сообщение о запуске с статусом БД
+    db_status = "✅ Подключена" if db else "❌ Не подключена"
+    startup_message = f"🤖 Бот запущен\n📊 База данных: {db_status}"
+    await bot.send_message(ADMINS, text=startup_message)
 
     # Регистрируем антиспам
     dp.message.middleware(AntiSpamMiddleware(bot))
     dp.callback_query.middleware(AntiSpamMiddleware(bot))
 
-    await dp.start_polling(bot, drop_pending_updates=True)
-    await bot.send_message(ADMINS, text="🤖 Бот остановлен")
-    
-    # Закрываем подключение к БД
+    # Запускаем воркер уведомлений в фоне
+    notification_task = asyncio.create_task(notification_worker(bot, db))
+    logger.info("Воркер уведомлений запущен")
+
     try:
-        await db.close()
-    except Exception:
-        pass
+        await dp.start_polling(bot, drop_pending_updates=True)
+    finally:
+        # === ОЧИСТКА РЕСУРСОВ ===
+        # Этот блок ВСЕГДА выполняется при завершении бота (нормальном или при ошибке)
+        # Гарантирует корректное освобождение всех ресурсов
+        try:
+            # 1. Останавливаем воркер уведомлений
+            # cancel() отправляет сигнал остановки, await ждет завершения
+            notification_task.cancel()
+            await notification_task
+            logger.info("Воркер уведомлений остановлен")
+            
+            # 2. Уведомляем админа об остановке и закрываем БД
+            # Порядок важен: сначала уведомление, потом закрытие БД
+            await bot.send_message(ADMINS, text="🤖 Бот остановлен")
+            await db.close()
+            logger.info("Подключение к БД закрыто")
+        except asyncio.CancelledError:
+            # CancelledError - это НОРМАЛЬНОЕ поведение при отмене задачи
+            # Не является ошибкой, просто воркер получил сигнал остановки
+            logger.info("Воркер уведомлений остановлен")
+        except Exception as e:
+            # Любые другие ошибки при завершении (проблемы с Telegram API, БД и т.д.)
+            logger.error(f"Ошибка при завершении: {e}")
 
 
 if __name__ == "__main__":

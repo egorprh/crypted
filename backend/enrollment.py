@@ -263,9 +263,9 @@ async def expire_overdue_enrollments(db) -> int:
             else:
                 try:
                     access_end_at = time_end or now_utc
-                    await schedule_access_end_notifications(db, user=user, access_end_at=access_end_at)
+                    await schedule_access_end_notifications(db, user=user, access_end_at=access_end_at, course_id=course_id)
                 except Exception as notify_err:
-                    logger.error(f"Не удалось поставить уведомления об окончании доступа для user={user_id}: {notify_err}")
+                    logger.error(f"Не удалось поставить уведомления об окончании доступа для user={user_id} по курсу {course_id}: {notify_err}")
 
             processed += 1
 

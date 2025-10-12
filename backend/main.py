@@ -21,7 +21,7 @@ from logger import logger  # Импортируем логгер
 from enrollment import ENROLLMENT_STATUS_NOT_ENROLLED, create_user_enrollment, get_course_access_info, expire_overdue_enrollments
 # Импортируем вспомогательные функции
 from misc import send_survey_to_crm, remove_timestamps, check_lesson_blocked, mark_lesson_completed, check_enter_survey_completion, send_homework_notification, send_homework_to_crm
-from notifications.notifications import schedule_on_user_created
+from notifications.notifications import schedule_on_user_created, schedule_welcome_notifications
 
 # Импорт для настройки админки
 from admin.admin_setup import setup_admin
@@ -393,7 +393,16 @@ async def save_level(request: Request):
         # Базовая точка старта слотов — текущее время
         enrolled_at = datetime.now(timezone.utc)
         try:
-            await schedule_on_user_created(db, user=user, enrolled_at=enrolled_at, is_pro=is_pro)
+            # Сначала создаем приветственные уведомления (один раз)
+            await schedule_welcome_notifications(db, user=user, enrolled_at=enrolled_at, is_pro=is_pro)
+            
+            # Затем создаем прогресс-слоты для всех курсов с включенными уведомлениями
+            enabled_courses = await db.get_records_sql("SELECT id FROM courses WHERE enable_notify = TRUE")
+            
+            for course in enabled_courses:
+                course_id = course['id']
+                await schedule_on_user_created(db, user=user, enrolled_at=enrolled_at, is_pro=is_pro, course_id=course_id)
+                
         except Exception as e:
             logger.error(f"Failed to schedule notifications for user {user['id']}: {e}")
         
