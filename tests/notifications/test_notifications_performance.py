@@ -19,6 +19,7 @@ if BACKEND_DIR not in sys.path:
 from backend.db.pgapi import PGApi
 from backend.notifications.notifications import (
     schedule_on_user_created,
+    schedule_welcome_notifications,
     schedule_access_end_notifications,
     enqueue_notification,
 )
@@ -232,11 +233,21 @@ class TestNotificationsPerformance:
         
         enrolled_at = datetime.now(timezone.utc)
         for user in users:
-            await schedule_on_user_created(
+            # Сначала создаем приветственные уведомления
+            await schedule_welcome_notifications(
                 db=self.db,
                 user=user,
                 enrolled_at=enrolled_at,
                 is_pro=False
+            )
+            
+            # Затем создаем прогресс-слоты для курса
+            await schedule_on_user_created(
+                db=self.db,
+                user=user,
+                enrolled_at=enrolled_at,
+                is_pro=False,
+                course_id=1
             )
         
         notification_time = time.time() - start_time
@@ -264,11 +275,21 @@ class TestNotificationsPerformance:
         # Создаем несколько задач для одновременного планирования уведомлений
         async def create_notifications():
             enrolled_at = datetime.now(timezone.utc)
-            await schedule_on_user_created(
+            # Сначала создаем приветственные уведомления
+            await schedule_welcome_notifications(
                 db=self.db,
                 user=user,
                 enrolled_at=enrolled_at,
                 is_pro=False
+            )
+            
+            # Затем создаем прогресс-слоты для курса
+            await schedule_on_user_created(
+                db=self.db,
+                user=user,
+                enrolled_at=enrolled_at,
+                is_pro=False,
+                course_id=1
             )
         
         # Запускаем 10 задач одновременно
@@ -328,11 +349,21 @@ class TestNotificationsPerformance:
             
             # Создаем уведомления для каждого пользователя
             enrolled_at = datetime.now(timezone.utc)
-            await schedule_on_user_created(
+            # Сначала создаем приветственные уведомления
+            await schedule_welcome_notifications(
                 db=self.db,
                 user=user,
                 enrolled_at=enrolled_at,
                 is_pro=False
+            )
+            
+            # Затем создаем прогресс-слоты для курса
+            await schedule_on_user_created(
+                db=self.db,
+                user=user,
+                enrolled_at=enrolled_at,
+                is_pro=False,
+                course_id=1
             )
         
         # Тестируем производительность запросов
@@ -366,21 +397,41 @@ class TestNotificationsPerformance:
         
         # Первое создание
         start_time = time.time()
-        await schedule_on_user_created(
+        # Сначала создаем приветственные уведомления
+        await schedule_welcome_notifications(
             db=self.db,
             user=user,
             enrolled_at=enrolled_at,
             is_pro=False
         )
-        first_creation_time = time.time() - start_time
         
-        # Второе создание (должно быть быстрее из-за дедупликации)
-        start_time = time.time()
+        # Затем создаем прогресс-слоты для курса
         await schedule_on_user_created(
             db=self.db,
             user=user,
             enrolled_at=enrolled_at,
+            is_pro=False,
+            course_id=1
+        )
+        first_creation_time = time.time() - start_time
+        
+        # Второе создание (должно быть быстрее из-за дедупликации)
+        start_time = time.time()
+        # Сначала создаем приветственные уведомления
+        await schedule_welcome_notifications(
+            db=self.db,
+            user=user,
+            enrolled_at=enrolled_at,
             is_pro=False
+        )
+        
+        # Затем создаем прогресс-слоты для курса
+        await schedule_on_user_created(
+            db=self.db,
+            user=user,
+            enrolled_at=enrolled_at,
+            is_pro=False,
+            course_id=1
         )
         second_creation_time = time.time() - start_time
         
@@ -407,11 +458,21 @@ class TestNotificationsPerformance:
         
         enrolled_at = datetime.now(timezone.utc)
         for user in users:
-            await schedule_on_user_created(
+            # Сначала создаем приветственные уведомления
+            await schedule_welcome_notifications(
                 db=self.db,
                 user=user,
                 enrolled_at=enrolled_at,
                 is_pro=False
+            )
+            
+            # Затем создаем прогресс-слоты для курса
+            await schedule_on_user_created(
+                db=self.db,
+                user=user,
+                enrolled_at=enrolled_at,
+                is_pro=False,
+                course_id=1
             )
         
         creation_time = time.time() - start_time
@@ -424,7 +485,8 @@ class TestNotificationsPerformance:
             await schedule_access_end_notifications(
                 db=self.db,
                 user=user,
-                access_end_at=access_end_at
+                access_end_at=access_end_at,
+                course_id=1
             )
         
         access_end_time = time.time() - start_time
@@ -456,11 +518,21 @@ class TestNotificationsPerformance:
             
             # Создаем уведомления
             enrolled_at = datetime.now(timezone.utc)
-            await schedule_on_user_created(
+            # Сначала создаем приветственные уведомления
+            await schedule_welcome_notifications(
                 db=self.db,
                 user=user,
                 enrolled_at=enrolled_at,
                 is_pro=False
+            )
+            
+            # Затем создаем прогресс-слоты для курса
+            await schedule_on_user_created(
+                db=self.db,
+                user=user,
+                enrolled_at=enrolled_at,
+                is_pro=False,
+                course_id=1
             )
         
         # Проверяем, что уведомления создались
@@ -491,7 +563,10 @@ class TestNotificationsPerformance:
     @pytest.mark.asyncio
     async def test_notification_memory_usage(self):
         """Тест использования памяти при создании уведомлений"""
-        import psutil
+        try:
+            import psutil
+        except ImportError:
+            pytest.skip("psutil не установлен, пропускаем тест использования памяти")
         import os
         
         # Получаем текущий процесс
@@ -508,11 +583,21 @@ class TestNotificationsPerformance:
             
             # Создаем уведомления
             enrolled_at = datetime.now(timezone.utc)
-            await schedule_on_user_created(
+            # Сначала создаем приветственные уведомления
+            await schedule_welcome_notifications(
                 db=self.db,
                 user=user,
                 enrolled_at=enrolled_at,
                 is_pro=False
+            )
+            
+            # Затем создаем прогресс-слоты для курса
+            await schedule_on_user_created(
+                db=self.db,
+                user=user,
+                enrolled_at=enrolled_at,
+                is_pro=False,
+                course_id=1
             )
         
         # Проверяем использование памяти

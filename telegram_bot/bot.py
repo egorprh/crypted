@@ -18,6 +18,8 @@ from dotenv import load_dotenv
 from spam_protection import AntiSpamMiddleware
 from datetime import datetime
 from aiogram.utils.markdown import hcode
+# Импортируем функции для работы с уведомлениями
+from learn_notify import notification_worker
 
 # Добавляем путь к backend для импорта PGAPI
 backend_path = Path(__file__).parent.parent / "backend"
@@ -25,9 +27,6 @@ sys.path.insert(0, str(backend_path))
 
 # Импортируем PGAPI
 from db.pgapi import PGApi
-
-# Импортируем функции для работы с уведомлениями
-from learn_notify import notification_worker, resolve_message_text
 
 # === Загрузка переменных из .env ===
 # В unified режиме используем backend/.env, иначе telegram_bot/.env

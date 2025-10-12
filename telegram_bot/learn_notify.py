@@ -14,7 +14,7 @@ from typing import Optional, Tuple
 from aiogram import Bot
 from logger import logger
 
-from .notification_texts import (
+from telegram_bot.notification_texts import (
     WELCOME_1, WELCOME_2, PRO_WELCOME_12M, PRO_NEXT_DAY,
     ACCESS_ENDED_1, ACCESS_ENDED_2, DAY1_1934, DAY2_2022, DAY3_0828,
 )
@@ -241,9 +241,8 @@ async def notification_worker(bot: Bot, db):
                     if not message_text:
                         logger.warning(f"Не удалось резолвить сообщение для маркера: {message_marker}")
                         # Помечаем как failed
-                        await db.update_record("notifications", 
-                            {"status": "failed", "error": f"Неизвестный маркер: {message_marker}"},
-                            {"id": notification_id}
+                        await db.update_record("notifications", notification_id,
+                            {"status": "failed", "error": f"Неизвестный маркер: {message_marker}"}
                         )
                         continue
                     
@@ -265,7 +264,7 @@ async def notification_worker(bot: Bot, db):
                     else:
                         logger.error(f"Уведомление {notification_id} провалено: {error_text}")
                     
-                    await db.update_record("notifications", update_data, {"id": notification_id})
+                    await db.update_record("notifications", notification_id, update_data)
                     
                     # Проверяем, нужно ли отменить последующие прогресс-слоты (для любого исхода)
                     if progress_type:
@@ -277,12 +276,11 @@ async def notification_worker(bot: Bot, db):
                 except Exception as e:
                     logger.error(f"Ошибка при обработке уведомления {notification_id}: {e}", exc_info=True)
                     # Помечаем как failed при критической ошибке
-                    await db.update_record("notifications", 
+                    await db.update_record("notifications", notification_id,
                         {
                             "status": "failed",
                             "error": f"Критическая ошибка: {str(e)}"
-                        },
-                        {"id": notification_id}
+                        }
                     )
             
             # Пауза между циклами обработки

@@ -17,7 +17,7 @@ from backend.notifications.notifications import (
     schedule_on_user_created,
     schedule_access_end_notifications,
 )
-from telegram_bot.helper import resolve_message_text
+from telegram_bot.learn_notify import resolve_message_text
 from telegram_bot.notification_texts import (
     WELCOME_1,
     DAY1_1934,
@@ -35,6 +35,8 @@ class FakeDB:
     def __init__(self):
         self.inserted = []  # список словарей-параметров для notifications
         self.counter = 0
+        # Добавляем заглушку для курсов с enable_notify=True
+        self.courses = {1: {"id": 1, "enable_notify": True}}
 
     async def insert_record(self, table_name: str, params: dict):
         # Сохраняем только вставки в notifications
@@ -57,6 +59,13 @@ class FakeDB:
                     return row["id"]
         return None
 
+    async def get_record(self, table_name: str, params: dict):
+        # Поддержка для проверки enable_notify в курсах
+        if table_name == "courses" and "id" in params:
+            course_id = params["id"]
+            return self.courses.get(course_id)
+        return None
+
 
 def test_make_dedup_key_minute_bucket():
     when = datetime(2025, 10, 7, 12, 34, 56, tzinfo=timezone.utc)
@@ -77,41 +86,43 @@ async def test_enqueue_notification_builds_dedup_and_inserts():
         message="welcome_1",
         when=when,
         kind="welcome+3m",
+        course_id=0,  # Приветственные сообщения не привязаны к курсу
         ext_data={"track": "newbie"},
     )
     assert notif_id == 1
     assert len(db.inserted) == 1
     row = db.inserted[0]
     assert row["user_id"] == 1
+    assert row["course_id"] == 0
     assert row["telegram_id"] == 111
     assert row["status"] == "pending"
     assert row["dedup_key"].startswith("111:welcome+3m:")
 
 
 @pytest.mark.asyncio
-async def test_schedule_on_user_created_newbie_creates_5_slots():
+async def test_schedule_on_user_created_newbie_creates_3_progress_slots():
     db = FakeDB()
     user = {"id": 1, "telegram_id": 111}
     enrolled_at = datetime(2025, 10, 7, 12, 0, 0, tzinfo=timezone.utc)
-    await schedule_on_user_created(db, user=user, enrolled_at=enrolled_at, is_pro=False)
-    # 2 приветствия + 3 прогресс-слота
-    assert len(db.inserted) == 5
+    # Теперь schedule_on_user_created создает только прогресс-слоты для курса
+    course_id = 1
+    await schedule_on_user_created(db, user=user, enrolled_at=enrolled_at, is_pro=False, course_id=course_id)
+    # Только 3 прогресс-слота (приветственные создаются отдельно)
+    assert len(db.inserted) == 3
     markers = [row["message"] for row in db.inserted]
-    assert "welcome_1" in markers and "welcome_2" in markers
     assert "progress_slot_day1_1934" in markers
     assert "progress_slot_day2_2022" in markers
     assert "progress_slot_day3_0828" in markers
 
 
 @pytest.mark.asyncio
-async def test_schedule_on_user_created_pro_creates_2_slots():
+async def test_schedule_on_user_created_pro_creates_no_slots():
     db = FakeDB()
     user = {"id": 2, "telegram_id": 222}
     enrolled_at = datetime(2025, 10, 7, 12, 0, 0, tzinfo=timezone.utc)
-    await schedule_on_user_created(db, user=user, enrolled_at=enrolled_at, is_pro=True)
-    assert len(db.inserted) == 2
-    markers = [row["message"] for row in db.inserted]
-    assert "pro_welcome_12m" in markers and "pro_next_day" in markers
+    # Для профи schedule_on_user_created не создает уведомления (только для новичков)
+    await schedule_on_user_created(db, user=user, enrolled_at=enrolled_at, is_pro=True, course_id=0)
+    assert len(db.inserted) == 0  # Профи не создают прогресс-слоты
 
 
 @pytest.mark.asyncio
@@ -119,25 +130,43 @@ async def test_schedule_access_end_notifications_creates_2_slots():
     db = FakeDB()
     user = {"id": 3, "telegram_id": 333}
     access_end_at = datetime(2025, 10, 15, 12, 0, 0, tzinfo=timezone.utc)
-    await schedule_access_end_notifications(db, user=user, access_end_at=access_end_at)
+    # Теперь нужно передать course_id
+    await schedule_access_end_notifications(db, user=user, access_end_at=access_end_at, course_id=1)
     assert len(db.inserted) == 2
     kinds = {row["message"] for row in db.inserted}
     assert "access_ended_1" in kinds and "access_ended_2" in kinds
 
 
-def test_resolve_message_text_basic_and_progress_slots():
-    # Простые константы
-    assert resolve_message_text("welcome_1") == WELCOME_1
+@pytest.mark.asyncio
+async def test_resolve_message_text_basic_and_progress_slots():
+    # Создаем простую заглушку БД для тестов
+    class MockDB:
+        async def get_records_sql(self, query, *args):
+            if "SELECT title FROM courses" in query:
+                # Возвращаем заглушку для курса
+                return [{"title": "Тестовый курс"}]
+            elif "SELECT COUNT(*) as completed_count" in query:
+                # Возвращаем заглушку для прогресса (2 завершенных урока)
+                return [{"completed_count": 2}]
+            return []
+    
+    db = MockDB()
+    
+    # Простые константы - возвращают (text, None)
+    text, progress_type = await resolve_message_text("welcome_1", 1, 0, db)
+    assert text == WELCOME_1
+    assert progress_type is None
 
-    # Progress-слоты: возвращают какой-то из вариантов словаря; проверяем, что строка не False и из набора
-    t1 = resolve_message_text("progress_slot_day1_1934")
-    assert t1 in DAY1_1934.values()
-    t2 = resolve_message_text("progress_slot_day2_2022")
-    assert t2 in DAY2_2022.values()
-    t3 = resolve_message_text("progress_slot_day3_0828")
-    assert t3 in DAY3_0828.values()
+    # Progress-слоты: возвращают (text, progress_type)
+    text, progress_type = await resolve_message_text("progress_slot_day1_1934", 1, 1, db)
+    # Проверяем, что получили текст и тип прогресса
+    assert text is not False
+    assert progress_type == "lt3"  # 2 урока = lt3
+    assert "Тестовый курс" in text  # Проверяем подстановку названия курса
 
-    # Неизвестный маркер -> False
-    assert resolve_message_text("unknown_key") is False
+    # Неизвестный маркер -> (False, None)
+    text, progress_type = await resolve_message_text("unknown_key", 1, 0, db)
+    assert text is False
+    assert progress_type is None
 
 

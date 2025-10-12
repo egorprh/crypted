@@ -218,14 +218,24 @@ class TestNotificationsIntegration:
             is_pro = False
         
         # Планируем уведомления (как в main.py)
-        from backend.notifications.notifications import schedule_on_user_created
+        from backend.notifications.notifications import schedule_on_user_created, schedule_welcome_notifications
         
         enrolled_at = datetime.now(timezone.utc)
-        await schedule_on_user_created(
+        # Сначала создаем приветственные уведомления
+        await schedule_welcome_notifications(
             db=self.db,
             user=user,
             enrolled_at=enrolled_at,
             is_pro=is_pro
+        )
+        
+        # Затем создаем прогресс-слоты для курса
+        await schedule_on_user_created(
+            db=self.db,
+            user=user,
+            enrolled_at=enrolled_at,
+            is_pro=is_pro,
+            course_id=1
         )
         
         # Проверяем, что уведомления создались
@@ -302,14 +312,24 @@ class TestNotificationsIntegration:
             is_pro = False
         
         # Планируем уведомления
-        from backend.notifications.notifications import schedule_on_user_created
+        from backend.notifications.notifications import schedule_on_user_created, schedule_welcome_notifications
         
         enrolled_at = datetime.now(timezone.utc)
-        await schedule_on_user_created(
+        # Сначала создаем приветственные уведомления
+        await schedule_welcome_notifications(
             db=self.db,
             user=user,
             enrolled_at=enrolled_at,
             is_pro=is_pro
+        )
+        
+        # Затем создаем прогресс-слоты для курса
+        await schedule_on_user_created(
+            db=self.db,
+            user=user,
+            enrolled_at=enrolled_at,
+            is_pro=is_pro,
+            course_id=1
         )
         
         # Проверяем, что уведомления создались
@@ -365,14 +385,24 @@ class TestNotificationsIntegration:
         # Изменяем уровень с 0 на 1 (Начальный)
         await self.db.update_record("users", user["id"], {"level": 1})
         
-        from backend.notifications.notifications import schedule_on_user_created
+        from backend.notifications.notifications import schedule_on_user_created, schedule_welcome_notifications
         
         enrolled_at = datetime.now(timezone.utc)
-        await schedule_on_user_created(
+        # Сначала создаем приветственные уведомления
+        await schedule_welcome_notifications(
             db=self.db,
             user=user,
             enrolled_at=enrolled_at,
             is_pro=False
+        )
+        
+        # Затем создаем прогресс-слоты для курса
+        await schedule_on_user_created(
+            db=self.db,
+            user=user,
+            enrolled_at=enrolled_at,
+            is_pro=False,
+            course_id=1
         )
         
         # Проверяем количество уведомлений после первого изменения
@@ -383,11 +413,21 @@ class TestNotificationsIntegration:
         await self.db.update_record("users", user["id"], {"level": 2})
         
         # Планируем уведомления снова
-        await schedule_on_user_created(
+        # Сначала создаем приветственные уведомления
+        await schedule_welcome_notifications(
             db=self.db,
             user=user,
             enrolled_at=enrolled_at,
             is_pro=False
+        )
+        
+        # Затем создаем прогресс-слоты для курса
+        await schedule_on_user_created(
+            db=self.db,
+            user=user,
+            enrolled_at=enrolled_at,
+            is_pro=False,
+            course_id=1
         )
         
         # Проверяем количество уведомлений после второго изменения
@@ -404,14 +444,24 @@ class TestNotificationsIntegration:
         user = await self._create_test_user()
         
         # Планируем уведомления
-        from backend.notifications.notifications import schedule_on_user_created
+        from backend.notifications.notifications import schedule_on_user_created, schedule_welcome_notifications
         
         enrolled_at = datetime.now(timezone.utc)
-        await schedule_on_user_created(
+        # Сначала создаем приветственные уведомления
+        await schedule_welcome_notifications(
             db=self.db,
             user=user,
             enrolled_at=enrolled_at,
             is_pro=False
+        )
+        
+        # Затем создаем прогресс-слоты для курса
+        await schedule_on_user_created(
+            db=self.db,
+            user=user,
+            enrolled_at=enrolled_at,
+            is_pro=False,
+            course_id=1
         )
         
         # Получаем уведомления
@@ -450,14 +500,24 @@ class TestNotificationsIntegration:
         user = await self._create_test_user()
         
         # Планируем уведомления
-        from backend.notifications.notifications import schedule_on_user_created
+        from backend.notifications.notifications import schedule_on_user_created, schedule_welcome_notifications
         
         enrolled_at = datetime.now(timezone.utc)
-        await schedule_on_user_created(
+        # Сначала создаем приветственные уведомления
+        await schedule_welcome_notifications(
             db=self.db,
             user=user,
             enrolled_at=enrolled_at,
             is_pro=False
+        )
+        
+        # Затем создаем прогресс-слоты для курса
+        await schedule_on_user_created(
+            db=self.db,
+            user=user,
+            enrolled_at=enrolled_at,
+            is_pro=False,
+            course_id=1
         )
         
         # Получаем уведомления
@@ -493,14 +553,24 @@ class TestNotificationsIntegration:
         user = await self._create_test_user()
         
         # Планируем уведомления
-        from backend.notifications.notifications import schedule_on_user_created
+        from backend.notifications.notifications import schedule_on_user_created, schedule_welcome_notifications
         
         enrolled_at = datetime.now(timezone.utc)
-        await schedule_on_user_created(
+        # Сначала создаем приветственные уведомления
+        await schedule_welcome_notifications(
             db=self.db,
             user=user,
             enrolled_at=enrolled_at,
             is_pro=False
+        )
+        
+        # Затем создаем прогресс-слоты для курса
+        await schedule_on_user_created(
+            db=self.db,
+            user=user,
+            enrolled_at=enrolled_at,
+            is_pro=False,
+            course_id=1
         )
         
         # Проверяем, что уведомления создались
