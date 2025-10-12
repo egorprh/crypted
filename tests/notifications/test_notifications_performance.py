@@ -195,12 +195,13 @@ class TestNotificationsPerformance:
         return user_data
 
     async def _create_test_course(self) -> Dict:
-        """Создает тестовый курс"""
+        """Создает тестовый курс с включенными уведомлениями"""
         course_data = {
             "title": f"Perf Test Course {random.randint(1000, 9999)}",
             "description": "Performance test course",
             "visible": True,
-            "type": "perf_test"
+            "type": "perf_test",
+            "enable_notify": True  # Включаем уведомления для тестового курса
         }
         
         course_id = await self.db.insert_record("courses", course_data)
@@ -242,12 +243,17 @@ class TestNotificationsPerformance:
             )
             
             # Затем создаем прогресс-слоты для курса
+            # Создаем тестовый курс с включенными уведомлениями
+
+            course = await self._create_test_course()
+
+
             await schedule_on_user_created(
                 db=self.db,
                 user=user,
                 enrolled_at=enrolled_at,
                 is_pro=False,
-                course_id=1
+                course_id=course["id"]
             )
         
         notification_time = time.time() - start_time
@@ -272,6 +278,9 @@ class TestNotificationsPerformance:
         # Создаем пользователя
         user = await self._create_test_user()
         
+        # Создаем тестовый курс один раз для всех задач
+        course = await self._create_test_course()
+        
         # Создаем несколько задач для одновременного планирования уведомлений
         async def create_notifications():
             enrolled_at = datetime.now(timezone.utc)
@@ -283,13 +292,13 @@ class TestNotificationsPerformance:
                 is_pro=False
             )
             
-            # Затем создаем прогресс-слоты для курса
+            # Затем создаем прогресс-слоты для курса (используем тот же курс)
             await schedule_on_user_created(
                 db=self.db,
                 user=user,
                 enrolled_at=enrolled_at,
                 is_pro=False,
-                course_id=1
+                course_id=course["id"]
             )
         
         # Запускаем 10 задач одновременно
@@ -358,12 +367,17 @@ class TestNotificationsPerformance:
             )
             
             # Затем создаем прогресс-слоты для курса
+            # Создаем тестовый курс с включенными уведомлениями
+
+            course = await self._create_test_course()
+
+
             await schedule_on_user_created(
                 db=self.db,
                 user=user,
                 enrolled_at=enrolled_at,
                 is_pro=False,
-                course_id=1
+                course_id=course["id"]
             )
         
         # Тестируем производительность запросов
@@ -392,6 +406,9 @@ class TestNotificationsPerformance:
         # Создаем пользователя
         user = await self._create_test_user()
         
+        # Создаем тестовый курс один раз для всего теста
+        course = await self._create_test_course()
+        
         # Создаем уведомления с одинаковыми dedup_key
         enrolled_at = datetime.now(timezone.utc)
         
@@ -411,7 +428,7 @@ class TestNotificationsPerformance:
             user=user,
             enrolled_at=enrolled_at,
             is_pro=False,
-            course_id=1
+            course_id=course["id"]
         )
         first_creation_time = time.time() - start_time
         
@@ -425,13 +442,13 @@ class TestNotificationsPerformance:
             is_pro=False
         )
         
-        # Затем создаем прогресс-слоты для курса
+        # Затем создаем прогресс-слоты для курса (используем тот же курс)
         await schedule_on_user_created(
             db=self.db,
             user=user,
             enrolled_at=enrolled_at,
             is_pro=False,
-            course_id=1
+            course_id=course["id"]
         )
         second_creation_time = time.time() - start_time
         
@@ -467,12 +484,17 @@ class TestNotificationsPerformance:
             )
             
             # Затем создаем прогресс-слоты для курса
+            # Создаем тестовый курс с включенными уведомлениями
+
+            course = await self._create_test_course()
+
+
             await schedule_on_user_created(
                 db=self.db,
                 user=user,
                 enrolled_at=enrolled_at,
                 is_pro=False,
-                course_id=1
+                course_id=course["id"]
             )
         
         creation_time = time.time() - start_time
@@ -482,11 +504,16 @@ class TestNotificationsPerformance:
         
         access_end_at = datetime.now(timezone.utc) + timedelta(days=1)
         for user in users:
+            # Создаем тестовый курс с включенными уведомлениями
+
+            course = await self._create_test_course()
+
+
             await schedule_access_end_notifications(
                 db=self.db,
                 user=user,
                 access_end_at=access_end_at,
-                course_id=1
+                course_id=course["id"]
             )
         
         access_end_time = time.time() - start_time
@@ -527,12 +554,17 @@ class TestNotificationsPerformance:
             )
             
             # Затем создаем прогресс-слоты для курса
+            # Создаем тестовый курс с включенными уведомлениями
+
+            course = await self._create_test_course()
+
+
             await schedule_on_user_created(
                 db=self.db,
                 user=user,
                 enrolled_at=enrolled_at,
                 is_pro=False,
-                course_id=1
+                course_id=course["id"]
             )
         
         # Проверяем, что уведомления создались
@@ -592,12 +624,17 @@ class TestNotificationsPerformance:
             )
             
             # Затем создаем прогресс-слоты для курса
+            # Создаем тестовый курс с включенными уведомлениями
+
+            course = await self._create_test_course()
+
+
             await schedule_on_user_created(
                 db=self.db,
                 user=user,
                 enrolled_at=enrolled_at,
                 is_pro=False,
-                course_id=1
+                course_id=course["id"]
             )
         
         # Проверяем использование памяти

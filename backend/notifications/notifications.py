@@ -122,7 +122,6 @@ def _at_next_day_time(base_dt: datetime, hh: int, mm: int, day_offset: int = 1) 
 
 async def schedule_on_user_created(
     db: PGApi,
-    *,
     user: Dict,
     enrolled_at: datetime,
     is_pro: bool = False,
@@ -188,7 +187,6 @@ async def schedule_on_user_created(
 
 async def schedule_welcome_notifications(
     db: PGApi,
-    *,
     user: Dict,
     enrolled_at: datetime,
     is_pro: bool = False,

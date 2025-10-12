@@ -100,22 +100,24 @@ async def resolve_message_text(message_marker: str, user_id: int, course_id: int
     if key in simple_map:
         return simple_map[key], None
 
-    # Получаем название курса для подстановки в тексты (только если нужно)
+    # Все остальные сообщения требуют курс - проверяем его наличие один раз
     course_data = await db.get_records_sql("SELECT title FROM courses WHERE id = $1", course_id)
     if not course_data or not course_data[0]['title']:
         logger.error(f"Курс {course_id} не найден или не имеет названия")
-        return False
+        return False, None
     course_title = course_data[0]['title']
-    
+
     # Уведомления об окончании доступа - подставляем название курса
-    if key == "access_ended_1":
-        return ACCESS_ENDED_1.format(course_title=course_title), None
-    if key == "access_ended_2":
-        return ACCESS_ENDED_2.format(course_title=course_title), None
+    if key in ["access_ended_1", "access_ended_2"]:
+        if key == "access_ended_1":
+            return ACCESS_ENDED_1.format(course_title=course_title), None
+        if key == "access_ended_2":
+            return ACCESS_ENDED_2.format(course_title=course_title), None
 
     # Прогресс-слоты: проверяем реальный прогресс пользователя по конкретному курсу
     if key in ["progress_slot_day1_1934", "progress_slot_day2_2022", "progress_slot_day3_0828"]:
         try:
+            
             # Получаем количество завершенных уроков для пользователя по конкретному курсу
             completed_lessons = await db.get_records_sql("""
                 SELECT COUNT(*) as completed_count
@@ -174,7 +176,7 @@ async def _cancel_future_progress_slots_if_completed(db, user_id: int, course_id
     try:
         # Отменяем прогресс-слоты только если пользователь прошел все уроки
         if progress_type == "all":
-            cancelled_count = await db.execute("""
+            result = await db.execute("""
                 UPDATE notifications 
                 SET status = 'cancelled', 
                     error = 'Отменено: пользователь уже прошел все уроки'
@@ -183,6 +185,14 @@ async def _cancel_future_progress_slots_if_completed(db, user_id: int, course_id
                   AND status = 'pending' 
                   AND message LIKE 'progress_slot_%'
             """, user_id, course_id, execute=True)
+            
+            # Извлекаем количество обновленных записей из строки результата
+            cancelled_count = 0
+            if isinstance(result, str) and result.startswith("UPDATE "):
+                try:
+                    cancelled_count = int(result.split()[1])
+                except (IndexError, ValueError):
+                    cancelled_count = 0
             
             if cancelled_count > 0:
                 logger.info(f"Отменено {cancelled_count} будущих прогресс-слотов для пользователя {user_id} по курсу {course_id} (прошел все уроки)")
@@ -236,7 +246,18 @@ async def notification_worker(bot: Bot, db):
                 try:
                     # Резолвим текст сообщения с учетом прогресса пользователя и курса
                     course_id = notification.get('course_id', 0)
-                    message_text, progress_type = await resolve_message_text(message_marker, user_id, course_id, db)
+                    result = await resolve_message_text(message_marker, user_id, course_id, db)
+                    
+                    # Проверяем, что resolve_message_text вернул кортеж
+                    if not result or not isinstance(result, tuple) or len(result) != 2:
+                        logger.warning(f"Не удалось резолвить сообщение для маркера: {message_marker}, результат: {result}")
+                        # Помечаем как failed
+                        await db.update_record("notifications", notification_id,
+                            {"status": "failed", "error": f"Неизвестный маркер: {message_marker}"}
+                        )
+                        continue
+                    
+                    message_text, progress_type = result
                     
                     if not message_text:
                         logger.warning(f"Не удалось резолвить сообщение для маркера: {message_marker}")

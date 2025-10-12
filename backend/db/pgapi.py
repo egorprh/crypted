@@ -188,9 +188,16 @@ class PGApi:
             sqlparams.append(val)
         sql = f"INSERT INTO {table_name} ({keys}) VALUES ({params_mask}) RETURNING id;"
         try:
-            return await self.execute(sql, *sqlparams, fetchval=True)
+            result = await self.execute(sql, *sqlparams, fetchval=True)
+            return result
         except asyncpg.exceptions.UniqueViolationError:
-            return await self.get_field(table_name, 'id', cleaned_params)
+            # Пытаемся найти существующую запись по уникальным полям
+            existing_id = await self.get_field(table_name, 'id', cleaned_params)
+            if existing_id is None:
+                # Если не нашли, возвращаем None (запись уже существует, но мы не можем получить ID)
+                logger.warning(f"Unique violation for {table_name}, but existing record not found")
+                return None
+            return existing_id
 
     async def update_record(self, table_name: str, recordid: int, params: dict):
         # Автоматически очищаем все строковые данные перед обновлением

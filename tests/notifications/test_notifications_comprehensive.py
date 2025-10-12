@@ -236,12 +236,13 @@ class TestNotificationsComprehensive:
         return user_data
 
     async def _create_test_course(self) -> Dict:
-        """Создает тестовый курс"""
+        """Создает тестовый курс с включенными уведомлениями"""
         course_data = {
             "title": f"Test Course {random.randint(1000, 9999)}",
             "description": "Test course for notifications",
             "visible": True,
-            "type": "test"
+            "type": "test",
+            "enable_notify": True  # Включаем уведомления для тестового курса
         }
         
         course_id = await self.db.insert_record("courses", course_data)
@@ -301,13 +302,21 @@ class TestNotificationsComprehensive:
             is_pro=is_pro
         )
         
+        # Создаем тестовый курс с включенными уведомлениями
+        course = await self._create_test_course()
+        
         # Затем создаем прогресс-слоты для курса
+        # Создаем тестовый курс с включенными уведомлениями
+
+        course = await self._create_test_course()
+
+
         await schedule_on_user_created(
             db=self.db,
             user=user,
             enrolled_at=enrolled_at,
             is_pro=is_pro,
-            course_id=1
+            course_id=course["id"]
         )
         
         # Проверяем, что создались правильные уведомления
@@ -401,12 +410,17 @@ class TestNotificationsComprehensive:
         )
         
         # Затем создаем прогресс-слоты для курса
+        # Создаем тестовый курс с включенными уведомлениями
+
+        course = await self._create_test_course()
+
+
         await schedule_on_user_created(
             db=self.db,
             user=user,
             enrolled_at=enrolled_at,
             is_pro=is_pro,
-            course_id=1
+            course_id=course["id"]
         )
         
         # Проверяем, что создались правильные уведомления
@@ -453,6 +467,9 @@ class TestNotificationsComprehensive:
         # Создаем пользователя
         user = await self._create_test_user()
         
+        # Создаем тестовый курс один раз для всего теста
+        course = await self._create_test_course()
+        
         # Планируем уведомления первый раз
         enrolled_at = self._get_test_time()
         # Сначала создаем приветственные уведомления
@@ -469,7 +486,7 @@ class TestNotificationsComprehensive:
             user=user,
             enrolled_at=enrolled_at,
             is_pro=False,
-            course_id=1
+            course_id=course["id"]
         )
         
         # Получаем количество уведомлений после первого создания
@@ -485,13 +502,13 @@ class TestNotificationsComprehensive:
             is_pro=False
         )
         
-        # Затем создаем прогресс-слоты для курса
+        # Затем создаем прогресс-слоты для курса (используем тот же курс)
         await schedule_on_user_created(
             db=self.db,
             user=user,
             enrolled_at=enrolled_at,
             is_pro=False,
-            course_id=1
+            course_id=course["id"]
         )
         
         # Получаем количество уведомлений после второго создания
@@ -522,7 +539,7 @@ class TestNotificationsComprehensive:
             db=self.db,
             user=user,
             access_end_at=access_end_at,
-            course_id=1
+            course_id=course["id"]
         )
         
         # Проверяем, что создались правильные уведомления
@@ -569,13 +586,16 @@ class TestNotificationsComprehensive:
         # Создаем пользователя
         user = await self._create_test_user()
         
+        # Создаем тестовый курс
+        course = await self._create_test_course()
+        
         # Планируем уведомления об окончании доступа первый раз
         access_end_at = self._get_test_time()
         await schedule_access_end_notifications(
             db=self.db,
             user=user,
             access_end_at=access_end_at,
-            course_id=1
+            course_id=course["id"]
         )
         
         # Получаем количество уведомлений после первого создания
@@ -587,7 +607,7 @@ class TestNotificationsComprehensive:
             db=self.db,
             user=user,
             access_end_at=access_end_at,
-            course_id=1
+            course_id=course["id"]
         )
         
         # Получаем количество уведомлений после второго создания
@@ -621,12 +641,17 @@ class TestNotificationsComprehensive:
         )
         
         # Затем создаем прогресс-слоты для user1
+        # Создаем тестовый курс с включенными уведомлениями
+
+        course = await self._create_test_course()
+
+
         await schedule_on_user_created(
             db=self.db,
             user=user1,
             enrolled_at=enrolled_at1,
             is_pro=False,
-            course_id=1
+            course_id=course["id"]
         )
 
         # Сначала создаем приветственные уведомления для user2
@@ -638,12 +663,17 @@ class TestNotificationsComprehensive:
         )
         
         # Затем создаем прогресс-слоты для user2
+        # Создаем тестовый курс с включенными уведомлениями
+
+        course = await self._create_test_course()
+
+
         await schedule_on_user_created(
             db=self.db,
             user=user2,
             enrolled_at=enrolled_at2,
             is_pro=False,
-            course_id=1
+            course_id=course["id"]
         )
         
         # Получаем уведомления для каждого пользователя
@@ -678,12 +708,17 @@ class TestNotificationsComprehensive:
         )
         
         # Затем создаем прогресс-слоты для курса
+        # Создаем тестовый курс с включенными уведомлениями
+
+        course = await self._create_test_course()
+
+
         await schedule_on_user_created(
             db=self.db,
             user=user,
             enrolled_at=enrolled_at,
             is_pro=False,
-            course_id=1
+            course_id=course["id"]
         )
         
         # Получаем уведомления
@@ -743,12 +778,17 @@ class TestNotificationsComprehensive:
         )
         
         # Затем создаем прогресс-слоты для курса
+        # Создаем тестовый курс с включенными уведомлениями
+
+        course = await self._create_test_course()
+
+
         await schedule_on_user_created(
             db=self.db,
             user=user,
             enrolled_at=enrolled_at,
             is_pro=False,
-            course_id=1
+            course_id=course["id"]
         )
         
         # Получаем уведомления
@@ -826,12 +866,17 @@ class TestNotificationsComprehensive:
         )
         
         # Затем создаем прогресс-слоты для курса
+        # Создаем тестовый курс с включенными уведомлениями
+
+        course = await self._create_test_course()
+
+
         await schedule_on_user_created(
             db=self.db,
             user=user,
             enrolled_at=enrolled_at,
             is_pro=False,
-            course_id=1
+            course_id=course["id"]
         )
         
         # Планируем уведомления об окончании доступа
@@ -840,7 +885,7 @@ class TestNotificationsComprehensive:
             db=self.db,
             user=user,
             access_end_at=access_end_at,
-            course_id=1
+            course_id=course["id"]
         )
         
         # Получаем все уведомления пользователя
@@ -881,12 +926,17 @@ class TestNotificationsComprehensive:
         )
         
         # Затем создаем прогресс-слоты для курса
+        # Создаем тестовый курс с включенными уведомлениями
+
+        course = await self._create_test_course()
+
+
         await schedule_on_user_created(
             db=self.db,
             user=user,
             enrolled_at=enrolled_at,
             is_pro=False,
-            course_id=1
+            course_id=course["id"]
         )
         
         # Получаем уведомления из БД
@@ -1018,12 +1068,17 @@ class TestNotificationsComprehensive:
         )
         
         # Затем создаем прогресс-слоты для курса
+        # Создаем тестовый курс с включенными уведомлениями
+
+        course = await self._create_test_course()
+
+
         await schedule_on_user_created(
             db=self.db,
             user=user,
             enrolled_at=enrolled_at,
             is_pro=False,
-            course_id=1
+            course_id=course["id"]
         )
         
         notifications = await self._get_user_notifications(user_id)
@@ -1041,12 +1096,17 @@ class TestNotificationsComprehensive:
         )
         
         # Затем создаем прогресс-слоты для курса (для профи их не будет)
+        # Создаем тестовый курс с включенными уведомлениями
+
+        course = await self._create_test_course()
+
+
         await schedule_on_user_created(
             db=self.db,
             user=user_large_id,
             enrolled_at=enrolled_at,
             is_pro=True,
-            course_id=1
+            course_id=course["id"]
         )
         
         notifications = await self._get_user_notifications(user_large_id["id"])
@@ -1129,12 +1189,17 @@ class TestNotificationsComprehensive:
         )
         
         # Затем создаем прогресс-слоты для курса
+        # Создаем тестовый курс с включенными уведомлениями
+
+        course = await self._create_test_course()
+
+
         await schedule_on_user_created(
             db=self.db,
             user=user,
             enrolled_at=past_time,
             is_pro=False,
-            course_id=1
+            course_id=course["id"]
         )
         
         notifications = await self._get_user_notifications(user["id"])
@@ -1166,12 +1231,17 @@ class TestNotificationsComprehensive:
             )
             
             # Затем создаем прогресс-слоты для курса
+            # Создаем тестовый курс с включенными уведомлениями
+
+            course = await self._create_test_course()
+
+
             await schedule_on_user_created(
                 db=self.db,
                 user=user,
                 enrolled_at=enrolled_at,
                 is_pro=False,
-                course_id=1
+                course_id=course["id"]
             )
         
         end_time = time.time()
@@ -1198,11 +1268,16 @@ class TestNotificationsComprehensive:
         for i, user in enumerate(users):
             # Каждый пользователь получает уведомления с разным временем
             user_enrolled_at = enrolled_at + timedelta(minutes=i)
+            # Создаем тестовый курс с включенными уведомлениями
+
+            course = await self._create_test_course()
+
+
             await schedule_access_end_notifications(
                 db=self.db,
                 user=user,
                 access_end_at=user_enrolled_at,
-                course_id=1
+                course_id=course["id"]
             )
         
         end_time = time.time()

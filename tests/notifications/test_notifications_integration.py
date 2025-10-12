@@ -182,6 +182,23 @@ class TestNotificationsIntegration:
         self.test_users.append(user_data)
         return user_data
 
+    async def _create_test_course(self) -> Dict:
+        """Создает тестовый курс с включенными уведомлениями"""
+        course_data = {
+            "title": f"Integration Test Course {random.randint(1000, 9999)}",
+            "description": "Integration test course for notifications",
+            "visible": True,
+            "type": "integration_test",
+            "enable_notify": True  # Включаем уведомления для тестового курса
+        }
+        
+        course_id = await self.db.insert_record("courses", course_data)
+        course_data["id"] = course_id
+        if not hasattr(self, 'test_courses'):
+            self.test_courses = []
+        self.test_courses.append(course_data)
+        return course_data
+
     async def _get_user_notifications(self, user_id: int) -> List[Dict]:
         """Получает все уведомления пользователя"""
         return await self.db.get_records("notifications", {"user_id": user_id})
@@ -229,13 +246,16 @@ class TestNotificationsIntegration:
             is_pro=is_pro
         )
         
+        # Создаем тестовый курс с включенными уведомлениями
+        course = await self._create_test_course()
+        
         # Затем создаем прогресс-слоты для курса
         await schedule_on_user_created(
             db=self.db,
             user=user,
             enrolled_at=enrolled_at,
             is_pro=is_pro,
-            course_id=1
+            course_id=course["id"]
         )
         
         # Проверяем, что уведомления создались
