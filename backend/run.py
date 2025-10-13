@@ -28,9 +28,31 @@ from pathlib import Path
 from dotenv import load_dotenv
 from logger import logger  # Используем логгер из logger.py
 
+# === ПРИОРИТЕТ ПУТЕЙ ДЛЯ UNIFIED РЕЖИМА ===
+# Поскольку этот скрипт лежит в /app/backend, Python по умолчанию ставит
+# эту папку первой в sys.path, из-за чего файл /app/backend/telegram_bot.py
+# (если существует) затмевает пакет /app/telegram_bot.
+# Явно поднимем /app и /app/telegram_bot выше /app/backend.
+try:
+    app_root = "/app"
+    telegram_pkg = "/app/telegram_bot"
+    backend_dir = "/app/backend"
+    # Вставляем в начало sys.path нужные каталоги
+    for p in [app_root, telegram_pkg]:
+        if p in sys.path:
+            sys.path.remove(p)
+        if os.path.isdir(p):
+            sys.path.insert(0, p)
+    # Оставляем backend после них (не удаляем, просто не ставим первым)
+    # На случай кэшированного неправильного импорта очищаем модуль
+    if 'telegram_bot' in sys.modules:
+        del sys.modules['telegram_bot']
+except Exception as path_e:
+    logger.warning(f"Не удалось перенастроить sys.path для unified: {path_e}")
+
 # === ИМПОРТЫ ДЛЯ UNIFIED РЕЖИМА ===
 # Пытаемся импортировать модули для unified режима
-# Если импорт не удается - unified режим недоступен
+# Если импорт не удается - добавляем подробную диагностику путей и содержимого
 try:
     from telegram_bot.bot import main as bot_main  # Функция запуска Telegram бота
     from main import app as fastapi_app            # FastAPI приложение
@@ -39,6 +61,36 @@ try:
 except ImportError as e:
     UNIFIED_IMPORTS_AVAILABLE = False
     logger.warning(f"Unified режим недоступен: {e}")
+    try:
+        logger.warning("Диагностика unified импорта:")
+        logger.warning(f"PYTHONPATH={os.getenv('PYTHONPATH')}")
+        logger.warning(f"sys.path={sys.path}")
+        # Проверим наличие директорий и файлов
+        for path in [
+            "/app/telegram_bot",
+            "/app/backend",
+            "/app/frontend/dist",
+        ]:
+            p = Path(path)
+            exists = p.exists()
+            is_dir = p.is_dir()
+            logger.warning(f"PATH {path}: exists={exists}, is_dir={is_dir}")
+            if exists and is_dir:
+                try:
+                    listing = sorted([f.name for f in p.iterdir()])
+                    logger.warning(f"LIST {path}: {listing}")
+                except Exception as le:
+                    logger.warning(f"LIST {path} error: {le}")
+        # Пробуем явный импорт шагами
+        import importlib
+        logger.warning("Пробуем importlib.import_module('telegram_bot')...")
+        pkg = importlib.import_module('telegram_bot')
+        logger.warning(f"Импорт telegram_bot ОК: {pkg}")
+        logger.warning("Пробуем importlib.import_module('telegram_bot.bot')...")
+        mod = importlib.import_module('telegram_bot.bot')
+        logger.warning(f"Импорт telegram_bot.bot ОК: {mod}")
+    except Exception as de:
+        logger.warning(f"Подробности ошибки unified импорта: {de}")
 
 def check_python_version():
     """Проверка версии Python"""

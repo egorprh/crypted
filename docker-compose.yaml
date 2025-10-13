@@ -50,24 +50,6 @@ services:
     expose:
       - "8015"
 
-
-
-  # Бота отдельно поднял в папке root
-  # telegram-bot:
-  #   build:
-  #     context: .
-  #     dockerfile: telegram_bot/Dockerfile.bot
-  #   volumes:
-  #     - ./telegram_bot:/app
-  #   env_file:
-  #     - ".env"
-  #   environment:
-  #     BOT_TOKEN: $BOT_TOKEN
-  #     ADMINS: $ADMINS
-  #     PRIVATE_CHANNEL_ID: $PRIVATE_CHANNEL_ID
-  #   depends_on:
-  #     - backend
-
 networks:
   web:
     driver: bridge
