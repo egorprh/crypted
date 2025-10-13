@@ -37,8 +37,10 @@ services:
       - "backend/.env"
     environment:
       - PORT=8015
+      - UNIFIED_MODE=true
     volumes:
       - ./backend:/app/backend
+      - ./telegram_bot:/app/telegram_bot
       - ./frontend/dist:/app/frontend/dist
       - ./logs:/app/logs
       - ./backend/.env:/app/backend/.env

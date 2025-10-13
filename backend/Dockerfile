@@ -14,10 +14,14 @@ WORKDIR /app
 # Копируем файлы проекта
 COPY backend/requirements.txt /app/requirements.txt
 COPY backend/ /app/backend/
+COPY telegram_bot/ /app/telegram_bot/
 COPY frontend/dist/ /app/frontend/dist/
 
 # Устанавливаем зависимости
 RUN pip install --no-cache-dir -r requirements.txt
+
+# Добавляем telegram_bot в PYTHONPATH
+ENV PYTHONPATH="/app/telegram_bot:/app/backend:${PYTHONPATH}"
 
 # Делаем run.py исполняемым
 RUN chmod +x /app/backend/run.py

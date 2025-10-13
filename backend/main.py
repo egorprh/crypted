@@ -11,15 +11,17 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from contextlib import asynccontextmanager
 from typing import Any, AsyncGenerator, Dict
+from datetime import datetime, timezone
 from db.pgapi import PGApi
 from notification_service import send_service_message, send_service_document
 from config import load_config
 import json
 from logger import logger  # Импортируем логгер
 # Импортируем функции для работы с записями пользователей на курсы
-from enrollment import ENROLLMENT_STATUS_NOT_ENROLLED, create_user_enrollment, get_course_access_info
+from enrollment import ENROLLMENT_STATUS_NOT_ENROLLED, create_user_enrollment, get_course_access_info, expire_overdue_enrollments
 # Импортируем вспомогательные функции
 from misc import send_survey_to_crm, remove_timestamps, check_lesson_blocked, mark_lesson_completed, check_enter_survey_completion, send_homework_notification, send_homework_to_crm
+from notifications.notifications import schedule_on_user_created, schedule_welcome_notifications
 
 # Импорт для настройки админки
 from admin.admin_setup import setup_admin
@@ -105,6 +107,24 @@ async def daily_db_backup():
         await asyncio.sleep(24*60*60)
 
 
+async def expire_enrollments_worker():
+    """
+    Фоновая задача: каждые 2 часа завершает просроченные подписки и ставит уведомления
+    об окончании доступа пользователям (две записи на каждого).
+    """
+    while True:
+        try:
+            if check_db_connection():
+                count = await expire_overdue_enrollments(db)
+                logger.info(f"Фоновая задача завершения подписок отработала, обработано: {count}")
+            else:
+                logger.warning("БД недоступна, пропускаем expire_overdue_enrollments")
+        except Exception as e:
+            logger.error(f"Ошибка в expire_enrollments_worker: {e}")
+        # Спим 2 часа
+        await asyncio.sleep(2*60*60)
+
+
 # https://medium.com/@marcnealer/fastapi-after-the-getting-started-867ecaa99de9
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -121,6 +141,7 @@ async def lifespan(app: FastAPI):
             db_connected = True
             # Запуск фоновой задачи только если БД подключена
             asyncio.create_task(daily_db_backup())
+            asyncio.create_task(expire_enrollments_worker())
             logger.info("Приложение запущено с подключением к БД")
             break  # Если подключение успешно, выходим из цикла
         except Exception as e:
@@ -358,6 +379,32 @@ async def save_level(request: Request):
         await db.update_record("users", user["id"], {"level": level})
         
         logger.info(f"User {user['id']} level updated to {level}")
+
+        # Планируем уведомления в зависимости от уровня
+        level_row = await db.get_record("levels", {"id": level})
+        is_pro = False
+        try:
+            short_name = (level_row or {}).get("short_name")
+            # pro трактуем как 'advanced' по данным из init.sql
+            is_pro = (str(short_name).lower() == "advanced")
+        except Exception:
+            is_pro = False
+
+        # Базовая точка старта слотов — текущее время
+        enrolled_at = datetime.now(timezone.utc)
+        try:
+            # Сначала создаем приветственные уведомления (один раз)
+            await schedule_welcome_notifications(db, user=user, enrolled_at=enrolled_at, is_pro=is_pro)
+            
+            # Затем создаем прогресс-слоты для всех курсов с включенными уведомлениями
+            enabled_courses = await db.get_records_sql("SELECT id FROM courses WHERE enable_notify = TRUE")
+            
+            for course in enabled_courses:
+                course_id = course['id']
+                await schedule_on_user_created(db, user=user, enrolled_at=enrolled_at, is_pro=is_pro, course_id=course_id)
+                
+        except Exception as e:
+            logger.error(f"Failed to schedule notifications for user {user['id']}: {e}")
         
         return {"status": "success", "message": "User level was updated"}
         
