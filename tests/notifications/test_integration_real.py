@@ -524,7 +524,7 @@ class TestIntegrationReal:
         text_none, progress_type = await resolve_message_text("progress_slot_day1_1934", user["id"], course["id"], self.db)
         assert text_none is not False, "Прогресс-слот должен резолвиться"
         assert progress_type == "none", f"Ожидался progress_type='none', получен '{progress_type}'"
-        assert course["title"] in text_none, "Текст должен содержать название курса"
+        # Название курса в текстах прогресс-слотов теперь намеренно не подставляется
         
         # Добавляем завершенные уроки (1-2 урока) - используем существующие lesson_id
         for lesson_id in [1, 2]:
@@ -574,7 +574,7 @@ class TestIntegrationReal:
         # Тестируем резолв с названием курса
         text, progress_type = await resolve_message_text("progress_slot_day1_1934", user["id"], course["id"], self.db)
         assert text is not False, "Сообщение должно резолвиться"
-        assert course["title"] in text, f"Текст должен содержать название курса '{course['title']}'"
+        # Название курса в текстах прогресс-слотов теперь намеренно не подставляется
 
     @pytest.mark.asyncio
     async def test_resolve_unknown_marker(self):
@@ -695,7 +695,7 @@ class TestIntegrationReal:
             )
             assert text is not False, f"Сообщение {notification['message']} должно резолвиться"
             assert progress_type == "lt5", f"Ожидался progress_type='lt5', получен '{progress_type}'"
-            assert course["title"] in text, "Текст должен содержать название курса"
+            # Название курса в текстах прогресс-слотов теперь намеренно не подставляется
 
     # ==================== ТЕСТЫ ИНТЕГРАЦИИ С КУРСАМИ ====================
 

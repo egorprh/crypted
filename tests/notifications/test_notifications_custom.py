@@ -162,7 +162,7 @@ async def test_resolve_message_text_basic_and_progress_slots():
     # Проверяем, что получили текст и тип прогресса
     assert text is not False
     assert progress_type == "lt3"  # 2 урока = lt3
-    assert "Тестовый курс" in text  # Проверяем подстановку названия курса
+    # Название курса в текстах прогресс-слотов теперь намеренно не подставляется
 
     # Неизвестный маркер -> (False, None)
     text, progress_type = await resolve_message_text("unknown_key", 1, 0, db)

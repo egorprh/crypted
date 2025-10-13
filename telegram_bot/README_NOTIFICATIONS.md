@@ -167,6 +167,27 @@ UPDATE courses SET enable_notify = TRUE WHERE id = {course_id};
 - Приветственные: `enrolled_at + timedelta(minutes=3)`
 - Прогресс-слоты: `_at_next_day_time(enrolled_at, hour, minute, day_offset)`
 
+### Часовой пояс (MSK → UTC)
+
+- В БД все даты/время (`scheduled_at`, `sent_at`) хранятся строго в UTC.
+- Планирование прогресс-слотов выполняется по московскому времени (Europe/Moscow),
+  затем конвертируется в UTC перед записью в БД.
+- Воркер выбирает слоты по условию `scheduled_at <= now_utc` без локальных поправок.
+
+Пример расчета времени по МСК с переводом в UTC:
+
+```python
+from datetime import timedelta, timezone
+from zoneinfo import ZoneInfo
+
+MSK = ZoneInfo("Europe/Moscow")
+
+def _at_next_day_time(base_dt_utc, hour, minute, day_offset=1):
+    base_msk = base_dt_utc.astimezone(MSK)
+    target_msk = base_msk.replace(hour=hour, minute=minute, second=0, microsecond=0) + timedelta(days=day_offset)
+    return target_msk.astimezone(timezone.utc)
+```
+
 ### Максимальные попытки
 По умолчанию: 5 попыток отправки с экспоненциальной задержкой.
 

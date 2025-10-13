@@ -22,6 +22,7 @@ import json
 """
 
 from datetime import datetime, timedelta, time, timezone
+from zoneinfo import ZoneInfo
 from typing import Optional, Dict
 
 from db.pgapi import PGApi, sanitize_input
@@ -109,15 +110,17 @@ async def enqueue_notification(
 
 
 def _at_next_day_time(base_dt: datetime, hh: int, mm: int, day_offset: int = 1) -> datetime:
-    """Возвращает UTC-момент следующего дня в заданный час:минуты.
+    """Возвращает UTC-момент нужного дня в заданный час:минуты по МСК.
 
-    Примечание: если позже появится пользовательский TZ, здесь следует сделать
-    пересчёт `локальное -> UTC`. Сейчас считаем базу (enrolled_at) уже в UTC
-    либо локальной зоне проекта и переводим в UTC.
+    Алгоритм:
+    1) Переводим базовое время (обычно enrolled_at) в зону Europe/Moscow
+    2) На этой временной шкале выставляем нужные hh:mm и добавляем day_offset
+    3) Полученный момент переводим обратно в UTC для записи в БД
     """
-    base_utc = base_dt.astimezone(timezone.utc)
-    target_date = (base_utc.date() + timedelta(days=day_offset))
-    return datetime.combine(target_date, time(hh, mm, tzinfo=timezone.utc))
+    msk = ZoneInfo("Europe/Moscow")
+    base_msk = base_dt.astimezone(msk)
+    target_msk = base_msk.replace(hour=hh, minute=mm, second=0, microsecond=0) + timedelta(days=day_offset)
+    return target_msk.astimezone(timezone.utc)
 
 
 async def schedule_on_user_created(

@@ -5,6 +5,7 @@ import pytest_asyncio
 import asyncio
 import random
 from datetime import datetime, timezone, timedelta
+from zoneinfo import ZoneInfo
 from typing import Dict, List
 
 # Добавляем корень проекта в sys.path, чтобы импортировать backend/
@@ -817,33 +818,33 @@ class TestNotificationsComprehensive:
         # progress_slot_day1_1934 должно быть на следующий день в 19:34
         progress1 = notification_map.get("progress_slot_day1_1934")
         if progress1:
-            # Проверяем, что время соответствует дню+1 и 19:34
-            actual_time = progress1["scheduled_at"]
-            expected_day = enrolled_at.date() + timedelta(days=1)
+            # Теперь слоты считаются по МСК, в БД хранится UTC
+            actual_time = progress1["scheduled_at"].astimezone(ZoneInfo("Europe/Moscow"))
+            expected_day = (enrolled_at.astimezone(ZoneInfo("Europe/Moscow")).date() + timedelta(days=1))
             actual_day = actual_time.date()
-            assert actual_day == expected_day, f"progress_slot_day1_1934 запланировано не на следующий день: {actual_day} vs {expected_day}"
-            assert actual_time.hour == 19, f"progress_slot_day1_1934 запланировано не в 19 часов: {actual_time.hour}"
-            assert actual_time.minute == 34, f"progress_slot_day1_1934 запланировано не в 34 минуты: {actual_time.minute}"
+            assert actual_day == expected_day, f"progress_slot_day1_1934 (MSK) запланировано не на следующий день: {actual_day} vs {expected_day}"
+            assert actual_time.hour == 19, f"progress_slot_day1_1934 (MSK) запланировано не в 19 часов: {actual_time.hour}"
+            assert actual_time.minute == 34, f"progress_slot_day1_1934 (MSK) запланировано не в 34 минуты: {actual_time.minute}"
         
         # progress_slot_day2_2022 должно быть через 2 дня в 20:22
         progress2 = notification_map.get("progress_slot_day2_2022")
         if progress2:
-            actual_time = progress2["scheduled_at"]
-            expected_day = enrolled_at.date() + timedelta(days=2)
+            actual_time = progress2["scheduled_at"].astimezone(ZoneInfo("Europe/Moscow"))
+            expected_day = (enrolled_at.astimezone(ZoneInfo("Europe/Moscow")).date() + timedelta(days=2))
             actual_day = actual_time.date()
-            assert actual_day == expected_day, f"progress_slot_day2_2022 запланировано не через 2 дня: {actual_day} vs {expected_day}"
-            assert actual_time.hour == 20, f"progress_slot_day2_2022 запланировано не в 20 часов: {actual_time.hour}"
-            assert actual_time.minute == 22, f"progress_slot_day2_2022 запланировано не в 22 минуты: {actual_time.minute}"
+            assert actual_day == expected_day, f"progress_slot_day2_2022 (MSK) запланировано не через 2 дня: {actual_day} vs {expected_day}"
+            assert actual_time.hour == 20, f"progress_slot_day2_2022 (MSK) запланировано не в 20 часов: {actual_time.hour}"
+            assert actual_time.minute == 22, f"progress_slot_day2_2022 (MSK) запланировано не в 22 минуты: {actual_time.minute}"
         
         # progress_slot_day3_0828 должно быть через 3 дня в 08:28
         progress3 = notification_map.get("progress_slot_day3_0828")
         if progress3:
-            actual_time = progress3["scheduled_at"]
-            expected_day = enrolled_at.date() + timedelta(days=3)
+            actual_time = progress3["scheduled_at"].astimezone(ZoneInfo("Europe/Moscow"))
+            expected_day = (enrolled_at.astimezone(ZoneInfo("Europe/Moscow")).date() + timedelta(days=3))
             actual_day = actual_time.date()
-            assert actual_day == expected_day, f"progress_slot_day3_0828 запланировано не через 3 дня: {actual_day} vs {expected_day}"
-            assert actual_time.hour == 8, f"progress_slot_day3_0828 запланировано не в 8 часов: {actual_time.hour}"
-            assert actual_time.minute == 28, f"progress_slot_day3_0828 запланировано не в 28 минут: {actual_time.minute}"
+            assert actual_day == expected_day, f"progress_slot_day3_0828 (MSK) запланировано не через 3 дня: {actual_day} vs {expected_day}"
+            assert actual_time.hour == 8, f"progress_slot_day3_0828 (MSK) запланировано не в 8 часов: {actual_time.hour}"
+            assert actual_time.minute == 28, f"progress_slot_day3_0828 (MSK) запланировано не в 28 минут: {actual_time.minute}"
 
     @pytest.mark.asyncio
     async def test_mixed_notification_types(self):
@@ -1012,34 +1013,40 @@ class TestNotificationsComprehensive:
         
         # Тест D+1 19:34 (первый прогресс-слот)
         result = _at_next_day_time(base_time, 19, 34, day_offset=1)
-        expected = datetime(2025, 1, 2, 19, 34, 0, tzinfo=timezone.utc)
-        assert result == expected, f"D+1 19:34: ожидался {expected}, получен {result}"
+        # 19:34 MSK == 16:34 UTC зимой
+        expected = datetime(2025, 1, 2, 16, 34, 0, tzinfo=timezone.utc)
+        assert result == expected, f"D+1 19:34 (MSK->UTC): ожидался {expected}, получен {result}"
         
         # Тест D+2 20:22 (второй прогресс-слот)
         result = _at_next_day_time(base_time, 20, 22, day_offset=2)
-        expected = datetime(2025, 1, 3, 20, 22, 0, tzinfo=timezone.utc)
-        assert result == expected, f"D+2 20:22: ожидался {expected}, получен {result}"
+        # 20:22 MSK == 17:22 UTC зимой
+        expected = datetime(2025, 1, 3, 17, 22, 0, tzinfo=timezone.utc)
+        assert result == expected, f"D+2 20:22 (MSK->UTC): ожидался {expected}, получен {result}"
         
         # Тест D+3 08:28 (третий прогресс-слот)
         result = _at_next_day_time(base_time, 8, 28, day_offset=3)
-        expected = datetime(2025, 1, 4, 8, 28, 0, tzinfo=timezone.utc)
-        assert result == expected, f"D+3 08:28: ожидался {expected}, получен {result}"
+        # 08:28 MSK == 05:28 UTC зимой
+        expected = datetime(2025, 1, 4, 5, 28, 0, tzinfo=timezone.utc)
+        assert result == expected, f"D+3 08:28 (MSK->UTC): ожидался {expected}, получен {result}"
         
         # Тест с day_offset=0 (тот же день)
         result = _at_next_day_time(base_time, 15, 30, day_offset=0)
-        expected = datetime(2025, 1, 1, 15, 30, 0, tzinfo=timezone.utc)
-        assert result == expected, f"D+0 15:30: ожидался {expected}, получен {result}"
+        # 15:30 MSK == 12:30 UTC зимой
+        expected = datetime(2025, 1, 1, 12, 30, 0, tzinfo=timezone.utc)
+        assert result == expected, f"D+0 15:30 (MSK->UTC): ожидался {expected}, получен {result}"
         
         # Тест с большим day_offset
         result = _at_next_day_time(base_time, 10, 0, day_offset=7)
-        expected = datetime(2025, 1, 8, 10, 0, 0, tzinfo=timezone.utc)
-        assert result == expected, f"D+7 10:00: ожидался {expected}, получен {result}"
+        # 10:00 MSK == 07:00 UTC зимой
+        expected = datetime(2025, 1, 8, 7, 0, 0, tzinfo=timezone.utc)
+        assert result == expected, f"D+7 10:00 (MSK->UTC): ожидался {expected}, получен {result}"
         
         # Тест с переходом через месяц
         base_time_month_end = datetime(2025, 1, 31, 12, 0, 0, tzinfo=timezone.utc)
         result = _at_next_day_time(base_time_month_end, 9, 0, day_offset=1)
-        expected = datetime(2025, 2, 1, 9, 0, 0, tzinfo=timezone.utc)
-        assert result == expected, f"Переход через месяц: ожидался {expected}, получен {result}"
+        # 09:00 MSK == 06:00 UTC зимой
+        expected = datetime(2025, 2, 1, 6, 0, 0, tzinfo=timezone.utc)
+        assert result == expected, f"Переход через месяц (MSK->UTC): ожидался {expected}, получен {result}"
 
     @pytest.mark.asyncio
     async def test_edge_cases(self):
@@ -1220,7 +1227,10 @@ class TestNotificationsComprehensive:
         
         # Создаем уведомления для всех пользователей
         enrolled_at = self._get_test_time()
-        
+        # Создаем один тестовый курс с включенными уведомлениями для всех пользователей,
+        # чтобы не множить слоты из-за разного course_id (дедуп-ключ включает course_id)
+        shared_course = await self._create_test_course()
+
         for user in users:
             # Сначала создаем приветственные уведомления
             await schedule_welcome_notifications(
@@ -1231,17 +1241,12 @@ class TestNotificationsComprehensive:
             )
             
             # Затем создаем прогресс-слоты для курса
-            # Создаем тестовый курс с включенными уведомлениями
-
-            course = await self._create_test_course()
-
-
             await schedule_on_user_created(
                 db=self.db,
                 user=user,
                 enrolled_at=enrolled_at,
                 is_pro=False,
-                course_id=course["id"]
+                course_id=shared_course["id"]
             )
         
         end_time = time.time()
@@ -1265,19 +1270,17 @@ class TestNotificationsComprehensive:
         # Дополнительный тест: создание уведомлений с разными временами
         start_time = time.time()
         
+        # Один курс на вторую фазу тоже создаем один раз
+        shared_course2 = await self._create_test_course()
+
         for i, user in enumerate(users):
             # Каждый пользователь получает уведомления с разным временем
             user_enrolled_at = enrolled_at + timedelta(minutes=i)
-            # Создаем тестовый курс с включенными уведомлениями
-
-            course = await self._create_test_course()
-
-
             await schedule_access_end_notifications(
                 db=self.db,
                 user=user,
                 access_end_at=user_enrolled_at,
-                course_id=course["id"]
+                course_id=shared_course2["id"]
             )
         
         end_time = time.time()
